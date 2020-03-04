@@ -82,3 +82,6 @@ wahi_korero*
 
 
 #*django.mo
+
+node_modules/
+package-lock.json
