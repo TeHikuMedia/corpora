@@ -60,6 +60,9 @@ services:
     image: "tehiku/corpora:local-dev"
     volumes:
       - .:/webapp/corpora/
+      - static_volume:/webapp/public/static
+      - media_volume:/webapp/public/media
+      - logs_volume:/webapp/logs/
     working_dir: /webapp/corpora/corpora/
     entrypoint: /webapp/corpora/entry.sh
     env_file: local.env
