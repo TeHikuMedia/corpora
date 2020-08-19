@@ -39,7 +39,7 @@
     - env_vars/local.yml
     - env_vars/vault.yml
   roles:
-    - base
+    - base-common
     - local-db
     - memcached
     - rabbitmq

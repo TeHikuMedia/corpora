@@ -1,6 +1,0 @@
----
-
-- include: ensure_ec2_running.yml
-  with_items: "{{server_roles}}"
-  loop_control:
-    loop_var: server_role

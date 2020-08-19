@@ -1,8 +1,0 @@
----
-
-- include: local_database.yml
-  tags:
-    - local
-    - database
-    - provision
-
