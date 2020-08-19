@@ -1,0 +1,1 @@
+{"virtualbox":{"/webapp/corpora":{"guestpath":"/webapp/corpora","hostpath":"/Users/livestream/tehikudev/corpora/corpora/corpora","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"/Users/livestream/tehikudev/corpora/corpora/corpora-deploy","disabled":false,"__vagrantfile":true}}}

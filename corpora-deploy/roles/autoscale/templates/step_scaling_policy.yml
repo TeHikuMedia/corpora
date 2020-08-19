@@ -1,0 +1,76 @@
+Resources: 
+  StepScalingPolicyUp:
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      AdjustmentType: ExactCapacity
+      AutoScalingGroupName: "ASG-{{ project_name }}-{{env_type}}-{{server_type}}"
+      EstimatedInstanceWarmup: 180
+      MetricAggregationType: Average
+      PolicyType: StepScaling
+      StepAdjustments:
+        - MetricIntervalLowerBound: 0
+          MetricIntervalUpperBound: 50
+          ScalingAdjustment: 1
+        - MetricIntervalLowerBound: 50
+          ScalingAdjustment: 1          
+  TGScalingPolicyRequstCountPerTarget:
+    Type: AWS::AutoScaling::ScalingPolicy        
+    Properties:
+      AdjustmentType: ChangeInCapacity
+      AutoScalingGroupName: "ASG-{{ project_name }}-{{env_type}}-{{server_type}}"
+      EstimatedInstanceWarmup: 180
+      PolicyType: TargetTrackingScaling
+      TargetTrackingConfiguration:
+        TargetValue: 300
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ALBRequestCountPerTarget         
+          ResourceLabel: "app/ELB-LB-{{ project_name }}-{{env_type}}-web/{{elb_id}}/targetgroup/ELB-TG-{{ project_name }}-{{env_type}}-web/{{tg_id}}"
+  SimpleScalingPolicyDown:
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      AdjustmentType: ChangeInCapacity
+      AutoScalingGroupName: "ASG-{{ project_name }}-{{env_type}}-{{server_type}}"
+      Cooldown: 180
+      PolicyType: SimpleScaling
+      ScalingAdjustment: -1
+  AlarmForHighLoad:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      ActionsEnabled: True
+      AlarmActions:
+        - !Ref StepScalingPolicyUp
+      AlarmDescription: This will alarm when high traffic
+      AlarmName: HIGH-Requests-Alarm-{{ project_name }}-{{env_type}}
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: LoadBalancer
+          Value: 'app/ELB-LB-{{ project_name }}-{{env_type}}-web/{{elb_id}}'
+      EvaluationPeriods: 1
+      MetricName: RequestCount
+      Namespace: AWS/ApplicationELB
+      OKActions:
+        - Ref: SimpleScalingPolicyDown
+      Period: 60
+      Statistic: Sum
+      Threshold: 50.0
+      Unit: Count
+  AlarmForHighCPU:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      ActionsEnabled: True
+      AlarmActions:
+        - Ref: StepScalingPolicyUp
+      AlarmDescription: This will alarm when high CPU
+      AlarmName: HIGH-CPU-Alarm-{{ project_name }}-{{env_type}}
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: InstanceId
+          Value: '{{ec2_primary_id}}'
+      EvaluationPeriods: 1
+      MetricName: CPUUtilization
+      Namespace: AWS/EC2
+      OKActions:
+        - Ref: SimpleScalingPolicyDown
+      Period: 300
+      Statistic: Average
+      Threshold: 25.0

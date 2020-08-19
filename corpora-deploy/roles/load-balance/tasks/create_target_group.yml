@@ -1,0 +1,75 @@
+---
+
+
+- ec2_instance_facts:
+    region: "{{aws_region}}"
+    filters:
+      "tag:server_role": "primary"
+      "tag:project_env_server_type":  "{{ project_name }}_{{env_type}}_web"
+  register:
+    ec2_instances
+
+
+# In this scenario we send all traffic to our ec2 on port 80
+# and we let the ELB handle the https
+# docs: http://docs.ansible.com/ansible/latest/elb_target_group_module.html
+- name: Create Load Balancing Target Group
+  local_action:
+    module: elb_target_group
+    name: "ELB-TG-{{ project_name }}-{{env_type}}-web"
+    state: present
+    region: ap-southeast-2    
+    protocol: http
+    port: 80
+    targets:
+      - Id: "{{item.instance_id}}"
+        Port: 80
+    vpc_id: vpc-9a9d97f8 # THIS IS HARD CODED!
+  register: ec2_elb_tg
+  tags:
+    - ec2
+    - elb
+    - tg
+  with_items: "{{ec2_instances.instances}}"
+
+
+### ONLY REGISTER ONE HERE????
+
+- name: Create Load Balancing Target Group for Celery
+  local_action:
+    module: elb_target_group
+    name: "ELB-TG-{{ project_name }}-{{env_type}}-celery"
+    state: present
+    region: ap-southeast-2    
+    protocol: http
+    port: 5555
+    targets:
+      - Id: "{{item.instance_id}}"
+        Port: 5555
+    vpc_id: vpc-9a9d97f8 # THIS IS HARD CODED!
+  register: ec2_elb_tg
+  tags:
+    - ec2
+    - elb
+    - tg
+  with_items: "{{ec2_instances.instances}}"
+
+
+- name: Create Load Balancing Target Group for Rabbitmq admin
+  local_action:
+    module: elb_target_group
+    name: "ELB-TG-{{ project_name }}-{{env_type}}-rmq"
+    state: present
+    region: ap-southeast-2    
+    protocol: http
+    port: 15672
+    targets:
+      - Id: "{{item.instance_id}}"
+        Port: 15672
+    vpc_id: vpc-9a9d97f8 # THIS IS HARD CODED!
+  register: ec2_elb_tg
+  tags:
+    - ec2
+    - elb
+    - tg
+  with_items: "{{ec2_instances.instances}}"

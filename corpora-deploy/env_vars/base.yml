@@ -1,0 +1,26 @@
+---
+ec2_key_pair : tehiku
+git_repo: https://github.com/TeHikuMedia/corpora.git
+project_name: corpora
+application_name: corpora
+ssl_dest_dir: /etc/ssl
+aws_region: ap-southeast-2
+timezone: Pacific/Auckland
+# This is probably a bad option to have in the playbook. So I'm putting this variable here with a default of NO.
+# I would only want to do this in the local environment.
+# rebuild_database: no
+destroy_vagrant: no
+
+maintenance: no
+
+purge_celery_tasks: no
+
+# These are AWS seettings which are static or cant be create programatically via ansible
+hosted_zone_id: Z2DXU3EOYXYT52
+aws_cloudfront_ssl_region: us-east-1
+aws_key_name: tehiku
+
+availability_zones:
+  - ap-southeast-2a
+  - ap-southeast-2b
+  - ap-southeast-2c

@@ -1,0 +1,117 @@
+---
+
+env_type: staging
+
+git_branch: python3-django2
+setup_git_repo: yes
+
+# AWS Settings
+webserver_instance_type: t3.small # cant build ffmpeg on micro
+solrserver_instance_type: t3.small
+webserver_ami: ami-00a5fc80ec944398f # sydney, debian 9.9+2
+debian_distro: stretch
+number_webserver_instances: 1
+domain_name: koreromaori.com
+cloudfront_subdomain: staticdev
+cloudfront_cname: "{{cloudfront_subdomain}}.{{domain_name}}"
+
+# AWS SSL ARN FOR LOAD BALANCING
+elb_ssl_arn: arn:aws:acm:ap-southeast-2:473856431958:certificate/6f42dda8-75d4-4420-a60f-023751bda8a0
+
+#memcached_instance_type: t1.micro # right now we're using a localling installed memcache
+database_instance_type: db.t2.micro
+
+# Database settings.
+db_user: "{{ application_name }}"
+db_name: "{{ application_name }}"
+db_password: password
+db_roles: "NOSUPERUSER,NOCREATEDB"
+
+# Gunicorn settings. For the number of workers, a good rule to follow is
+# 2 x number of CPUs + 1
+gunicorn_num_workers: 2
+# A positive integer generally in the 2-4 x $(NUM_CORES) range.
+gunicorn_num_threads: 2
+
+# Setting this to 1 will restart the Gunicorn process each time
+# you make a request, basically reloading the code. Very handy
+# when developing. Set to 0 for unlimited requests (default).
+gunicorn_max_requests: 1000
+
+# Nginx settings.
+#nginx_server_name: "{{ inventory_hostname }}"
+nginx_server_name: "dev.koreromaori.com"
+nginx_server_name_aliases: "dev.corpora.io dev.olelomaoli.com" #  ELB-LB-corpora-staging-web-248399336.ap-southeast-2.elb.amazonaws.com" <= required this http://charles.lescampeurs.org/2008/11/14/fix-nginx-increase-server_names_hash_bucket_size
+nginx_server_name_no_ssl: "dummywebsitehereshould.fix.this"
+
+nginx_server_names:
+  corpora: "dev.koreromaori.com"
+  reo_api: "dev.koreromaori.io"
+nginx_server_names_aliases:
+  corpora: "dev.corpora.io dev.olelomaoli.com"
+  reo_api: "www.dev.koreromaori.com"
+
+# nginx_server_names_aliases_redirect:
+#   corpora:
+#     dev.corpora.io: dev.koreromaori.io
+#     dev.olelomaoli.com: dev.olelomaoli.com
+#   reo_api:
+#     www.dev.koreromaori.com: dev.koreromaori.io
+
+# memcached Settings:
+#memcached_listen: 127.0.0.1 # we're using ec2 to get this IP in the roles/web/postactivate template
+memcached_port: 11211
+memcached_user: nobody
+memcached_max_memory_mb: 128
+memcached_max_connections: 1024
+memcached_key_limit: 1
+# django cache length in seconds - used so we can have diffrerent cache times for different envs
+cache_base_seconds: 1
+
+# RabbitMQ settings.
+rabbitmq_server_name: localhost # we're using ec2 to get this IP in the roles/web/postactivate template
+rabbitmq_port: 5672
+rabbitmq_port_2: 4369
+rabbitmq_port_3: 25672
+rabbitmq_port_4_from: 35672
+rabbitmq_port_4_to: 35682
+rabbitmq_port_5: 15672
+rabbitmq_admin_user: admin
+rabbitmq_admin_password: password
+rabbitmq_application_vhost: "{{ application_name }}"
+rabbitmq_application_user: "{{ application_name }}"
+rabbitmq_application_password: password
+
+# Celery settings.
+celery_num_workers: 2 # <= not using as celery will default to num CPUs
+celery_num_workers_secondary: 4 # <= not using as celery will default to num CPUs
+celery_application_settings_file: settings.dev
+
+# SMTP settings.
+smtp_host: smtp.gmail.com
+
+# FFMPEG
+rebuild_ffmpeg: no
+
+# Application settings.
+upgrade_pip: yes
+upgrade_pip_app: yes
+django_settings_file: settings.py
+django_include_fixtures: yes
+django_isnot_production: true
+django_file_storage: storages.backends.s3boto3.S3Boto3Storage
+create_django_superuser: no
+aws_bucket: "{{project_name}}-{{env_type}}-{{aws_region}}"
+aws_staticfiles_bucket: "{{project_name}}-{{env_type}}-static-{{aws_region}}"
+run_django_syncdb: yes
+# run_django_south_migration: yes
+run_django_migrations: yes
+run_django_collectstatic: yes
+run_django_clearstatic: yes
+build_language_files: yes
+
+# run_django_createinitialrevisions: yes
+purge_celery_tasks: no
+install_bower_packages: yes
+prune_bower_packages: yes
+install_people_fixture: no

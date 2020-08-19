@@ -1,0 +1,175 @@
+### STAGING ###
+### PLAYBOOK FOR THE STAGING SERVERS ###
+### NOTE NOTE NOTE ###
+# If we restart celery then we'll lose the list of tasks from http://...:5555
+# So I uncommented teh celery portion in deploy to prevent that. 
+# Also not sure if tasks will get erased on restart (don't think they will as rabbitmq will still have them)
+###
+
+- name: "Launch all staging {{ application_name }} servers"
+  hosts: localhost
+  serial: "100%"
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/staging.yml
+    - env_vars/vault.yml
+  vars:
+    - server_type: web
+    - server_roles:
+      - secondary
+      - primary
+  roles:
+    - ec2
+    - load-balance
+    - s3
+    - cloudfront
+  tags:
+    - staging
+    - launch
+    - launch-staging
+    - remote
+
+# we need to wait somewhere until the instance is finally booted, then we need to re-process the inventory!!!
+# could wrape provision and deplay in includes so that error on hosts isn't displayed when doing local deployment
+- name: "Provision staging {{ application_name }} web servers"
+  hosts: tag_project_env_server_type_{{ project_name }}_{{env_type}}_web
+  remote_user: admin
+  become: true
+  vars:
+    - setup_bitbucket_repo: yes
+    - update_apt_cache: yes
+    - rebuild_database: no
+    - server_type: web    
+    - host_tag: tag_project_env_server_type_{{application_name}}_{{env_type}}_web    
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/staging.yml
+    - env_vars/vault.yml
+  roles:
+    - base
+    - ec2-db
+    - memcached
+    - rabbitmq
+  tags:
+    - staging
+    - provision
+    - provision-staging
+    - web
+    - remote
+
+# tag_solrserver_staging # note that we didn't do the memchaceh server so only asking for webserver
+# - name: "Deploy staging {{ application_name }} solr server"
+#   hosts: tag_env_server_type_staging_web_project_{{project_name}} # moving solr to same instance for now since it has such low usage 
+#   remote_user: admin
+#   sudo: yes
+#   vars_files:
+#     - env_vars/base.yml
+#     - env_vars/staging.yml
+#     - env_vars/vault.yml
+#   roles:
+#     - search
+#   tags:
+#     - staging
+#     - deploy
+#     - deploy-staging
+#     - deploy-staging-search
+#     - remote
+
+- name: "Ensure secondary server is running"
+  hosts: localhost
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/staging.yml  
+    - env_vars/vault.yml  
+  vars:
+    - server_type: web
+    - server_roles:
+      - secondary
+      - primary
+  roles:
+    - ensure-ec2-running
+  tags:
+    - deploy
+    - deploy-asg
+    - deploy-staging-asg
+
+
+- name: "Deploy to staging {{ application_name }} WEB servers"
+  hosts: tag_project_env_server_type_{{ project_name }}_{{env_type}}_web
+  serial: "100%"
+  remote_user: admin
+  become: true
+  vars:
+    - setup_bitbucket_repo: yes
+    - update_apt_cache: yes                 # "{{ lookup('file', '/tmp/ec2_solrserver_private_ip') }}"   
+    - ec2_solrserver_private_ip: 127.0.0.1  # moving solr to same instance for now since it has such low usage 
+    - server_type: web
+    - host_tag: tag_project_env_server_type_{{application_name}}_{{env_type}}_web
+    - ansible_user: admin
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/staging.yml  
+    - env_vars/vault.yml
+  roles: 
+    - get-rds-facts
+    - web
+    - celery
+  tags:
+    - staging
+    - deploy
+    - deploy-primary
+    - deploy-web
+    - deploy-staging
+    - deploy-staging-web
+    - remote
+
+
+# Use the secondary machine to create an AMI for autoscaling
+- name: "Set up autoscaling for {{ application_name }}"
+  hosts: localhost
+  vars:
+    - server_role: secondary
+    - server_type: web
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/staging.yml  
+    - env_vars/vault.yml
+    - group_vars/staging.yml    
+  roles:
+    - ensure-ec2-stopped
+    - autoscale
+  tags:
+    - staging    
+    - deploy-asg
+    - deploy-staging
+    - deploy-staging-asg
+    - scale
+    - scale-asg
+    - scale-staging
+    - scale-staging-asg
+    - remote
+    # deploy
+
+
+- name: Set securtity groups
+  hosts: localhost
+  serial: "100%"
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/staging.yml
+    - env_vars/vault.yml
+  vars:
+    - server_type: web
+  roles:
+    - load-balance
+  tags:
+    - staging
+    - launch
+    - launch-staging
+    - provision
+    - deploy
+    - scale
+    - deploy-web
+    - remote
+    - load-balance-security
+  

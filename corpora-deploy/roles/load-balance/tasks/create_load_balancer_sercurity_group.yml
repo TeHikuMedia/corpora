@@ -1,0 +1,49 @@
+
+
+- name: get my public IP
+  ipify_facts:
+
+- name: Create Load Balancer Security Group
+  local_action:
+    module: ec2_group
+    name: "{{ project_name }}-{{env_type}}-loadbalancer" 
+    description: "Security group for {{ project_name }} {{env_type}} loadbalancer"
+    region: ap-southeast-2
+    purge_rules: no
+    rules:
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 5555
+        to_port: 5555
+        cidr_ip: "{{ipify_public_ip}}/32"
+      - proto: tcp
+        from_port: 15672
+        to_port: 15672
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0
+    rules_egress:
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 5555
+        to_port: 5555
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 15672
+        to_port: 15672
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0
+  register: ec2_group
+  tags:
+    sg_config

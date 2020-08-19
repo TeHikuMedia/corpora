@@ -1,0 +1,49 @@
+---
+
+### FOR NOW WE'RE RUNNING MEMCACHED ON THE WEBSERVER INSTANCE - BETTER TO DO ANSIBLE GET INFO
+
+- local_action: ec2_instance_facts
+  become: no
+  args:
+    aws_access_key: "{{ansible_aws_id}}"
+    aws_secret_key: "{{ansible_aws_secret}}"
+    region: ap-southeast-2
+    filters:
+      "tag:Name": "{{project_name}}-{{env_type}}-webserver"
+      "tag:server_type": "web"
+  register:
+    ec2_webserver_facts
+  when: env_type != 'local'
+
+
+- set_fact:
+    ec2_webserver: "{{ec2_webserver_facts.instances[0]}}"
+  when: env_type != 'local'
+
+- set_fact:
+    ec2_webserver:
+      private_ip_address: 127.0.0.1
+  when: env_type  == 'local'
+
+- debug: var=ec2_webserver
+
+##############################################################################
+
+- name: Install Memcached
+  apt: name=memcached update_cache={{ update_apt_cache }} state=installed
+  tags: packages
+
+- name: Install Dev Libraries for Memcached
+  apt: name=libmemcached-dev update_cache={{ update_apt_cache }} state=installed
+  tags: packages
+
+- name: Create the Memcached configuration file
+  template: src=memcached.conf.j2
+            dest=/etc/memcached.conf
+            mode=0644
+            backup=yes
+  notify:
+    - restart memcached
+
+- name: Ensure the Memcached service is running
+  service: name=memcached state=started enabled=yes

@@ -1,0 +1,53 @@
+---
+
+- name: Make sure third_party folder exists
+  file:
+    path: "{{application_path}}/{{application_name}}/static/third_party/"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ gunicorn_group }}"    
+    # mode: 0777
+  tags:
+    - fontawesome
+
+- name: Copy FontAwesome zip
+  copy:
+    src: third_party/fontawesome-pro-js.zip
+    dest: "{{application_path}}/{{application_name}}/static/third_party/fontawesome-pro.zip"
+    # mode: 0777
+  tags:
+    - fontawesome
+
+- name: Make sure fontawesome folder exists
+  file:
+    path: "{{application_path}}/{{application_name}}/static/third_party/fontawesome-pro/"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ gunicorn_group }}"
+    # mode: 0777
+  tags:
+    - fontawesome
+
+- name: Unzip fontawesome
+  unarchive:
+    src: "{{application_path}}/{{application_name}}/static/third_party/fontawesome-pro.zip"
+    dest: "{{application_path}}/{{application_name}}/static/third_party/fontawesome-pro/"
+    remote_src: yes
+
+- name: Remove zip
+  file:
+    path: "{{application_path}}/{{application_name}}/static/third_party/fontawesome-pro.zip"
+    state: absent
+  tags:
+    - fontawesome
+
+# - name: Make sure fontawesome folder perms are correct
+#   file:
+#     dest: "{{item}}"
+#     state: directory
+#     # mode: 0775
+#   tags:
+#     - fontawesome
+#   loop:
+#     - "{{application_path}}/{{application_name}}/static/third_party/fontawesome-pro/"
+#     - "{{application_path}}/{{application_name}}/static/third_party/"

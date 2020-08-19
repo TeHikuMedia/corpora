@@ -1,0 +1,24 @@
+sudo apt-get update -f && sudo apt-get upgrade
+wget https://github.com/sourcefabric/airtime/archive/airtime-2.5.2.1.tar.gz
+tar -zxvf airtime-2.5.2.1.tar.gz
+cd airtime-airtime-2.5.2.1
+sudo ./install -fiap
+
+
+sudo apt-get install s3cmd
+s3cmd --configure
+
+
+sudo service airtime-playout start
+sudo service airtime-liquidsoap start
+sudo service airtime-media-monitor start
+
+
+
+
+# To replace db from backup
+s3cmd get s3://tehiku-airtime-bucket/tehiku_fm/database_backup_Thu.gz
+gzip -d database_backup_Thu.gz
+sudo -u postgres psql -c "drop database airtime"
+sudo -u postgres psql -c "create database airtime"
+sudo -u postgres psql -f database_backup_Thu airtime

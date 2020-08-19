@@ -1,0 +1,39 @@
+---
+
+# - name: Add the RabbitMQ public GPG key to the apt repo
+#   apt_key: url=https://www.rabbitmq.com/rabbitmq-signing-key-public.asc
+#            state=present
+
+# - name: Add RabbitMQ to the sources list
+#   apt_repository: repo='deb http://www.rabbitmq.com/debian/ testing main'
+#                   update_cache={{ update_apt_cache }}
+#                   state=present
+
+# - name: Remove rabbitmq repository - i broke shit
+#   apt_repository:
+#     repo: deb https://dl.bintray.com/rabbitmq/debian {{debian_distro}} main
+#     state: absent
+
+- name: Install RabbitMQ server
+  apt:
+    name:
+     - rabbitmq-server
+    update_cache: "{{ update_apt_cache }}"
+    force: yes 
+    state: installed
+
+- name: Enable the RabbitMQ Management Console
+  rabbitmq_plugin:
+    names: rabbitmq_management
+    state: enabled
+  notify: restart rabbitmq-server
+
+- include: setup_vhosts.yml
+
+- include: setup_users.yml
+
+- name: Ensure that the RabbitMQ service is running
+  service:
+    name: rabbitmq-server
+    state: started
+    enabled: yes

@@ -1,0 +1,83 @@
+---
+
+env_type: local
+
+#git_branch: develop
+debian_distro: stretch
+
+# Database settings.
+db_user: "{{ application_name }}"
+db_name: "{{ application_name }}"
+db_password: password # could encrypt and store in vault - but is it even necessary???
+rebuild_database: no
+db_roles: "NOSUPERUSER,CREATEDB"
+# Here we assign "fake" ec2 registers for our code. This is the database host
+ec2_database: { "instance":{"endpoint":"localhost"} }
+# Gunicorn settings. For the number of workers, a good rule to follow is
+# 2 x number of CPUs + 1
+gunicorn_num_workers: 2
+# A positive integer generally in the 2-4 x $(NUM_CORES) range.
+gunicorn_num_threads: 4
+
+# Setting this to 1 will restart the Gunicorn process each time
+# you make a request, basically reloading the code. Very handy
+# when developing. Set to 0 for unlimited requests (default).
+gunicorn_max_requests: 1
+
+
+# Nginx settings.
+nginx_server_name: "{{ ansible_eth1.ipv4.address }}"
+nginx_server_name_aliases: "corporalocal.nz www.corporalocal.nz kōreromāorilocal.com corporalocal.io olelohawaii.com"
+nginx_server_name_no_ssl: "podcast.{{ ansible_eth1.ipv4.address }} podcast.tehiku.nz"
+
+nginx_server_names:
+  corpora: "{{ ansible_eth1.ipv4.address }} corporalocal.nz www.corporalocal.nz kōreromāorilocal.com olelohawaii.com"
+  reo_api: "corporalocal.io"
+
+# memcached Settings:
+memcached_listen: 127.0.0.1
+memcached_port: 11211
+memcached_user: nobody
+memcached_max_memory_mb: 64
+memcached_max_connections: 1024
+memcached_key_limit: 1
+# django cache length in seconds - used so we can have diffrerent cache times for different envs
+cache_base_seconds: 0.5 # no cache in local
+
+
+# RabbitMQ settings.
+rabbitmq_server_name: localhost
+rabbitmq_admin_user: admin
+rabbitmq_port: 5672
+rabbitmq_admin_password: password
+rabbitmq_application_vhost: "{{ application_name }}"
+rabbitmq_application_user: "{{ application_name }}"
+rabbitmq_application_password: password
+
+# Celery settings.
+celery_num_workers: 4 # <= not using as celery will default to num CPUs
+celery_application_settings_file: settings.local
+
+# SMTP settings.
+smtp_host: smtp.gmail.com
+
+# FFMPEG
+rebuild_ffmpeg: no
+
+# Application settings.
+upgrade_pip: yes
+upgrade_pip_app: yes
+django_settings_file: settings.py
+django_include_fixtures: yes
+django_isnot_production: true
+django_file_storage: django.core.files.storage.FileSystemStorage
+create_django_superuser: yes
+aws_bucket: tehiku-local
+run_django_syncdb: yes
+run_django_migrations: yes
+install_bower_packages: yes
+prune_bower_packages: yes
+run_django_collectstatic: yes
+run_django_clearstatic: no
+build_language_files: no
+install_people_fixture: no

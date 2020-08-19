@@ -1,0 +1,46 @@
+---
+
+
+
+- include: create_ami_from_deployment.yml
+
+- include: delete_old_launch_configurations.yml
+
+# - include: create_ec2_load_balancer.yml
+
+- include: create_ec2_scaling_launch_configuration.yml
+
+
+- include: create_ec2_scaling_group.yml
+  tags:
+    - create-asg
+    - reset-alarms
+
+# This uses cloudformation to do that autoscaling on requests amout
+# We also need to scale based on cpu load
+- include: create_ec2_asg_policy.yml
+  tags:
+    - alarms
+    - reset-alarms
+
+- include: create_alarms_and_scaling_policies.yml
+  tags:
+    - test-step
+    - alarms
+    - reset-alarms
+
+# This was an old way - we're using the cloudformation way above
+# - include: create_ec2_asg_alarm.yml
+#   tags:
+#     - alarms
+
+
+
+
+
+
+
+#- include: delete_old_amis.yml
+
+
+# stop ec2

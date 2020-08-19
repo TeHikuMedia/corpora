@@ -1,0 +1,89 @@
+
+# - name: download multimedia keyring deb packages
+#   get_url: dest=/tmp/deb-multimedia-keyring_2016.3.7_all.deb url=https://deb-multimedia.org/pool/main/d/deb-multimedia-keyring/deb-multimedia-keyring_2016.3.7_all.deb
+
+# - name: install keyring
+#   apt: deb=/tmp/deb-multimedia-keyring_2016.3.7_all.deb
+
+# - name: added source deb-multimedia
+#   lineinfile: dest=/etc/apt/sources.list line="deb http://www.deb-multimedia.org wheezy main non-free" state=present
+
+# - name: install ffmpeg
+#   apt: name=ffmpeg update_cache=yes state=present
+
+
+- name: Install ffmpeg dependencies
+  apt: name={{ item }} update_cache={{ update_apt_cache }} state=latest
+  with_items:
+    - libass-dev
+    - libfreetype6-dev
+    - libtheora-dev
+    - libtool
+    - libvorbis-dev
+    - pkg-config
+    - texinfo
+    - zlib1g-dev
+  tags: 
+    - ffmpeg
+    - packages  
+
+# https://ffmpeg.org/releases/ffmpeg-2.8.7.tar.bz2
+# https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
+- name: Install ffmpeg
+  file: path="{{ffmpeg_sources_dir}}/ffmpeg" state=directory
+- get_url: url={{ ffmpeg_source_file }} dest="{{ffmpeg_sources_dir}}/ffmpeg/ffmpeg.tar.bz2"
+- shell: "{{item}}"
+  args:
+    chdir: "{{ffmpeg_sources_dir}}/ffmpeg"
+  with_items:
+    - "tar xjvf {{ffmpeg_sources_dir}}/ffmpeg/ffmpeg.tar.bz2 -C {{ffmpeg_sources_dir}}/ffmpeg --strip-components=1"
+    - "PATH=\"$HOME/bin:$PATH\" PKG_CONFIG_PATH=\"$HOME/ffmpeg_build/lib/pkgconfig\" ./configure \
+      --prefix=\"$HOME/ffmpeg_build\" \
+      --pkg-config-flags=\"--static\" \
+      --extra-cflags=\"-I$HOME/ffmpeg_build/include\" \
+      --extra-ldflags=\"-L$HOME/ffmpeg_build/lib\" \
+      --bindir=\"$HOME/bin\" \
+      --enable-gpl \
+      --enable-libass \
+      --enable-libfdk-aac \
+      --enable-libfreetype \
+      --enable-libmp3lame \
+      --enable-libopus \
+      --enable-libtheora \
+      --enable-libvorbis \
+      --enable-libvpx \
+      --enable-libx264 \
+      --enable-libx265 \
+      --enable-openssl \
+      --enable-nonfree" 
+    - "PATH=\"$HOME/bin:$PATH\" make"
+    - "make install"
+    - cp /root/bin/ffmpeg /usr/bin/ffmpeg
+    - cp /root/bin/ffprobe /usr/bin/ffprobe
+
+#     cd ~/ffmpeg_sources
+# wget http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
+# tar xjvf ffmpeg-snapshot.tar.bz2
+# cd ffmpeg
+# PATH="$HOME/bin:$PATH" PKG_CONFIG_PATH="$HOME/ffmpeg_build/lib/pkgconfig" ./configure \
+#   --prefix="$HOME/ffmpeg_build" \
+#   --pkg-config-flags="--static" \
+#   --extra-cflags="-I$HOME/ffmpeg_build/include" \
+#   --extra-ldflags="-L$HOME/ffmpeg_build/lib" \
+#   --bindir="$HOME/bin" \
+#   --enable-gpl \
+#   --enable-libass \
+#   --enable-libfdk-aac \
+#   --enable-libfreetype \
+#   --enable-libmp3lame \
+#   --enable-libopus \
+#   --enable-libtheora \
+#   --enable-libvorbis \
+#   --enable-libvpx \
+#   --enable-libx264 \
+#   --enable-libx265 \
+#   --enable-nonfree
+# PATH="$HOME/bin:$PATH" make
+# make install
+# make distclean
+# hash -r

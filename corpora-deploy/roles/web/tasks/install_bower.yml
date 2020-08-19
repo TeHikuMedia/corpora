@@ -1,0 +1,25 @@
+---
+
+# - name: Create node symlink
+#   file:
+#     src: /usr/bin/nodejs
+#     dest: /usr/bin/node
+#     force: yes
+#     state: link
+# # notes about this node symlink - https://github.com/nodejs/node-v0.x-archive/issues/3911
+
+
+# Using Debian, as root
+- name: Get Node files
+  shell: curl -sL https://deb.nodesource.com/setup_11.x | bash -
+
+- name: install nodejs
+  apt:
+    name:
+      - nodejs
+    state: latest
+
+- name: Install bower
+  command: npm install -g bower@latest
+
+# do yarn stuff but upgrade debian first!

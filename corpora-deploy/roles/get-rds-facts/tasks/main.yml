@@ -1,0 +1,35 @@
+---
+
+- debug: var="{{project_name}}-{{env_type}}-database"
+
+- name: Get RDS details when ec2_database isn't properly defined
+  become: false
+  local_action:
+    module: rds
+    command: facts
+    region: ap-southeast-2
+    instance_name: "{{project_name}}-{{env_type}}-database"
+  register: ec2_database
+
+- debug: var=cloudfront_cname
+  tags:
+    - cloudfront
+
+- name: Get cloudfront details
+  become: false
+  local_action:
+    module: cloudfront_facts
+    distribution: true
+    domain_name_alias: "{{ cloudfront_cname }}"
+  tags:
+    - cloudfront
+
+- name: Set cloudfront domain name
+  set_fact:
+    cloudfront_domain_name: "{{ ansible_facts['cloudfront'][cloudfront_cname]['Distribution']['DomainName'] }}"
+  tags:
+    - cloudfront
+
+- debug: var=cloudfront_domain_name
+  tags:
+    - cloudfront

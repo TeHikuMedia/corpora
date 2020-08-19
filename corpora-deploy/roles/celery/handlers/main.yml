@@ -1,0 +1,24 @@
+---
+
+# - name: restart {{ celery_application_name }}
+#   shell: supervisorctl restart 
+#   # supervisorctl:
+#   #   name: "{{ celery_application_name }}"
+#   #   state: restarted
+
+- name: restart celery-celery
+  supervisorctl:
+    name: "{{ celery_application_name }}-celery"
+    state: restarted
+
+- name: restart celery-beat
+  supervisorctl:
+    name: "{{ celery_application_name }}-beat"
+    state: restarted
+  ignore_errors: yes
+
+- name: restart flower
+  shell: supervisorctl restart {{ flower_application_name }}
+  # supervisorctl:
+  #   name: "{{ flower_application_name }}"
+  #   state: restarted

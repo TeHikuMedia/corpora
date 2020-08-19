@@ -1,0 +1,44 @@
+---
+
+# ansible_user: "{{ lookup('env','USER') }}"
+
+# Application settings.
+virtualenv_path: "/webapp"
+project_path: "{{ virtualenv_path }}/{{ project_name }}"
+application_path: "{{ project_path }}/{{ application_name }}"
+application_log_dir: "{{ virtualenv_path }}/logs"
+application_log_file: "{{ application_log_dir }}/gunicorn_supervisor.log"
+django_log_file: "{{ application_log_dir }}/django.log"
+celery_log_file: "{{ application_log_dir }}/celery.log"
+requirements_file: "{{ project_path }}/requirements.txt"
+application_tmp_dir: "/tmp/{{ project_name }}_files"
+
+django_num_sites: 2
+django_settings: ['corpora', 'reo_api']
+
+# Gunicorn settings
+
+gunicorn_user: "{{ application_name }}"
+gunicorn_group: webapp
+
+# Nginx settings
+nginx_http_port: 80
+nginx_https_port: 443
+nginx_access_log_file: "{{ application_log_dir }}/nginx_access.log"
+nginx_error_log_file: "{{ application_log_dir }}/nginx_error.log"
+nginx_static_dir: "{{ virtualenv_path }}/public/static/" # note we're using s3 for django app
+nginx_media_dir: "{{ virtualenv_path }}/public/media/" # note we're using s3 for django app
+
+# Celery Settings
+celery_media_queue_name: media
+
+
+# Wahi korero astuff
+tmp_dir: /tmp/
+pkg_dir: /tmp/wahi_korero/
+exe_dir: /tmp/wahi_korero/wahi_korero/
+wahi_korero_version: v0.5.1
+
+purge_segments_repo: yes
+
+clean_git_repo: yes

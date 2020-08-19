@@ -1,0 +1,190 @@
+# Tasks for creating security groups
+# What happens if security group already exists?
+- name: Create Web security group
+  local_action:
+    module: ec2_group
+    name: "{{ project_name }}-{{env_type}}-webserver"
+    description: "Security group for {{ project_name }} {{env_type}} webserver"
+    region: ap-southeast-2
+    rules:
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0
+      - proto: icmp
+        from_port: -1
+        to_port: -1
+        cidr_ip: 0.0.0.0/0
+      - proto: udp
+        from_port: 123
+        to_port: 123
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 81
+        to_port: 81
+        group_name: "{{ project_name }}-{{env_type}}-loadbalancer"            
+      - proto: tcp
+        from_port: "{{memcached_port}}"
+        to_port: "{{memcached_port}}"
+        group_name: "{{ project_name }}-{{env_type}}-webserver"  
+      - proto: tcp
+        from_port: "{{rabbitmq_port}}"
+        to_port: "{{rabbitmq_port}}"
+        group_name: "{{ project_name }}-{{env_type}}-webserver"       
+      - proto: tcp
+        from_port: "{{rabbitmq_port_2}}"
+        to_port: "{{rabbitmq_port_2}}"
+        group_name: "{{ project_name }}-{{env_type}}-webserver"   
+      - proto: tcp
+        from_port: "{{rabbitmq_port_3}}"
+        to_port: "{{rabbitmq_port_3}}"
+        group_name: "{{ project_name }}-{{env_type}}-webserver"   
+      - proto: tcp
+        from_port: "{{rabbitmq_port_5}}"
+        to_port: "{{rabbitmq_port_5}}"
+        group_name: "{{ project_name }}-{{env_type}}-webserver"   
+      - proto: tcp
+        from_port: "{{rabbitmq_port_4_from}}"
+        to_port: "{{rabbitmq_port_4_to}}"
+        group_name: "{{ project_name }}-{{env_type}}-webserver"                               
+      - proto: tcp
+        from_port: 8983
+        to_port: 8983
+        group_name: "{{ project_name }}-{{env_type}}-webserver"    
+      - proto: tcp
+        from_port: 8080
+        to_port: 8080
+        group_name: "{{ project_name }}-{{env_type}}-webserver"    
+      - proto: tcp
+        from_port: 7574
+        to_port: 7574
+        group_name: "{{ project_name }}-{{env_type}}-webserver"
+      - proto: tcp
+        from_port: 5555
+        to_port: 5555
+        group_name: "{{ project_name }}-{{env_type}}-loadbalancer"
+    rules_egress:
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 5432
+        to_port: 5432
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 8000
+        to_port: 8080
+        cidr_ip: 0.0.0.0/0      
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+      - proto: udp
+        from_port: 123
+        to_port: 123
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 5000
+        to_port: 5000
+        cidr_ip: 0.0.0.0/0 
+      - proto: tcp
+        from_port: "{{memcached_port}}"
+        to_port: "{{memcached_port}}"
+        group_name: "{{ project_name }}-{{env_type}}-webserver"  
+      - proto: tcp
+        from_port: "{{rabbitmq_port}}"
+        to_port: "{{rabbitmq_port}}"
+        group_name: "{{ project_name }}-{{env_type}}-webserver"       
+      - proto: tcp
+        from_port: "{{rabbitmq_port_2}}"
+        to_port: "{{rabbitmq_port_2}}"
+        group_name: "{{ project_name }}-{{env_type}}-webserver"   
+      - proto: tcp
+        from_port: "{{rabbitmq_port_3}}"
+        to_port: "{{rabbitmq_port_3}}"
+        group_name: "{{ project_name }}-{{env_type}}-webserver"   
+      - proto: tcp
+        from_port: "{{rabbitmq_port_5}}"
+        to_port: "{{rabbitmq_port_5}}"
+        group_name: "{{ project_name }}-{{env_type}}-webserver"   
+      - proto: tcp
+        from_port: "{{rabbitmq_port_4_from}}"
+        to_port: "{{rabbitmq_port_4_to}}"
+        group_name: "{{ project_name }}-{{env_type}}-webserver"     
+      - proto: tcp
+        from_port: 8983
+        to_port: 8983
+        group_name: "{{ project_name }}-{{env_type}}-webserver"    
+      - proto: tcp
+        from_port: 8080
+        to_port: 8080
+        group_name: "{{ project_name }}-{{env_type}}-webserver"    
+      - proto: tcp
+        from_port: 7574
+        to_port: 7574
+        group_name: "{{ project_name }}-{{env_type}}-webserver"    
+  register: ec2_group
+  tags:
+    sg_config
+
+# Tasks for launching instances
+# What happens if instance already exists? I'm assuming the exact_count = 1 fixes this...
+# If an instance is stopped, these will launch new ones. Should they start existing ones?
+- name: Launch webserver instance
+  local_action:
+    module: ec2
+    region: ap-southeast-2
+    keypair: "{{ ec2_key_pair }}"
+    group: "{{ project_name }}-{{env_type}}-webserver"
+    instance_type: "{{ webserver_instance_type }}"
+    image:  "{{ webserver_ami }}"
+    wait: yes
+    instance_tags:
+      project_env_server_type: "{{ project_name }}_{{env_type}}_web"
+    exact_count: "{{number_webserver_instances}}"
+    count_tag: 
+      project_env_server_type_role: "{{ project_name }}_{{env_type}}_web_{{server_role}}"
+    volumes:
+      - device_name: xvda
+        volume_type: gp2
+        volume_size: 32
+        delete_on_termination: yes
+    termination_protection: yes
+  register: ec2_webserver
+
+- debug:
+    msg: "test"
+
+- debug:
+    var: ec2_webserver.tagged_instances[0].id
+
+# Tasks for tagging and grouping launched instances
+- name: Tag instance
+  local_action: ec2_tag resource={{ item }} region=ap-southeast-2 state=present
+  with_items: 
+   - "{{ec2_webserver.tagged_instances[0].id}}"
+  args:
+    tags:
+      Name: "{{project_name}}-{{env_type}}-webserver"
+      env_type: "{{env_type}}"
+      server_type: "web"
+      server_role: "{{server_role}}"
+      webserver: "{{env_type}}"
+      app: "{{project_name}}"
+      project_env_server_type: "{{ project_name }}_{{env_type}}_web"
+      project_env_server_type_role: "{{ project_name }}_{{env_type}}_web_{{server_role}}"
+
+

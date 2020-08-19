@@ -1,0 +1,39 @@
+---
+
+- name: Get AMIs that already exists
+  local_action:
+    module: ec2_ami_find
+    owner: self
+    ami_tags:
+      type: "{{env_type}}"
+      project: "{{ project_name }}"
+    region: ap-southeast-2
+  register: ami_find
+  tags:
+    - delete-amis
+
+# - debug: var=ami_find.results
+#   tags:
+#     - delete-amis
+
+# - name: Testing loops and shit
+#   command: echo {{item.name}}
+#   with_items:  "{{ami_find.results}}"
+#   tags:
+#     - delete-amis
+#   register: result
+
+- name: Delete old AMIs
+  local_action:
+    module: ec2_ami
+    name: "{{item.name}}" # Here we always create a new AMI (can we delete old ones automatically?)
+    state: absent
+    region: ap-southeast-2
+    image_id: '{{item.ami_id}}'
+    #tags: comming in 2.0
+  tags:
+    - ec2
+    - ami
+    - delete-amis
+  with_items: "{{ami_find.results}}"
+  when: ' item.name != "AMI-{{ project_name }}-{{env_type}}-{{epoch}}" '

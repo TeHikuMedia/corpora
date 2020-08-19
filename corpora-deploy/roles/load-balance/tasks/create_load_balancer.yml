@@ -1,0 +1,61 @@
+---
+
+- name: Create Elastic Application Load Balancer
+  local_action:
+    module: elb_application_lb
+    name: "ELB-LB-{{ project_name }}-{{env_type}}-web"
+    state: present
+    region: ap-southeast-2
+    idle_timeout: 75 # Nginx Defaultf or Keep-Alive https://serverfault.com/questions/782022/keepalive-setting-for-gunicorn-behind-elb-without-nginx
+    listeners:       
+      - Protocol: HTTPS
+        Port: 443
+        SslPolicy: ELBSecurityPolicy-2015-05        
+        Certificates:
+          - CertificateArn: "{{elb_ssl_arn}}"
+        DefaultActions:
+          - Type: forward
+            TargetGroupName: "ELB-TG-{{ project_name }}-{{env_type}}-web"
+      - Protocol: HTTP
+        Port: 80
+        DefaultActions:
+          - Type: forward
+            TargetGroupName: "ELB-TG-{{ project_name }}-{{env_type}}-web"
+      - Protocol: HTTP
+        Port: 5555
+        DefaultActions:
+          - Type: forward
+            TargetGroupName: "ELB-TG-{{ project_name }}-{{env_type}}-celery"
+      - Protocol: HTTP
+        Port: 15672
+        DefaultActions:
+          - Type: forward
+            TargetGroupName: "ELB-TG-{{ project_name }}-{{env_type}}-rmq"
+    security_groups:
+      - "{{ project_name }}-{{env_type}}-loadbalancer"
+    subnets: 
+      - subnet-5585da13 # ap-southeast-2c
+      - subnet-895e6afd # ap-southeast-2a
+      - subnet-98efe4fa # ap-southeast-2b
+  register: ec2_elb_lb
+  tags:
+    - ec2
+    - elb
+    - lb
+
+
+### WE DONT NEED TO DO THIS SINCE ASG WILL SPIN UP INSTANCES FOR US.
+
+# - name: register instance with the LB
+#   local_action:
+#     module: ec2_elb
+#     instance_id: "{{ansible_ec2_instance_id}}"
+#     ec2_elbs: "LB-{{ project_name }}-{{env_type}}-{{server_type}}"
+#     state: present
+#     wait: yes
+#     region: ap-southeast-2
+#   register: ec2_elb
+#   ignore_errors: yes
+#   tags:
+#     - ec2
+#     - elb

@@ -1,0 +1,61 @@
+---
+
+- name: Install git so we can retrieve app source
+  apt: name=git state=latest
+  become: true
+
+# - name: Install known_hosts file for ponies repository
+#   copy:
+#     src: known_hosts_git
+#     dest: "/home/{{ansible_user}}/.ssh/known_hosts"
+#     owner: "{{ansible_user}}"
+#     group: "{{ansible_user}}"
+
+- name: make repo directory
+  become: true
+  file:
+    path: "{{ virtualenv_path }}"
+    recurse: no # having this as yes fucks up while in deployment and live. plus the set file perms task does this anyway
+    owner: "{{ ansible_user }}"
+    group: "{{ gunicorn_group }}"
+    state: directory
+  tags:
+   - git  
+
+
+# Set specific permissions for git stuff
+- name: set repo perms
+  become: true
+  file:
+    path: "{{item}}"
+    owner: "{{ ansible_user }}"
+    group: "{{ gunicorn_group }}"
+    recurse: yes
+    state: directory
+  tags:
+    - git 
+  with_items:
+    - "{{project_path}}"
+
+- name: Clean git repo directory
+  shell: git clean -fX
+  args:
+    chdir: "{{ project_path }}"
+  when: clean_git_repo
+  ignore_errors: yes
+
+- name: Clean git repo directory
+  shell: "rm -rf {{ project_path }}"
+  when: clean_git_repo
+  ignore_errors: yes
+
+- name: Setup the git repo
+  # the private key is stored in admin's .ssh
+  become: false
+  git:  repo="{{ git_repo }}" 
+        dest="{{ project_path }}" 
+        version="{{ git_branch }}"
+        accept_hostkey=yes
+        force=yes
+  when: setup_git_repo
+  tags: git

@@ -1,0 +1,34 @@
+- name: "Launch all staging  servers"
+  hosts: localhost
+  tasks:
+    - name: "Get RDS  Database instance facts"
+      local_action:
+        module: rds
+        command: facts
+        region: ap-southeast-2
+        instance_name: "kuaka-staging-database"
+      register: ec2_database
+    - debug: var=ec2_database
+
+
+- name: "Launch all staging {{ application_name }} servers"
+  hosts: localhost
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/staging.yml
+    - env_vars/vault.yml  
+  tasks:
+    #include: launch_aws_instance.yml env_type=staging server_role=webserver
+    - include: launch_aws_instance.yml env_type=staging server_role=database
+
+- name: "Launch all staging {{ application_name }} servers"
+  hosts: localhost
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/staging.yml
+    - env_vars/vault.yml
+  vars:
+    env_type: staging
+  roles:
+    #include: launch_aws_instance.yml env_type=staging server_role=webserver
+    - ec2

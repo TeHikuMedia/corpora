@@ -1,0 +1,24 @@
+---
+
+- name: Ensure that the application file permissions are set properly
+  file: path={{ virtualenv_path }}
+        owner={{ gunicorn_user }}
+        group={{ gunicorn_group }}
+        state=directory
+        recurse=yes
+  notify: restart application
+
+- name: Ensure application tmp folder permissions are correct
+  file: path={{ application_tmp_dir }}
+        owner={{ gunicorn_user }}
+        group={{ gunicorn_group }}
+        mode=0777
+        state=directory
+        recurse=yes
+
+# recurese was taking long ebcause i had hundreds of thousands of folders!
+# # recurse with file above is very slow
+# # This should be a good replacement
+# - name: Ensure that the application file permissions are set properly
+#   command: chown -R {{ gunicorn_user }}:{{ gunicorn_group }} {{ virtualenv_path }}
+#   become: true

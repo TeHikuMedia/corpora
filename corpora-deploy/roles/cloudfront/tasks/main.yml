@@ -1,0 +1,72 @@
+---
+
+- name: Get facts for ACM certificate
+  aws_acm_facts:
+    name: "{{ cloudfront_cname }}"
+    region: "{{aws_cloudfront_ssl_region}}"
+  register: acm_facts
+  tags:
+    - cloudfront
+    - route53
+
+- debug: var=acm_facts['certificates'][0]['certificate_arn']
+  tags:
+    - cloudfront
+    - route53
+
+# Note this fails when we try to do the certificate thing
+- name: Register cloudfront distribution for staticfiles
+  cloudfront_distribution:
+    state: present
+    region: "{{aws_region}}"
+    origins:
+      - id: "S3-{{aws_staticfiles_bucket}}"
+        domain_name: "{{aws_staticfiles_bucket}}.s3-{{ aws_region }}.amazonaws.com"
+    tags:
+      Name: "{{ project_name }}-{{env_type}}-cloudfront"
+      Project: "{{ project_name }}"
+      EnvType: "{{env_type}}"
+    alias: "{{cloudfront_cname}}"
+    viewer_certificate:
+      acm_certificate_arn: "{{acm_facts['certificates'][0]['certificate_arn']}}"
+    comment: "{{ project_name }}-{{env_type}}-cloudfront"
+  register: ec2_cloudfront
+  ignore_errors: yes
+  tags:
+    - cloudfront
+    - route53
+
+- name: Get cloudfront details
+  become: false
+  local_action:
+    module: cloudfront_facts
+    distribution: true
+    domain_name_alias: "{{ cloudfront_cname }}"
+  tags:
+    - cloudfront
+    - route53
+
+- name: Set cloudfront domain name
+  set_fact:
+    cloudfront_domain_name: "{{ ansible_facts['cloudfront'][cloudfront_cname]['Distribution']['DomainName'] }}"
+    cloudfront_id: "{{ ansible_facts['cloudfront'][cloudfront_cname]['Distribution']['Id'] }}"
+  tags:
+    - cloudfront
+    - route53
+
+- debug: var=ansible_facts['cloudfront'][cloudfront_cname]['Distribution']
+  tags:
+    - cloudfront
+    - route53
+
+- route53:
+    state: present
+    zone: "{{domain_name}}."
+    record: "{{cloudfront_subdomain}}.{{domain_name}}"
+    type: A
+    value: "{{ ansible_facts['cloudfront'][cloudfront_cname]['Distribution']['DomainName'] }}"
+    alias: True
+    alias_hosted_zone_id: Z2FDTNDATAQYW2 # https://forums.aws.amazon.com/thread.jspa?threadID=136948
+  tags:
+    - route53
+  ignore_errors: yes

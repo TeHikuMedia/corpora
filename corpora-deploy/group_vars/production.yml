@@ -1,0 +1,7 @@
+---
+
+# SSH Credentials
+private_key: ~/.ssh/tehiku.pem
+
+# Repository Details
+branch: "master"

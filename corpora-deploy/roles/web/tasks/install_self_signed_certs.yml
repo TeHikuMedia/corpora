@@ -1,0 +1,21 @@
+# No longer necessary
+
+# - name: Copy the Developer SSL certificate to the remote server
+#   copy:
+#     content: "{{ ssl_crt_tehiku_co_nz }}"
+#     dest: "/usr/local/share/ca-certificates/{{ application_name }}.crt"
+
+# - name: Copy the Developer SSL key to the remote server
+#   copy:
+#     content: "{{ ssl_key_tehiku_co_nz }}"
+#     dest: "/usr/local/share/ca-certificates/{{ application_name }}.key"
+
+
+# - name: Updated the CA ca-certificates
+#   shell: update-ca-certificates
+
+# - name: Copy the Developer SSL key to the remote server
+#   copy:
+#     content: "{{ ssl_key_tehiku_co_nz }}"
+#     dest: "{{ssl_dest_dir}}/private/{{ application_name }}.key"
+

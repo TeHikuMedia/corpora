@@ -1,0 +1,72 @@
+---
+
+# Rolling ASG Updates - http://docs.ansible.com/ec2_asg_module.html
+# Below is an example of how to assign a new launch config to an ASG and terminate old instances.
+# All instances in the ASG that do not have the launch configuration named will be terminated in
+# a rolling fashion with instances using the current launch configuration.
+# This could also be considered a rolling deploy of a pre-baked AMI.
+# If this is a newly created group, the instances will not be replaced since all instances
+# will have the current launch configuration.
+
+# So what happens if we have model changes and Django database needs to be migrated!
+
+# Get ELB Target Group ARN
+- name: Get ARN for ELB TG
+  elb_target_group_facts:
+    region: "{{aws_region}}"
+    names:
+      - ELB-TG-{{ project_name }}-{{env_type}}-{{server_type}}
+  register: elb_targets
+  tags:
+    - create-asg
+
+- debug: var=elb_targets
+  tags:
+    - create-asg
+
+- debug: var=elb_targets.target_groups[0].target_group_arn
+  tags:
+    - create-asg
+
+- name: Create the Auto Scaling Group
+  local_action:
+    module: ec2_asg
+    name: "ASG-{{ project_name }}-{{env_type}}-{{server_type}}"
+    launch_config_name: "LC-{{ project_name }}-{{env_type}}-{{server_type}}"
+    health_check_period: 60
+    health_check_type: ELB
+    replace_all_instances: yes
+    min_size: 0
+    max_size: 10
+    desired_capacity: 0
+    region: "{{aws_region}}"
+    availability_zones: "{{availability_zones}}"
+    state: present
+    target_group_arns: 
+      - "{{ elb_targets.target_groups[0].target_group_arn }}"
+    tags:
+      - Name: "ASG-{{ project_name }}-{{env_type}}-{{server_type}}"
+        project_name: "{{ project_name }}"
+        project_env_server_type_role: "{{ project_name }}-{{env_type}}-{{server_type}}-secondary"
+        project_env_server_type: "{{ project_name }}-{{env_type}}-{{server_type}}"
+        server_role: secondary
+  register: ec2_asg
+  tags:
+    - ec2
+    - asg
+    - scaling
+    - create-asg
+  ignore_errors: yes
+
+
+# - ec2_instance_facts:
+#     region: "{{ aws_region }}"
+#     filters:
+#       "tag:project_env_server_type_role": "{{project_name}}_{{env_type}}_{{server_type}}_primary"
+#   register:
+#     ec2_facts
+# - set_fact:
+#     ec2_server: "{{ec2_facts.instances[0]}}"
+
+# - name: attached primary server to asg
+#   script: "attach_ec2_to_asg.py {{aws_region}} {{ec2_server.id}} ASG-{{ project_name }}-{{env_type}}-{{server_type}}"

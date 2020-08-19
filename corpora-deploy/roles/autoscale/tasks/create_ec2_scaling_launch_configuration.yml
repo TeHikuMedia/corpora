@@ -1,0 +1,18 @@
+---
+
+- name: Create the AS Launch Configuration
+  local_action:
+    module: ec2_lc
+    name: "LC-{{ project_name }}-{{env_type}}-{{server_type}}"
+    state: present # what happens if it's already present... can we overwrite it?
+    region: "{{aws_region}}"
+    key_name: "{{aws_key_name}}" 
+    image_id: "{{ec2_ami.ami_id}}" # Does epoch stay the same throughout the play?
+    security_groups: "{{ project_name }}-{{env_type}}-webserver"
+    instance_type: "{{webserver_instance_type}}"
+  tags:
+    - ec2
+    - scaling
+    - lc
+  #ignore_errors: yes # We're doing this for now as the devel has a bug in this module
+

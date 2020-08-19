@@ -1,0 +1,225 @@
+---
+
+- name: Upgrade pip
+  pip:
+    name: pip
+    extra_args: --upgrade
+    executable: /home/{{ansible_user}}/.localpython/bin/pip3.7
+  when: upgrade_pip
+
+- name: Upgrade pip
+  pip:
+    name: pip
+    extra_args: --upgrade
+    virtualenv: "{{ virtualenv_path }}"
+  when: upgrade_pip_app
+
+- name: Install packages required by the Django app inside virtualenv
+  pip:
+    virtualenv: "{{ virtualenv_path }}"
+    requirements: "{{ requirements_file }}"
+    state: latest
+
+- include_tasks: install_audio_segmenter.yaml
+  tags:
+    - segmenter
+  ignore_errors: yes
+
+- name: Compile language executables for Translation Support
+  shell: . {{ virtualenv_path }}/bin/activate
+         && . {{ virtualenv_path }}/bin/postactivate
+         && cd {{ application_path }}
+         && python3 manage.py compilemessages 
+  tags:
+    - django
+    - translations
+  when: build_language_files
+
+
+- name: Make/update language translation files
+  shell: . {{ virtualenv_path }}/bin/activate
+         && . {{ virtualenv_path }}/bin/postactivate
+         && cd {{ application_path }}
+         && python3 manage.py makemessages -l {{item}} 
+  tags:
+    - django
+    - translations
+  with_items:
+    - mi
+    - en_NZ
+  when: env_type == 'local' and build_language_files
+
+- set_fact:
+    ec2_tag_server_role:  "primary"
+  when: env_type == 'local'
+- set_fact:
+    tag_condition: "primary"
+
+- name: Run Django Migrations
+  shell: . {{ virtualenv_path }}/bin/activate
+         && . {{ virtualenv_path }}/bin/postactivate
+         && cd {{ application_path }}
+         && python3 manage.py migrate --noinput
+  when: run_django_migrations and ec2_tag_server_role == tag_condition
+  async: 1000
+  poll: 5  
+  tags:
+    - django
+    - rebuild-database
+
+- name: Prune Django Bower Packages
+  shell: . {{ virtualenv_path }}/bin/activate
+         && . {{ virtualenv_path }}/bin/postactivate
+         && cd {{ application_path }}
+         && python3 manage.py bower prune 
+  when: prune_bower_packages
+  tags: django
+
+- name: Install Django Bower Packages
+  shell: . {{ virtualenv_path }}/bin/activate
+         && . {{ virtualenv_path }}/bin/postactivate
+         && cd {{ application_path }}
+         && python3 manage.py bower_install --allow-root
+  when: install_bower_packages
+  tags: django
+
+# - name: Compile SASS with django-sass-processor
+#   shell: . {{ virtualenv_path }}/bin/activate
+#          && . {{ virtualenv_path }}/bin/postactivate
+#          && cd {{ application_path }}
+#          && python3 manage.py compilescss
+#   when: run_django_collectstatic and env_type != 'local'  
+#   tags: 
+#    - django
+#    - collectstatic
+#    - compilescss
+
+- name: Run Django CLEAR collectstatic
+  shell: . {{ virtualenv_path }}/bin/activate
+         && . {{ virtualenv_path }}/bin/postactivate
+         && cd {{ application_path }}
+         && python3 manage.py collectstatic --clear --noinput 
+  when: run_django_clearstatic and server_role=='primary'
+  tags: 
+   - django
+   - collectstatic
+  ignore_errors: yes
+
+- name: Run Django CLEAR CACHE
+  shell: . {{ virtualenv_path }}/bin/activate
+         && . {{ virtualenv_path }}/bin/postactivate
+         && cd {{ application_path }}
+         && python3 manage.py clearcache 
+  when: run_django_clearstatic 
+  tags: 
+   - django
+   - collectstatic
+   - clearcache
+  ignore_errors: yes
+   
+- name: Run Django collectstatic
+  shell: . {{ virtualenv_path }}/bin/activate
+         && . {{ virtualenv_path }}/bin/postactivate
+         && cd {{ application_path }}
+         && python3 manage.py collectstatic --noinput 
+  when: run_django_collectstatic and server_role=='primary'
+  tags: 
+   - django
+   - collectstatic
+  ignore_errors: yes
+
+# This is no longer needed as we'll create a superuser with the social auth and a predefined email via ansible
+- name: Create Django Superuser
+  shell: . {{ virtualenv_path }}/bin/activate
+         && . {{ virtualenv_path }}/bin/postactivate
+         && cd {{ application_path }}
+         && echo "from django.db import DEFAULT_DB_ALIAS as database; from django.contrib import auth; model = auth.get_user_model(); model.objects.db_manager(database).create_superuser('{{django_superuser_name}}','{{django_superuser_email}}', '{{django_superuser_password}}')" | python3 manage.py shell
+  when: (create_django_superuser or rebuild_database) and server_type != 'media'
+  tags:
+    - django
+    - rebuild-database
+  ignore_errors: yes
+
+- name: Create media directory
+  file:
+    path: "{{ nginx_media_dir }}"
+    state: directory
+    owner: "{{ gunicorn_user }}"
+    group: "{{ gunicorn_group }}"
+  tags: 
+    - django
+    - current
+- debug: var=nginx_media_dir
+
+- name: Install people fixgtures
+  shell: . {{ virtualenv_path }}/bin/activate
+         && . {{ virtualenv_path }}/bin/postactivate
+         && cd {{ application_path }}
+         && python3 manage.py loaddata /webapp/corpora/corpora/people/fixtures/iwi.yaml 
+  tags:
+    - django
+    - loaddata
+  when: install_people_fixture
+
+
+- name: Stop the {{ celery_application_name }} app
+  supervisorctl: name="{{ celery_application_name }}-{{item}}" state=stopped
+  when: purge_celery_tasks
+  with_items:
+    - celery
+    - beat
+  tags:
+    - django-celery
+  ignore_errors: "{{server_role == 'secondary'}}" # need a way to ignore beat when not on server
+
+- name: Purge celery tasks
+  shell: . {{ virtualenv_path }}/bin/activate
+         && . {{ virtualenv_path }}/bin/postactivate
+         && cd {{ application_path }}
+         && celery -f -A {{application_name}} purge
+  tags:
+    - django-celery
+  when: purge_celery_tasks
+
+- name: Start the {{ celery_application_name }} app
+  supervisorctl: name="{{ celery_application_name }}-{{item}}" state=started
+  when: purge_celery_tasks
+  with_items:
+    - celery
+    - beat
+  tags:
+    - django-celery
+  ignore_errors: "{{server_role == 'secondary'}}" # need a way to ignore beat when not on server   
+
+# - name: Build solr schema
+#   shell: . {{ virtualenv_path }}/bin/activate
+#          && . {{ virtualenv_path }}/bin/postactivate
+#          && cd {{ application_path }}
+#          && python3 manage.py build_solr_schema > /etc/solr/conf/schema.xml # since solr is on same server, this is easy.
+#   notify:
+#     - stop solr schema
+#     - start solr schema
+#     - rebuild django solr index
+#   tags: 
+#     - django
+#   when: server_type != 'media'
+
+# - fetch: src={{ virtualenv_path }}/schema.xml dest=/tmp/
+  #when: env_type != 'production'
+
+# NOTE WE NEED TO PUT THE SCHEMA.XML ONTO THE SOLR SERVER AND RESTART SOLR!
+# rebuild needs to happen after that!
+
+# - name: rebuild index
+#   shell: . {{ virtualenv_path }}/bin/activate
+#          && . {{ virtualenv_path }}/bin/postactivate
+#          && cd {{ application_path }}
+#          && python3 manage.py rebuild_index --noinput
+#   register: solr_schema
+#   tags: 
+#     - django
+  #when: env_type != 'production'
+
+
+
+

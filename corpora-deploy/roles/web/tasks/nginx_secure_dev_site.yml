@@ -1,0 +1,24 @@
+---
+
+- name: Install base packages
+  apt:
+    update_cache: "{{ update_apt_cache }}"
+    state: latest
+    name:
+      - apache2-utils
+      - python-passlib
+  when: env_type == 'staging'
+  tags:
+    - sites
+
+- name: Add passwrod file for staging environment
+  htpasswd:
+    path: /etc/nginx/passwdfile
+    name: "{{nginx_uname}}"
+    password: "{{nginx_htpasswd}}"
+    owner: root
+    group: www-data
+    mode: 0640
+  when: env_type == 'staging'
+  tags:
+    - sites

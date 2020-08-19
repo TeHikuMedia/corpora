@@ -1,0 +1,43 @@
+---
+
+- local_action: ec2_instance_facts
+  become: no
+  args:
+    region: "{{ aws_region }}"
+    filters:
+      "tag:project_env_server_type_role": "{{project_name}}_{{env_type}}_{{server_type}}_{{server_role}}"
+  register:
+    ec2_facts
+- set_fact:
+    ec2_server: "{{ec2_facts.instances[0]}}"
+
+- debug: var=ec2_server
+
+- name: Ensure ec2 is running
+  ec2:
+    instance_ids: "{{ec2_server.instance_id}}"
+    region: "{{ aws_region }}"
+    state: running
+    wait: yes
+    wait_timeout: 500
+
+- name: Wait for SSH to come up
+  wait_for: host={{ ec2_server.public_dns_name }} port=22 delay=120 timeout=320 state=started
+  when: ec2_server.state.name != 'running'
+
+- local_action: ec2_instance_facts
+  become: false
+  args:
+    region: "{{ aws_region }}"
+    filters:
+      "tag:project_env_server_type_role": "{{project_name}}_{{env_type}}_{{server_type}}_{{server_role}}"
+  register:
+    ec2_facts
+- set_fact:
+    ec2_server: "{{ec2_facts.instances[0]}}"
+
+- name: Write the new ec2 instance host key to known hosts
+  connection: local
+  shell: "ssh-keyscan -H {{ ec2_server.public_ip_address }} >> ~/.ssh/known_hosts"
+
+- meta: refresh_inventory  

@@ -1,0 +1,3 @@
+[submodule "corpora-deploy/ansible-django-stack"]
+	path = corpora-deploy/ansible-django-stack
+	url = git@github.com:TeHikuMedia/ansible-django-stack.git

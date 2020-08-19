@@ -1,0 +1,64 @@
+---
+
+- name: stop solr schema
+  service: name=tomcat7 state=stopped
+  notify: start solr schema
+
+- name: start solr schema
+  service: name=tomcat7 state=started
+  notify: rebuild django solr index
+
+- name: rebuild django solr index
+  shell: . {{ virtualenv_path }}/bin/activate
+         && . {{ virtualenv_path }}/bin/postactivate
+         && cd {{ application_path }}
+         && python manage.py rebuild_index --noinput
+
+- name: restart application
+  supervisorctl: name={{ application_name }}_{{item}} state=restarted
+  loop: "{{django_settings}}"
+
+- name: restart nginx
+  service: name=nginx state=restarted enabled=yes
+
+- name: reload nginx
+  service: name=nginx state=reloaded
+
+- name: rebuild search index
+  shell: . {{ virtualenv_path }}/bin/activate
+         && . {{ virtualenv_path }}/bin/postactivate
+         && cd {{ application_path }}
+         && python manage.py rebuild_index --noinput
+
+# THESE TASKS ARE PERFORMED FOR THE WEBSERVER AS WELL! WE NEED TO IGNORE THEM
+# WE NEED TO USE THE ANSBILE_HOST_EC2 DICT HERE
+
+- name: destroy media server ami
+  sudo: False
+  local_action:
+    module: ec2_ami_find
+    region: ap-southeast-2
+    name: "AMI-{{ project_name }}-{{env_type}}-media"
+  register: ami_find
+  notify: destroy media server ami 2
+  when: server_type == 'media'
+
+- name: destroy media server ami 2
+  sudo: False
+  set_fact:
+    ec2_ami: "{{ami_find.results[0]}}"
+  notify: destroy media server ami 3
+  ignore_errors: True # We ignore errors in the case where the AMI doesn't exist.
+  when: server_type == 'media'
+
+- name: destroy media server ami 3
+  sudo: False
+  local_action:
+    module: ec2_ami
+    wait: yes
+    state: absent
+    region: ap-southeast-2
+    image_id: "{{ec2_ami.ami_id}}"
+    delete_snapshot: True
+  ignore_errors: True # We get error if AMI no longer available - as it shouldn't!
+  when: server_type == 'media'

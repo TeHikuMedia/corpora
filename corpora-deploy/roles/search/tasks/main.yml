@@ -1,0 +1,64 @@
+---
+- name: Install Java and Solr Packages
+  apt: name={{item}} update_cache=yes
+  with_items:
+    - default-jre
+    - solr-tomcat
+
+# - name: Create the jetty config file
+#   template: src=jetty.xml.j2
+#             dest=/etc/jetty/jetty.xml
+
+# - name: Create the jetty default file
+#   template: src=jetty.j2
+#             dest=/etc/default/jetty
+
+
+### Perhps the right thing to do is to build the schema in the repository
+### like how we build migrations and store that in the repository.
+### The schema is really dependent on the models so this makes sense.
+### In that instance we don't need to do this stuff below.
+
+# - name: save django solr schema
+#   copy: src=/tmp/{{item}}/{{ virtualenv_path }}/schema.xml dest=/etc/solr/conf/schema.xml
+#   with_items:
+#     - "{{groups['tag_webserver_production']}}"
+#   when: env_type == 'production'
+
+# - name: save django solr schema
+#   copy: src=/tmp/{{item}}/{{ virtualenv_path }}/schema.xml dest=/etc/solr/conf/schema.xml
+#   with_items:
+#     - "{{groups['tag_webserver_staging']}}"
+#   when: env_type == 'staging'
+
+# - ec2_instance_facts:
+#     aws_access_key: "{{ansible_aws_id}}"
+#     aws_secret_key: "{{ansible_aws_secret}}"
+#     region: ap-southeast-2
+#     filters:
+#       "tag:Name": "{{project_name}}-{{env_type}}-webserver"
+#       "tag:server_type": "web"
+#   register:
+#     ec2_webserver_facts
+#   when: env_type!='local'
+# - set_fact:
+#     ec2_webserver: "{{ec2_webserver_facts.instances[0]}}"
+#   when: env_type!='local'
+
+#- name: save django solr schema
+#  command: cp "{{ virtualenv_path }}/schema.xml" /etc/solr/conf/schema.xml
+  #copy: src=/tmp/{{item}}/{{ virtualenv_path }}/schema.xml dest=/etc/solr/conf/schema.xml
+  #with_items:
+  #  - "{{ec2_webserver}}"
+  #when: env_type == 'local'
+
+  
+# - name: Ensure tomcat solr is stopped
+#   service: name=tomcat7 state=stopped
+
+# - name: Ensure tomcat solr is started
+#   service: name=tomcat7 state=started
+#   notify:
+#     - rebuild search index
+  
+# rebuild index!!!!!
