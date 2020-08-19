@@ -85,3 +85,7 @@ wahi_korero*
 
 node_modules/
 package-lock.json
+
+
+# Ansible
+vault.yml

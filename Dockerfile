@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.7.4-slim
+FROM python:3.7.9-slim
 
 # Install required system packages
 RUN apt-get update && \

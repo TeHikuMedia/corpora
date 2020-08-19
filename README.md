@@ -33,7 +33,7 @@ The license will show up when users start to record. How and why we collect data
 
 To build the docker containers you need to be in the root project directory and run,
 ```bash
-docker build-compose build
+docker-compose build
 ```
 This modifies a canonical postgresql docker image to support unaccent of strings for searching. It also builds the docker image for this repository. This calls the `initialise` service which does some django management commands.
 
