@@ -12,6 +12,8 @@
   vars_files:
     - env_vars/base.yml
     - env_vars/staging.yml
+    - group_vars/remote.yml
+    - group_vars/staging.yml
     - env_vars/vault.yml
   vars:
     - server_type: web

@@ -3,7 +3,7 @@
 env_type: local
 
 #git_branch: develop
-debian_distro: stretch
+#debian_distro: stretch
 
 # Database settings.
 db_user: "{{ application_name }}"
@@ -17,13 +17,24 @@ ec2_database: { "instance":{"endpoint":"localhost"} }
 # 2 x number of CPUs + 1
 gunicorn_num_workers: 2
 # A positive integer generally in the 2-4 x $(NUM_CORES) range.
-gunicorn_num_threads: 4
+gunicorn_num_threads: 2
 
 # Setting this to 1 will restart the Gunicorn process each time
 # you make a request, basically reloading the code. Very handy
 # when developing. Set to 0 for unlimited requests (default).
 gunicorn_max_requests: 1
+gunicorn_max_requests_jitter: 4
+gunicorn_keepalive: 4
+gunicorn_timeout: 30
 
+num_processors: 2
+media_num_processors: 2
+
+# build_processors:
+#   web: "{{num_processors}}"
+#   media: "{{media_num_processors}}"
+
+build_processors: 2
 
 # Nginx settings.
 nginx_server_name: "{{ ansible_eth1.ipv4.address }}"

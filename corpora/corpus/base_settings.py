@@ -66,14 +66,14 @@ LANGUAGE_COOKIE_NAME = 'corpora-language'
 # https://en.wikipedia.org/wiki/List_of_ISO_639-2_codes
 LANGUAGES = (
 
-    #('mi',    _('Maori')),
-    #('haw',    _('Hawaiian')),
-    #('smo',    _('Samoan')),
-    #('rar',    _('Cook Island Maori')),
+    ('mi',    _('Maori')),
+    ('haw',    _('Hawaiian')),
+    # ('smo',    _('Samoan')),
+    # ('rar',    _('Cook Island Maori')),
     # ('en',    _('English')),
-    #('en_NZ', _('New Zealand English')),
-    ('en_US', _('American English')),
-    ('moh', _('Mohawk')),
+    ('en_NZ', _('New Zealand English')),
+    # ('en_US', _('American English')),
+    # ('moh', _('Mohawk')),
 )
 
 DIALECTS = (
@@ -127,7 +127,7 @@ ACCENTS = (
 
 )
 
-LANGUAGE_CODE = 'moh'
+LANGUAGE_CODE = 'mi'
 
 
 LANGUAGE_DOMAINS = {

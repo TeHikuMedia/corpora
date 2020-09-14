@@ -1,0 +1,155 @@
+---
+
+- name: Install Supervisor
+  apt: name=supervisor update_cache={{ update_apt_cache }} state=present
+  tags:
+    - celery
+    - flower
+
+- name: Ensure supervisor service is started
+  service: name=supervisor state=started enabled=yes
+  tags:
+    - celery
+    - flower
+
+# - name: Create the Supervisor config file for {{ celery_application_name }}
+#   template: src=supervisor_{{ celery_application_name }}.conf.j2
+#             dest=/etc/supervisor/conf.d/{{ celery_application_name }}_{{item}}.conf
+#   tags:
+#     - celery
+#   with_items:
+#     - media
+#   when: env_type !='local' and ec2_server.tags['server_type']=='media'
+
+- name: Create the Supervisor config file for {{ celery_application_name }}
+  template: src=supervisor_{{ celery_application_name }}.conf.j2
+            dest=/etc/supervisor/conf.d/{{ celery_application_name }}_{{item}}.conf
+  tags:
+    - celery
+  with_items:
+    - celery
+  when: env_type !='local' and ec2_server.tags['server_type']=='web'
+
+- name: Create the Supervisor config file for {{ celery_application_name }}
+  template: src=supervisor_{{ celery_application_name }}.conf.j2
+            dest=/etc/supervisor/conf.d/{{ celery_application_name }}_{{item}}.conf
+  tags:
+    - celery
+  with_items:
+    - beat
+  when: env_type !='local' and ec2_server.tags['server_type']=='web' and ec2_server.tags['server_role']=='primary'
+
+- name: Remove old formatted celery scripts
+  file: path=/etc/supervisor/conf.d/{{ celery_application_name }}.conf state=absent
+
+- name: Remove old beat celery scripts
+  file: path=/etc/supervisor/conf.d/{{ celery_application_name }}.conf state=absent
+  when: env_type !='local' and ec2_server.tags['server_type']=='web' and ec2_server.tags['server_role']=='secondary'
+
+- name: LOCAL Create the Supervisor config file for {{ celery_application_name }}
+  template: src=supervisor_{{ celery_application_name }}.conf.j2
+            dest=/etc/supervisor/conf.d/{{ celery_application_name }}_{{item}}.conf
+  tags:
+    - celery    
+  with_items:
+    - celery
+    - beat
+    # - django-beat
+  when: env_type =='local'
+
+
+- name: LOCAL Create the Supervisor config file for {{ flower_application_name }}
+  template: src=supervisor_{{ flower_application_name }}.conf.j2
+            dest=/etc/supervisor/conf.d/{{ flower_application_name }}.conf
+  when: env_type == 'local'
+  tags:
+    - flower
+
+- name: Create the Supervisor config file for {{ flower_application_name }}
+  template: src=supervisor_{{ flower_application_name }}.conf.j2
+            dest=/etc/supervisor/conf.d/{{ flower_application_name }}.conf
+  when: env_type !='local' and ec2_server.tags['server_type']=='web'
+  tags:
+    - flower
+
+- name: Create the celery log folder
+  file: path=/var/log/celery
+        owner={{ celery_user }}
+        group={{ celery_group }}
+        mode=0774
+        state=directory
+  tags:
+    - celery
+    - flower
+
+- name: Create the {{ celery_application_name }} log file
+  file: path=/var/log/celery/{{ celery_application_name }}_{{item}}.log
+        owner={{ celery_user }}
+        group={{ celery_group }}
+        mode=0774
+        state=touch
+  tags:
+    - celery
+  with_items:
+    - celery
+    - beat
+    # - django-beat
+
+- name: Create the {{ celery_application_name }} schedule file
+  file: path=/var/log/celery/{{ celery_application_name }}-celery{{item}}-schedule.txt
+        owner={{ celery_user }}
+        group={{ celery_group }}
+        mode=0774
+        state=touch
+  tags:
+    - celery
+  with_items:
+    - beat
+
+- name: Create the {{ celery_application_name }} beat pid file
+  file: path=/var/log/celery/{{ celery_application_name }}-celery{{item}}-schedule.pid
+        owner={{ celery_user }}
+        group={{ celery_group }}
+        mode=0774
+        state=touch
+  tags:
+    - celery  
+  with_items:
+    - beat
+    # - django-beat
+
+- name: Create the {{ flower_application_name }} log file
+  file: path=/var/log/celery/{{ flower_application_name }}.log
+        owner={{ celery_user }}
+        group={{ celery_group }}
+        mode=0774
+        state=touch
+  when: env_type !='local' and ec2_server.tags['server_type']=='web'
+  tags:
+    - flower
+
+- name: Create the {{ flower_application_name }} log file
+  file: path=/var/log/celery/{{ flower_application_name }}.log
+        owner={{ celery_user }}
+        group={{ celery_group }}
+        mode=0774
+        state=touch
+  when: env_type =='local'
+  tags:
+    - flower
+
+- name: Re-read the Supervisor config files
+  command: supervisorctl reread
+  tags:
+    - celery
+    - flower
+  notify:
+    - restart flower
+    - restart celery-celery
+    - restart celery-beat
+
+- name: Update Supervisor to add the app in the process group
+  command: supervisorctl update
+  tags:
+    - celery
+    - flower

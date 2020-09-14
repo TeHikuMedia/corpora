@@ -1,0 +1,27 @@
+---
+
+- local_action: ec2_instance_facts
+  become: no
+  args:
+    aws_access_key: "{{ansible_aws_id}}"
+    aws_secret_key: "{{ansible_aws_secret}}"
+    region: "{{aws_region}}"
+    filters:
+      "tag:Name": "{{project_name}}-{{env_type}}-webserver"
+      "tag:server_type": "web"
+      "ip-address": "{{inventory_hostname}}"
+  register:
+    ec2_webserver_facts
+  
+  tags:
+    django-celery
+
+- set_fact:
+    ec2_webserver: "{{ec2_webserver_facts.instances[0]}}"
+  tags:
+    django-celery  
+
+- set_fact:
+    server_role: "{{ ec2_webserver.tags['server_role'] }}"
+  tags:
+    django-celery

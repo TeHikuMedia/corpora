@@ -1,68 +1,68 @@
 ---
 
-- name: Check to see if we need to build python
-  stat:
-    path: /home/{{ansible_user}}/.localpython/bin/pip3.7
-  register: stat_result
+# - name: Check to see if we need to build python
+#   stat:
+#     path: /home/{{ansible_user}}/.localpython/bin/pip3.7
+#   register: stat_result
 
 
-- name: Create the python download folder
-  become: false
-  file:
-    path: /home/{{ansible_user}}/src
-    state: directory
-  when: stat_result.stat.exists == False
+# - name: Create the python download folder
+#   become: false
+#   file:
+#     path: /home/{{ansible_user}}/src
+#     state: directory
+#   when: stat_result.stat.exists == False
 
-- name: create the python local folder
-  become: false
-  file: 
-    path: /home/{{ansible_user}}/.localpython
-    state: directory
-  when: stat_result.stat.exists == False
+# - name: create the python local folder
+#   become: false
+#   file: 
+#     path: /home/{{ansible_user}}/.localpython
+#     state: directory
+#   when: stat_result.stat.exists == False
 
-- name: download latest python 3.7.1 version
-  become: false
-  get_url:
-    url: https://www.python.org/ftp/python/3.7.1/Python-3.7.1.tgz
-    dest: /home/{{ansible_user}}/src/Python-3.7.1.tgz
-    mode: 0444
-  when: stat_result.stat.exists == False
+# - name: download latest python 3.7.1 version
+#   become: false
+#   get_url:
+#     url: https://www.python.org/ftp/python/3.7.1/Python-3.7.1.tgz
+#     dest: /home/{{ansible_user}}/src/Python-3.7.1.tgz
+#     mode: 0444
+#   when: stat_result.stat.exists == False
 
-- name: unarchive python
-  become: false
-  shell: "tar -zxvf Python-3.7.1.tgz"
-  args:
-    chdir: "/home/{{ansible_user}}/src/"
-  when: stat_result.stat.exists == False
+# - name: unarchive python
+#   become: false
+#   shell: "tar -zxvf Python-3.7.1.tgz"
+#   args:
+#     chdir: "/home/{{ansible_user}}/src/"
+#   when: stat_result.stat.exists == False
 
-- name: Install required packages to build python
-  apt:
-    name:
-      - build-essential
-      - libssl-dev
-      - zlib1g-dev
-      - libncurses5-dev
-      - libncursesw5-dev
-      - libreadline-dev
-      - libsqlite3-dev
-      - libgdbm-dev
-      - libdb5.3-dev
-      - libbz2-dev
-      - libexpat1-dev
-      - liblzma-dev
-      - libffi-dev
-    state: present
-  when: stat_result.stat.exists == False
+# - name: Install required packages to build python
+#   apt:
+#     name:
+#       - build-essential
+#       - libssl-dev
+#       - zlib1g-dev
+#       - libncurses5-dev
+#       - libncursesw5-dev
+#       - libreadline-dev
+#       - libsqlite3-dev
+#       - libgdbm-dev
+#       - libdb5.3-dev
+#       - libbz2-dev
+#       - libexpat1-dev
+#       - liblzma-dev
+#       - libffi-dev
+#     state: present
+#   when: stat_result.stat.exists == False
 
-- name: Build python
-  shell: "{{ item }}"
-  args:
-    chdir: "/home/{{ansible_user}}/src/Python-3.7.1"
-  with_items:
-    - ./configure --prefix=/home/{{ansible_user}}/.localpython --enable-optimizations
-    - make -j 8
-    - make install
-  when: stat_result.stat.exists == False
+# - name: Build python
+#   shell: "{{ item }}"
+#   args:
+#     chdir: "/home/{{ansible_user}}/src/Python-3.7.1"
+#   with_items:
+#     - ./configure --prefix=/home/{{ansible_user}}/.localpython --enable-optimizations
+#     - make -j 8
+#     - make install
+#   when: stat_result.stat.exists == False
 
 
 #cd ~/src
@@ -72,89 +72,89 @@
 #~/.localpython/bin/python setup.py install
 
 
-- name: Upgrade pip
-  pip:
-    name: pip
-    extra_args: --upgrade
-    executable: /home/{{ansible_user}}/.localpython/bin/pip3.7
-  when: upgrade_pip
-# executable: /usr/bin/pip3
+# - name: Upgrade pip
+#   pip:
+#     name: pip
+#     extra_args: --upgrade
+#     executable: /home/{{ansible_user}}/.localpython/bin/pip3.7
+#   when: upgrade_pip
+# # executable: /usr/bin/pip3
 
-# note this doesn't always work!
-- name: Create the virtualenv
-  command: /home/{{ansible_user}}/.localpython/bin/python3.7 -m venv --upgrade {{ virtualenv_path }}
-  # command: /usr/bin/pyvenv-3.5 {{ virtualenv_path }}
-  # pyvenv-3.5 {{ virtualenv_path }} 
+# # note this doesn't always work!
+# - name: Create the virtualenv
+#   command: /home/{{ansible_user}}/.localpython/bin/python3.7 -m venv --upgrade {{ virtualenv_path }}
+#   # command: /usr/bin/pyvenv-3.5 {{ virtualenv_path }}
+#   # pyvenv-3.5 {{ virtualenv_path }} 
 
-- name: Upgrade pip
-  pip:
-    name: pip
-    extra_args: --upgrade
-    virtualenv: "{{ virtualenv_path }}"
-  when: upgrade_pip_app
+# - name: Upgrade pip
+#   pip:
+#     name: pip
+#     extra_args: --upgrade
+#     virtualenv: "{{ virtualenv_path }}"
+#   when: upgrade_pip_app
 
 
 
-- name: Set log file mode
-  set_fact:
-    log_permissions: 0664    
-  when: env_type != 'local'
+# - name: Set log file mode
+#   set_fact:
+#     log_permissions: 0664    
+#   when: env_type != 'local'
 
-- name: Set log file mode
-  set_fact:
-    log_permissions: 0666
-  when: env_type == 'local'
+# - name: Set log file mode
+#   set_fact:
+#     log_permissions: 0666
+#   when: env_type == 'local'
 
-- name: Set log folder mode
-  set_fact:
-    log_folder_permissions: 0774
-  when: env_type != 'local'
+# - name: Set log folder mode
+#   set_fact:
+#     log_folder_permissions: 0774
+#   when: env_type != 'local'
 
-- name: Set log folder mode
-  set_fact:
-    log_folder_permissions: 0775
-  when: env_type == 'local'
+# - name: Set log folder mode
+#   set_fact:
+#     log_folder_permissions: 0775
+#   when: env_type == 'local'
 
-# Are there security implications here? Afterall - if you have access to the server you can just do sudo and read this
-# I suppose this prevents processes from accessing these. Is that an issue?
-- name: Create the application log folder
-  file: path={{ application_log_dir }}
-        owner={{ gunicorn_user }}
-        group={{ gunicorn_group }}
-        mode={{log_folder_permissions}}
-        state=directory 
+# # Are there security implications here? Afterall - if you have access to the server you can just do sudo and read this
+# # I suppose this prevents processes from accessing these. Is that an issue?
+# - name: Create the application log folder
+#   file: path={{ application_log_dir }}
+#         owner={{ gunicorn_user }}
+#         group={{ gunicorn_group }}
+#         mode={{log_folder_permissions}}
+#         state=directory 
 
-- name: Create the application log file
-  file: 
-    state: touch
-    path: "{{ application_log_file }}"
-    owner: "{{ gunicorn_user }}"
-    group: "{{ gunicorn_group }}"
+# - name: Create the application log file
+#   file: 
+#     state: touch
+#     path: "{{ application_log_file }}"
+#     owner: "{{ gunicorn_user }}"
+#     group: "{{ gunicorn_group }}"
 
-- name: Create the django_log_file
-  file:
-    state: touch 
-    path: "{{ django_log_file }}"
-    owner: "{{ gunicorn_user }}"
-    group: "{{ gunicorn_group }}"
+# - name: Create the django_log_file
+#   file:
+#     state: touch 
+#     path: "{{ django_log_file }}"
+#     owner: "{{ gunicorn_user }}"
+#     group: "{{ gunicorn_group }}"
 
-- name: Create the celery_log_file
-  file:
-    state: touch
-    path: "{{ celery_log_file }}"
-    owner: "{{ gunicorn_user }}"
-    group: "{{ gunicorn_group }}"
+# - name: Create the celery_log_file
+#   file:
+#     state: touch
+#     path: "{{ celery_log_file }}"
+#     owner: "{{ gunicorn_user }}"
+#     group: "{{ gunicorn_group }}"
 
-- name: Create the application tmp folder
-  file: path={{ application_tmp_dir }}
-        owner={{ gunicorn_user }}
-        group={{ gunicorn_group }}
-        mode=0777
-        state=directory
+# - name: Create the application tmp folder
+#   file: path={{ application_tmp_dir }}
+#         owner={{ gunicorn_user }}
+#         group={{ gunicorn_group }}
+#         mode=0777
+#         state=directory
 
-- name: Create the application bin folder
-  file: path={{virtualenv_path}}/bin
-        state=directory
+# - name: Create the application bin folder
+#   file: path={{virtualenv_path}}/bin
+#         state=directory
 
 - name: LOCAL Create the virtualenv postactivate script to set environment variables
   template: src=virtualenv_postactivate.j2
@@ -184,46 +184,46 @@
   with_items:
     - "{{ec2_webserver.private_ip_address}}"
 
-- name: Set permission to the application log file
-  file: path={{ application_log_file }}
-        owner={{ gunicorn_user }}
-        group={{ gunicorn_group }}
-        mode=0664
-        state=file
+# - name: Set permission to the application log file
+#   file: path={{ application_log_file }}
+#         owner={{ gunicorn_user }}
+#         group={{ gunicorn_group }}
+#         mode=0664
+#         state=file
 
 
 
-- name: Set permission to the celery_log_file
-  file: path={{ celery_log_file }}
-        owner={{ gunicorn_user }}
-        group={{ gunicorn_group }}
-        mode={{log_permissions}}
-        state=file
+# - name: Set permission to the celery_log_file
+#   file: path={{ celery_log_file }}
+#         owner={{ gunicorn_user }}
+#         group={{ gunicorn_group }}
+#         mode={{log_permissions}}
+#         state=file
 
-- name: Set permission to the django_log_file
-  file: path={{ django_log_file }}
-        owner={{ gunicorn_user }}
-        group={{ gunicorn_group }}
-        mode={{log_permissions}}
-        state=file
+# - name: Set permission to the django_log_file
+#   file: path={{ django_log_file }}
+#         owner={{ gunicorn_user }}
+#         group={{ gunicorn_group }}
+#         mode={{log_permissions}}
+#         state=file
                 
 
-- name: Create the maintenance page
-  template: src=maintenance_off.html
-            dest={{ virtualenv_path }}/maintenance_off.html
-            mode=0664
+# - name: Create the maintenance page
+#   template: src=maintenance_off.html
+#             dest={{ virtualenv_path }}/maintenance_off.html
+#             mode=0664
 
-- name: Go down for maintenance
-  when: maintenance
-  file: src={{ virtualenv_path }}/maintenance_off.html
-        dest={{ virtualenv_path }}/maintenance_on.html
-        state=link
-  tags:
-    - maintenance
+# - name: Go down for maintenance
+#   when: maintenance
+#   file: src={{ virtualenv_path }}/maintenance_off.html
+#         dest={{ virtualenv_path }}/maintenance_on.html
+#         state=link
+#   tags:
+#     - maintenance
 
-- name: Go up from maintenance
-  when: not maintenance
-  file: path={{ virtualenv_path }}/maintenance_on.html
-        state=absent
-  tags:
-    - maintenance
+# - name: Go up from maintenance
+#   when: not maintenance
+#   file: path={{ virtualenv_path }}/maintenance_on.html
+#         state=absent
+#   tags:
+#     - maintenance

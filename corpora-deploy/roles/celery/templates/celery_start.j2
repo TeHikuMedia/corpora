@@ -1,0 +1,48 @@
+#!/bin/bash
+
+DJANGODIR={{ application_path }}
+USER={{ gunicorn_user }}
+GROUP={{ gunicorn_group }}
+
+# Activate the virtual environment.
+cd $DJANGODIR
+source {{ virtualenv_path }}/bin/activate
+source {{ virtualenv_path }}/bin/postactivate
+
+# Programs meant to be run under supervisor should not daemonize themselves
+# (do not use --daemon).
+#exec python manage.py celery worker -A {{ application_name }} -E -l info --concurrency={{ celery_num_workers }} --settings={{ celery_application_settings_file }}
+
+
+{% if 'beat' in item %}
+exec celery \
+	-A {{ application_name }} beat \
+	-s /var/log/celery/{{ celery_application_name }}-celery{{item}}-schedule.txt \
+	--pidfile=/var/log/celery/{{ celery_application_name }}-celery{{item}}-schedule.pid 
+{% elif 'django-beat' in item %}
+exec celery \
+	-A {{ application_name }} beat \
+	--scheduler django_celery_beat.schedulers:DatabaseScheduler \
+	--pidfile=/var/log/celery/{{ celery_application_name }}-celery{{item}}-schedule.pid
+{% elif 'media' in item %}
+exec celery \
+	-A {{ application_name }} \
+	-Q media worker \
+	-l info \
+	-n worker.{{item}}.%h
+	# --concurrency={{ celery_num_workers }} #<= not using as celery will default to num CPUs
+{% elif env_type != 'local' and ec2_server.tags.server_role in 'secondary' %}
+exec celery \
+	-A {{ application_name }} \
+	-Q {{item}} worker \
+	-l info \
+	-n worker.{{item}}.%h \
+	--concurrency={{ celery_num_workers_secondary }}
+{% else %}
+exec celery \
+	-A {{ application_name }} \
+	-Q {{item}} worker \
+	-l info \
+	-n worker.{{item}}.%h \
+	--concurrency={{ celery_num_workers }}
+{% endif %}

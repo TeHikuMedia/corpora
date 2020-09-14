@@ -11,7 +11,7 @@
     - name: "Vagrant Up"
       command: vagrant up
     - name: get Vagrant IP Address
-      shell: python vagrant/vagrant_inventory.py
+      shell: python inventory/vagrant.py
   vars_files:
     - env_vars/base.yml
     - env_vars/local.yml
@@ -22,17 +22,26 @@
     - local
     - launch-local
 
+
+- name: Refresh inventory
+  hosts: localhost
+  tasks:
+    - meta: refresh_inventory
+  tags:
+    - local
+
 # This should be called by the vagrant file. Hence its special tag
 # The downside of this is that we won't see any output.
 - name: "Provisioning a local vagrant {{ application_name }} server"
-  hosts: default # this will act on all hosts in the vagrant/ansible/inventory which will just be the 1 host from vagrant up
+  hosts: vagrant # this will act on all hosts in the vagrant/ansible/inventory which will just be the 1 host from vagrant up
   port: 22
   remote_user: vagrant
   become: true
   #become_user: root
   vars:
     - setup_bitbucket_repo: no
-    - update_apt_cache: yes  
+    - apt_upgrade: yes
+    - update_apt_cache: yes
     - host_tag: tag_project_env_server_type_{{application_name}}_{{env_type}}_web    
   vars_files:
     - env_vars/base.yml
@@ -52,8 +61,8 @@
 # DEPLOY:
 # this should stop all sevices,  deploy the latest code, and then restart all services
 # note that deploy doesn't apply for local vagrant.
-- name: "Deploy to local {{ application_name }} server"
-  hosts: default
+- name: "Deploy common web stuff to local {{ application_name }} server"
+  hosts: vagrant
   port: 22
   remote_user: vagrant
   become: true
@@ -69,27 +78,34 @@
     - env_vars/local.yml  
     - env_vars/vault.yml
   roles: 
-    # - search
+    - web-common
     - web
+    - nginx
     - celery
   tags:
     - local
     - deploy
     - deploy-local
 
-# - name: "Deploy local {{ application_name }} solr server"
-#   hosts: default # note that we didn't do the memchaceh server so only asking for webserver
-#   remote_user: admin
-#   sudo: yes
-#   vars_files:
-#     - env_vars/base.yml
-#     - env_vars/local.yml
-#     - env_vars/vault.yml
-#   roles:
-#     - search
-#   tags:
-#     - local
-#     - deploy
-#     - deploy-local
-#     - search
-#     - remote
+
+- name: "Deploy Django App to local {{ application_name }} server"
+  hosts: vagrant
+  port: 22
+  remote_user: vagrant
+  become: true
+  become_user: root
+  vars:
+    - setup_bitbucket_repo: no
+    - update_apt_cache: yes 
+    - ec2_solrserver_private_ip: 127.0.0.1  
+    - server_type: web
+    - serer_role: primary
+    - host_tag: tag_project_env_server_type_{{application_name}}_{{env_type}}_web    
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/local.yml  
+    - env_vars/vault.yml
+  roles: 
+    - web
+  tags:
+    - deploy-app

@@ -1,3 +1,28 @@
+### Build & Run a Deploy Machine
+This step is only necessary if you want to build a "deployment machine" locally.
+A deployment machine is a Linux machine with the packages required to deploy this project using ansible.
+We created this docker container so that we can use Git Actions for continuous deployment. Currently this docker container only supports deployment to staging and production environments. Perhaps we should look at including a local deployment.
+
+Before you start, you'll need some environment variables.
+The first is a `ANSIBLE_VAULT_PASSWORD` to access credentials in the ansible vault
+(ask one of the developers for theirs).
+The second is a var saying which environment you want to deploy
+e.g. production or staging.
+
+```bash
+export ENV_TYPE=production
+export ANSIBLE_VAULT_PASSWORD=ASKSOMEONE
+docker build ./ -t corpora-deploy
+docker run \
+  --entrypoint /deploy/scripts/deploy.sh \
+  -e ENV_TYPE=$ENV_TYPE \
+  -e ANSIBLE_VAULT_PASS=$ANSIBLE_VAULT_PASSWORD \
+  corpora-deploy
+```
+
+
+
+
 To deploy the kuaka platform, you will need the following packages: 
 
 * [boto] (https://github.com/boto/boto)

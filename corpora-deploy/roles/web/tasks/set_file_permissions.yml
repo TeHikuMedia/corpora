@@ -6,7 +6,7 @@
         group={{ gunicorn_group }}
         state=directory
         recurse=yes
-  notify: restart application
+  # notify: restart application
 
 - name: Ensure application tmp folder permissions are correct
   file: path={{ application_tmp_dir }}

@@ -59,3 +59,5 @@
         force=yes
   when: setup_git_repo
   tags: git
+  notify:
+    - restart all

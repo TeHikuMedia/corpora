@@ -1,6 +1,6 @@
 ---
 
-env_type: staging
+env_type: stag
 
 git_branch: python3-django2
 setup_git_repo: yes
@@ -8,8 +8,7 @@ setup_git_repo: yes
 # AWS Settings
 webserver_instance_type: t3.small # cant build ffmpeg on micro
 solrserver_instance_type: t3.small
-webserver_ami: ami-00a5fc80ec944398f # sydney, debian 9.9+2
-debian_distro: stretch
+debian_distro: buster
 number_webserver_instances: 1
 domain_name: koreromaori.com
 cloudfront_subdomain: staticdev
@@ -19,7 +18,7 @@ cloudfront_cname: "{{cloudfront_subdomain}}.{{domain_name}}"
 elb_ssl_arn: arn:aws:acm:ap-southeast-2:473856431958:certificate/6f42dda8-75d4-4420-a60f-023751bda8a0
 
 #memcached_instance_type: t1.micro # right now we're using a localling installed memcache
-database_instance_type: db.t2.micro
+database_instance_type: db.t2.small
 
 # Database settings.
 db_user: "{{ application_name }}"
@@ -37,6 +36,9 @@ gunicorn_num_threads: 2
 # you make a request, basically reloading the code. Very handy
 # when developing. Set to 0 for unlimited requests (default).
 gunicorn_max_requests: 1000
+gunicorn_max_requests_jitter: 242
+gunicorn_keepalive: 5
+gunicorn_timeout: 300
 
 # Nginx settings.
 #nginx_server_name: "{{ inventory_hostname }}"

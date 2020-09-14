@@ -4,13 +4,6 @@
   pip:
     name: pip
     extra_args: --upgrade
-    executable: /home/{{ansible_user}}/.localpython/bin/pip3.7
-  when: upgrade_pip
-
-- name: Upgrade pip
-  pip:
-    name: pip
-    extra_args: --upgrade
     virtualenv: "{{ virtualenv_path }}"
   when: upgrade_pip_app
 
@@ -99,7 +92,7 @@
          && . {{ virtualenv_path }}/bin/postactivate
          && cd {{ application_path }}
          && python3 manage.py collectstatic --clear --noinput 
-  when: run_django_clearstatic and server_role=='primary'
+  when: run_django_clearstatic
   tags: 
    - django
    - collectstatic
@@ -122,7 +115,7 @@
          && . {{ virtualenv_path }}/bin/postactivate
          && cd {{ application_path }}
          && python3 manage.py collectstatic --noinput 
-  when: run_django_collectstatic and server_role=='primary'
+  when: run_django_collectstatic
   tags: 
    - django
    - collectstatic

@@ -1,6 +1,6 @@
 ---
 
-env_type: production
+env_type: prod
 
 git_branch: master
 setup_git_repo: yes
@@ -8,8 +8,7 @@ setup_git_repo: yes
 # AWS Settings
 webserver_instance_type: t3.medium # migrate to t2.medium
 solrserver_instance_type: t3.medium
-webserver_ami: ami-00a5fc80ec944398f # sydney, debian 9.9+2
-debian_distro: stretch
+debian_distro: buster
 number_webserver_instances: 1
 domain_name: koreromaori.com
 cloudfront_subdomain: cdn
@@ -34,10 +33,14 @@ gunicorn_num_workers: 2
 # A positive integer generally in the 2-4 x $(NUM_CORES) range.
 gunicorn_num_threads: 2
 
+
 # Setting this to 1 will restart the Gunicorn process each time
 # you make a request, basically reloading the code. Very handy
 # when developing. Set to 0 for unlimited requests (default).
 gunicorn_max_requests: 1000
+gunicorn_max_requests_jitter: 242
+gunicorn_keepalive: 5
+gunicorn_timeout: 300
 
 # Nginx settings.
 #nginx_server_name: "{{ inventory_hostname }}"
