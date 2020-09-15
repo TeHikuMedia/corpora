@@ -11,9 +11,9 @@ EXTRA_LANG_INFO = {
         'name': 'Maori',
         'name_local': u'Māori',
     },
-    'en_NZ': {
+    'en-NZ': {
         'bidi': False,  # right-to-left
-        'code': 'en_NZ',
+        'code': 'en-NZ',
         'name': 'New Zealand English',
         'name_local': u'New Zealand English',
     },
@@ -41,9 +41,9 @@ EXTRA_LANG_INFO = {
         'name': 'Mohawk',
         'name_local': u'Kanienʼkéha',
     },
-    'en_US': {
+    'en-US': {
         'bidi': False,  # right-to-left
-        'code': 'en_US',
+        'code': 'en-US',
         'name': 'American English',
         'name_local': u'English',
     },
@@ -71,7 +71,7 @@ LANGUAGES = (
     # ('smo',    _('Samoan')),
     # ('rar',    _('Cook Island Maori')),
     # ('en',    _('English')),
-    ('en_NZ', _('New Zealand English')),
+    ('en-NZ', _('New Zealand English')),
     # ('en_US', _('American English')),
     # ('moh', _('Mohawk')),
 )
@@ -140,6 +140,6 @@ LANGUAGE_DOMAINS = {
     'corporalocal.com': 'mi',
     'corporalocal.nz': 'mi',
     'corporalocal.io': 'mi',
-    'corpora.com': 'en_NZ',
+    'corpora.com': 'en-NZ',
     'corporadocker.nz': 'mi',
 }
