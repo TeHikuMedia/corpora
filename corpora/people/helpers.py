@@ -166,20 +166,17 @@ def get_current_language(request):
         active_language = \
             KnownLanguage.objects.get(person=person, active=True)
         return active_language.language
-
     except ObjectDoesNotExist:
-
-
         domain = request.META['SERVER_NAME']
-            
         try:
             language = LANGUAGE_DOMAINS[domain]
         except KeyError:
             language = settings.LANGUAGE_CODE
-
-        # logger.debug('Explicitly setting language from domain: {0}:{1}'.format(domain, language))
-
         return language
+    except MultipleObjectsReturned:
+        active_language = \
+            KnownLanguage.objects.filter(person=person, active=True).first()
+        return active_language.language
 
 
 def get_current_known_language_for_person(person):
