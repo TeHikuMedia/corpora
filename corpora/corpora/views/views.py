@@ -28,7 +28,7 @@ from django.views.decorators.cache import cache_page
 
 from corpora.mixins import SiteInfoMixin
 
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 
 
 class HomeView(SiteInfoMixin, TemplateView):

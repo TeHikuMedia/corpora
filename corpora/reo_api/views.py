@@ -26,7 +26,7 @@ from rest_framework.response import Response
 from people.helpers import get_person
 from rest_framework.authtoken.models import Token
 
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 
 import logging
 logger = logging.getLogger('corpora')

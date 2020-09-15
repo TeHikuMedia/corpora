@@ -10,7 +10,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.core.exceptions import ObjectDoesNotExist
 
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 from django.db.models import Count, Q
 
 from people.helpers import get_current_language,\

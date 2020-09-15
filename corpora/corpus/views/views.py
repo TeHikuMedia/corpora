@@ -40,7 +40,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 
 import json
 
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 
 import logging
 logger = logging.getLogger('corpora')
