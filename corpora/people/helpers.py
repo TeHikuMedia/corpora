@@ -143,7 +143,7 @@ def set_language_cookie(response, language):
 
 def set_current_language_for_person(person, language):
     # First, deactivate active languages
-    active = KnownLanguage.objects.filter(person=person, active=True)
+    active = KnownLanguage.objects.filter(person=person)
     for kl in active:
         kl.active = False
         kl.save()
