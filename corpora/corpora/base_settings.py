@@ -8,6 +8,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_NAME = os.environ['PROJECT_NAME']
 APPLICATION_USER = os.environ['PROJECT_NAME']
 APPLICATION_GROUP = os.environ['PROJECT_NAME']
+ENV_TYPE = os.environ['ENVIRONMENT_TYPE']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
