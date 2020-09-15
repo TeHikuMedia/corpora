@@ -1,23 +1,25 @@
 ---
 
-- name: Gather facts
-  action: ec2_metadata_facts
-  when: env_type !='local'
+# - name: Gather facts
+#   action: ec2_metadata_facts
+#   when: env_type !='local'
 
-- local_action: ec2_instance_facts
-  become: no
-  args:
-    aws_access_key: "{{ansible_aws_id}}"
-    aws_secret_key: "{{ansible_aws_secret}}"
-    region: ap-southeast-2
-    filters:
-      instance-id: "{{ansible_ec2_instance_id}}"
-  register:
-    ec2_facts
-  when: env_type !='local'
-- set_fact:
-    ec2_server: "{{ec2_facts.instances[0]}}"
-  when: env_type !='local'
+# - local_action: ec2_instance_info
+#   become: no
+#   args:
+#     aws_access_key: "{{ansible_aws_id}}"
+#     aws_secret_key: "{{ansible_aws_secret}}"
+#     region: ap-southeast-2
+#     filters:
+#       "tag:Name": "{{ webserver_name }}"
+#       "tag:server_type": "web"
+#   register:
+#     ec2_info
+#   when: env_type !='local'
+
+# - set_fact:
+#     ec2_server: "{{ec2_info.instances[0]}}"
+#   when: env_type !='local'
 
 - include: copy_scripts.yml
 

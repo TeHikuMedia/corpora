@@ -11,21 +11,21 @@
     - flower
 
 
-- name: Create the {{ celery_application_name }} script file
-  template: src={{ celery_template_file }}
-            dest={{ celery_scripts_dir }}/{{ celery_application_name }}_{{item}}_start
-            owner={{ celery_user }}
-            group={{ celery_group }}
-            mode=0755
-  tags:
-    - celery
-  with_items:
-    - media # Media servers SHOULD NOT handle system critical tasks, e.g. queue celery, as that could prevent tasks from running at the proper time.
-  when: env_type !='local' and ec2_server.tags['server_type']=='media'
-  notify:
-   - destroy media server ami
-   - destroy media server ami 2
-   - destroy media server ami 3
+# - name: Create the {{ celery_application_name }} script file
+#   template: src={{ celery_template_file }}
+#             dest={{ celery_scripts_dir }}/{{ celery_application_name }}_{{item}}_start
+#             owner={{ celery_user }}
+#             group={{ celery_group }}
+#             mode=0755
+#   tags:
+#     - celery
+#   with_items:
+#     - media # Media servers SHOULD NOT handle system critical tasks, e.g. queue celery, as that could prevent tasks from running at the proper time.
+#   when: env_type !='local' and ec2_server.tags['server_type']=='media'
+#   notify:
+#    - destroy media server ami
+#    - destroy media server ami 2
+#    - destroy media server ami 3
 
 - name: Create the {{ celery_application_name }} script file
   template: src={{ celery_template_file }}
@@ -56,7 +56,7 @@
     - celery
   with_items:
     - beat
-  when: env_type !='local' and ec2_server.tags['server_role']=='primary'
+  when: env_type !='local' #and ec2_server.tags['server_role']=='primary'
   notify:
    - restart celery-beat 
 

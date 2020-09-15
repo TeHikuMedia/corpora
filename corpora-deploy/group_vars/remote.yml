@@ -3,7 +3,7 @@
 # Setup -
 launch_solr_instance: no
 launch_memcache_instance: no
-launch_elasticache: no
+launch_elasticache: yes
 
 # SSH Credentials
 private_key: ~/.ssh/corpora_2020.pem
@@ -26,3 +26,6 @@ autoscaling_group_name: "{{ project_name }}-{{env_type}}-media"
 # Other remote things
 webserver_ami: ami-038cef7ea3fc80d8a # sydney, debian 10.5
 ebs_size: 64
+
+
+elasticache_endpoint: corpora-redis.9eqoln.ng.0001.apse2.cache.amazonaws.com

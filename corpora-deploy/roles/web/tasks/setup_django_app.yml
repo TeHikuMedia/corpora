@@ -39,7 +39,7 @@
     - translations
   with_items:
     - mi
-    - en_NZ
+    - en-NZ
   when: env_type == 'local' and build_language_files
 
 - set_fact:
@@ -53,7 +53,7 @@
          && . {{ virtualenv_path }}/bin/postactivate
          && cd {{ application_path }}
          && python3 manage.py migrate --noinput
-  when: run_django_migrations and ec2_tag_server_role == tag_condition
+  when: run_django_migrations #and ec2_tag_server_role == tag_condition
   async: 1000
   poll: 5  
   tags:

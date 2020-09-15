@@ -25,12 +25,10 @@ export AWS_BUCKET="{{aws_bucket}}"
 export AWS_STATIC_BUCKET="{{aws_staticfiles_bucket}}"
 export AWS_CLOUDFRONT_DOMAIN="{{cloudfront_domain_name}}"
 export AWS_CLOUDFRONT_CNAME="{{cloudfront_cname}}"
+export AWS_ELASTICACHE_URL="{{elasticache_endpoint}}"
 {% endif %}
 export AWS_SECRET_S3="{{aws_secret_s3}}"
 export AWS_ID_S3="{{aws_id_s3}}"
-
-# export GOOGLE_KEY="google_oauth2_key"
-# export GOOGLE_SECRET="google_oauth2_secret"
 
 export ALLOWED_HOSTS="{{nginx_server_name}} {{nginx_server_name_aliases}} {{nginx_server_name_no_ssl}}" #note these will be space separated hosts
 export ALLOWED_HOSTS_INTERNAL="127.0.0.1"

@@ -28,7 +28,7 @@
     - celery
   with_items:
     - celery
-  when: env_type !='local' and ec2_server.tags['server_type']=='web'
+  when: env_type !='local' #and ec2_server.tags['server_type']=='web'
 
 - name: Create the Supervisor config file for {{ celery_application_name }}
   template: src=supervisor_{{ celery_application_name }}.conf.j2
@@ -37,14 +37,14 @@
     - celery
   with_items:
     - beat
-  when: env_type !='local' and ec2_server.tags['server_type']=='web' and ec2_server.tags['server_role']=='primary'
+  when: env_type !='local'  #and ec2_server.tags['server_type']=='web' and ec2_server.tags['server_role']=='primary'
 
 - name: Remove old formatted celery scripts
   file: path=/etc/supervisor/conf.d/{{ celery_application_name }}.conf state=absent
 
 - name: Remove old beat celery scripts
   file: path=/etc/supervisor/conf.d/{{ celery_application_name }}.conf state=absent
-  when: env_type !='local' and ec2_server.tags['server_type']=='web' and ec2_server.tags['server_role']=='secondary'
+  when: env_type !='local' # and ec2_server.tags['server_type']=='web' and ec2_server.tags['server_role']=='secondary'
 
 - name: LOCAL Create the Supervisor config file for {{ celery_application_name }}
   template: src=supervisor_{{ celery_application_name }}.conf.j2
@@ -68,7 +68,7 @@
 - name: Create the Supervisor config file for {{ flower_application_name }}
   template: src=supervisor_{{ flower_application_name }}.conf.j2
             dest=/etc/supervisor/conf.d/{{ flower_application_name }}.conf
-  when: env_type !='local' and ec2_server.tags['server_type']=='web'
+  when: env_type !='local'  #and ec2_server.tags['server_type']=='web'
   tags:
     - flower
 
@@ -124,7 +124,7 @@
         group={{ celery_group }}
         mode=0774
         state=touch
-  when: env_type !='local' and ec2_server.tags['server_type']=='web'
+  when: env_type !='local' #and ec2_server.tags['server_type']=='web'
   tags:
     - flower
 

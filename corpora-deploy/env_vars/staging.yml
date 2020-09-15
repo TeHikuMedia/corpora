@@ -1,8 +1,8 @@
 ---
 
 env_type: stag
-
-git_branch: python3-django2
+apt_upgrade: yes
+git_branch: combine-deploy
 setup_git_repo: yes
 
 # AWS Settings
@@ -109,11 +109,11 @@ run_django_syncdb: yes
 # run_django_south_migration: yes
 run_django_migrations: yes
 run_django_collectstatic: yes
-run_django_clearstatic: yes
+run_django_clearstatic: no
 build_language_files: yes
 
 # run_django_createinitialrevisions: yes
 purge_celery_tasks: no
 install_bower_packages: yes
-prune_bower_packages: yes
+prune_bower_packages: no
 install_people_fixture: no

@@ -1,10 +1,4 @@
 ### STAGING ###
-### PLAYBOOK FOR THE STAGING SERVERS ###
-### NOTE NOTE NOTE ###
-# If we restart celery then we'll lose the list of tasks from http://...:5555
-# So I uncommented teh celery portion in deploy to prevent that. 
-# Also not sure if tasks will get erased on restart (don't think they will as rabbitmq will still have them)
-###
 
 - name: "Launch all staging {{ application_name }} servers"
   hosts: localhost
@@ -17,9 +11,6 @@
     - env_vars/vault.yml
   vars:
     - server_type: web
-    - server_roles:
-      - secondary
-      - primary
   roles:
     - ec2
     - load-balance
@@ -31,10 +22,93 @@
     - launch-staging
     - remote
 
+- name: "Ensure staging {{ application_name }} WEB server is running"
+  hosts: localhost
+  vars:
+    server_type: web
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/staging.yml
+    - env_vars/vault.yml
+    - group_vars/remote.yml
+    - group_vars/staging.yml
+  roles:
+    - ensure-ec2-running
+  tags:
+    - staging
+    - provision
+    - deploy
+    - web
+    - provision-web
+    - provision-staging
+    - provision-staging-web
+    - deploy-web
+    - deploy-staging
+    - deploy-staging-webb
+    - remote
+    - ensure-ec2-running
+    - ensure-web-running
+    - run-tests
+
+# https://stackoverflow.com/questions/30226113/ansible-ssh-prompt-known-hosts-issue/39083724#39083724
+# We do this to register these new hosts as known hosts.
+- name: Store known hosts of 'all' the hosts in the inventory file
+  hosts: localhost
+  connection: local
+  vars:
+    # host_key_checking: False
+    ssh_known_hosts_command: "ssh-keyscan -T 10"
+    ssh_known_hosts_file: "{{ lookup('env','HOME') + '/.ssh/known_hosts' }}"
+    ssh_known_hosts_tags: 
+      - "tag_project_env_server_type_{{webserver_instance_hosttag}}"
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/staging.yml
+    - env_vars/vault.yml
+    - group_vars/remote.yml
+    - group_vars/staging.yml
+  tasks:
+    - name: Get host address stuff
+      shell: "echo {{groups[item][0]}}"
+      register: hosts
+      with_items: "{{ssh_known_hosts_tags}}"
+    - set_fact:
+        ssh_known_hosts: "{{ hosts.results | map(attribute='stdout') | list }}"
+    - name: For each host, scan for its ssh public key
+      shell: "ssh-keyscan {{ item }},`dig +short {{ item }}`"
+      with_items: "{{ ssh_known_hosts }}"
+      register: ssh_known_host_results
+      ignore_errors: yes
+    - name: Add/update the public key in the '{{ ssh_known_hosts_file }}'
+      known_hosts:
+        name: "{{ item.item }}"
+        key: "{{ item.stdout }}"
+        path: "{{ ssh_known_hosts_file }}"
+      with_items: "{{ ssh_known_host_results.results }}"
+      ignore_errors: yes
+  tags:
+    - staging
+    - provision
+    - deploy
+    - web
+    - provision-web
+    - provision-staging
+    - provision-staging-web
+    - deploy-web
+    - deploy-staging
+    - deploy-staging-web
+    - provision-staging
+    - deploy-staging
+    - remote
+    - ensure-ec2-running
+    - ensure-web-running
+    - run-tests
+
+
 # we need to wait somewhere until the instance is finally booted, then we need to re-process the inventory!!!
 # could wrape provision and deplay in includes so that error on hosts isn't displayed when doing local deployment
 - name: "Provision staging {{ application_name }} web servers"
-  hosts: tag_project_env_server_type_{{ project_name }}_{{env_type}}_web
+  hosts: "tag_project_env_server_type_{{webserver_instance_hosttag}}"
   remote_user: admin
   become: true
   vars:
@@ -47,53 +121,17 @@
     - env_vars/base.yml
     - env_vars/staging.yml
     - env_vars/vault.yml
+    - group_vars/remote.yml
+    - group_vars/staging.yml
   roles:
-    - base
+    - base-common
     - ec2-db
-    - memcached
-    - rabbitmq
   tags:
     - staging
     - provision
     - provision-staging
     - web
     - remote
-
-# tag_solrserver_staging # note that we didn't do the memchaceh server so only asking for webserver
-# - name: "Deploy staging {{ application_name }} solr server"
-#   hosts: tag_env_server_type_staging_web_project_{{project_name}} # moving solr to same instance for now since it has such low usage 
-#   remote_user: admin
-#   sudo: yes
-#   vars_files:
-#     - env_vars/base.yml
-#     - env_vars/staging.yml
-#     - env_vars/vault.yml
-#   roles:
-#     - search
-#   tags:
-#     - staging
-#     - deploy
-#     - deploy-staging
-#     - deploy-staging-search
-#     - remote
-
-- name: "Ensure secondary server is running"
-  hosts: localhost
-  vars_files:
-    - env_vars/base.yml
-    - env_vars/staging.yml  
-    - env_vars/vault.yml  
-  vars:
-    - server_type: web
-    - server_roles:
-      - secondary
-      - primary
-  roles:
-    - ensure-ec2-running
-  tags:
-    - deploy
-    - deploy-asg
-    - deploy-staging-asg
 
 
 - name: "Deploy to staging {{ application_name }} WEB servers"
@@ -112,9 +150,13 @@
     - env_vars/base.yml
     - env_vars/staging.yml  
     - env_vars/vault.yml
+    - group_vars/remote.yml
+    - group_vars/staging.yml
   roles: 
     - get-rds-facts
+    - web-common
     - web
+    - nginx
     - celery
   tags:
     - staging
@@ -125,6 +167,31 @@
     - deploy-staging-web
     - remote
 
+
+- name: "Deploy to Django staging {{ application_name }} WEB server"
+  hosts: tag_project_env_server_type_{{ project_name }}_{{env_type}}_web
+  serial: "100%"
+  remote_user: admin
+  become: true
+  vars:
+    - setup_bitbucket_repo: yes
+    - update_apt_cache: yes                 # "{{ lookup('file', '/tmp/ec2_solrserver_private_ip') }}"   
+    - ec2_solrserver_private_ip: 127.0.0.1  # moving solr to same instance for now since it has such low usage 
+    - server_type: web
+    - host_tag: tag_project_env_server_type_{{application_name}}_{{env_type}}_web
+    - ansible_user: admin
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/staging.yml  
+    - env_vars/vault.yml
+    - group_vars/remote.yml
+    - group_vars/staging.yml
+  roles: 
+    - get-rds-facts # and other facts?
+    - web
+  tags:
+    - staging
+    - deploy-django
 
 # Use the secondary machine to create an AMI for autoscaling
 - name: "Set up autoscaling for {{ application_name }}"
@@ -137,6 +204,7 @@
     - env_vars/staging.yml  
     - env_vars/vault.yml
     - group_vars/staging.yml    
+    - group_vars/remote.yml
   roles:
     - ensure-ec2-stopped
     - autoscale
@@ -160,6 +228,8 @@
     - env_vars/base.yml
     - env_vars/staging.yml
     - env_vars/vault.yml
+    - group_vars/remote.yml
+    - group_vars/staging.yml
   vars:
     - server_type: web
   roles:
@@ -168,10 +238,9 @@
     - staging
     - launch
     - launch-staging
-    - provision
     - deploy
     - scale
     - deploy-web
     - remote
     - load-balance-security
-  
+  # - provision

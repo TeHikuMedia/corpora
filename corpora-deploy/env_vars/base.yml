@@ -19,7 +19,7 @@ purge_celery_tasks: no
 # These are AWS seettings which are static or cant be create programatically via ansible
 hosted_zone_id: Z2DXU3EOYXYT52
 aws_cloudfront_ssl_region: us-east-1
-aws_key_name: corpora_2020
+# aws_key_name: corpora_2020
 
 availability_zones:
   - ap-southeast-2a

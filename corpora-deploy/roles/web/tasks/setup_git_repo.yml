@@ -37,17 +37,14 @@
   with_items:
     - "{{project_path}}"
 
-- name: Clean git repo directory
-  shell: git clean -fX
-  args:
-    chdir: "{{ project_path }}"
-  when: clean_git_repo
-  ignore_errors: yes
 
-- name: Clean git repo directory
-  shell: "rm -rf {{ project_path }}"
-  when: clean_git_repo
-  ignore_errors: yes
+- name: Install private deploy key file for repository
+  copy:
+    content: "{{ github_deploy_private_key }}" 
+    dest: "/home/{{ansible_ssh_user}}/.ssh/id_rsa"
+    owner: "{{ansible_ssh_user}}"
+    group: "{{ansible_ssh_user}}"
+    mode: "600"
 
 - name: Setup the git repo
   # the private key is stored in admin's .ssh
@@ -59,5 +56,6 @@
         force=yes
   when: setup_git_repo
   tags: git
+  ignore_errors: yes
   notify:
     - restart all
