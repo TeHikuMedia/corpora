@@ -89,6 +89,7 @@ package-lock.json
 
 # Ansible
 vault.yml
+id_rsa*
 
 # Vagrant
 .vagrant

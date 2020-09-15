@@ -1,9 +1,9 @@
 # pip # ensure we use the latest pip = we should update the BASE pip - not the virtual env one!
-Django~=2.2
+Django~=3.0.0
 boto
 boto3
 Pillow
-Celery
+celery[redis,librabbitmq]
 django-celery-beat
 flower #used to monitor Celery
 django-compressor
@@ -16,7 +16,7 @@ gunicorn
 psycopg2-binary
 pycrypto
 pytz
-django-storages==1.8 # collectfast support
+django-storages~=1.9.1
 django-bower
 # django-yarn
 
@@ -56,7 +56,8 @@ lxml
 premailer
 
 # API
-djangorestframework==3.11.0
+djangorestframework==3.11.1
+
 # API Docs
 django-coreapi
 pygments
