@@ -3,7 +3,7 @@ Django~=3.0.0
 boto
 boto3
 Pillow
-celery[redis,librabbitmq]
+celery[redis]
 django-celery-beat
 flower #used to monitor Celery
 django-compressor
