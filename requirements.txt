@@ -44,6 +44,9 @@ simplejson
 pylibmc
 python-memcached # => move to this oen as it's thread safe?
 
+# Redis
+django-redis
+
 # Django wrapper for AWS SES (Simple Email Service)
 django-ses
 
