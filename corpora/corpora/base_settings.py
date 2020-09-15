@@ -324,54 +324,6 @@ STATICFILES_FINDERS = (
 #                 srv.strip(), os.environ['DJANGO_MEMCACHED_PORT']))
 
 
-# CACHE
-if 'local' in ENV_TYPE:
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
-            'LOCATION': '%s:%s' % (
-                os.environ['DJANGO_MEMCACHED_IP'],
-                os.environ['DJANGO_MEMCACHED_PORT']),
-            "KEY_PREFIX": f"{PROJECT_NAME}:{ENV_TYPE}",
-            'TIMEOUT': 300,
-        },
-        'collectfast': {
-            'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-            'LOCATION': '/tmp/django_cache',
-        },
-    }
-else:
-    CACHES = {
-        'default': {
-            'BACKEND': 'django_redis.cache.RedisCache',
-            'LOCATION': f"redis://{REDIS_URL}/0",
-            "OPTIONS": {
-                "CLIENT_CLASS": "django_redis.client.DefaultClient"
-            },
-            "KEY_PREFIX": f"{PROJECT_NAME}:{ENV_TYPE}",
-            'TIMEOUT': 300,
-        },
-        'collectfast': {
-            'BACKEND': 'django_redis.cache.RedisCache',
-            'LOCATION': f"redis://{REDIS_URL}/0",
-            "OPTIONS": {
-                "CLIENT_CLASS": "django_redis.client.DefaultClient"
-            },
-            "KEY_PREFIX": f"{PROJECT_NAME}:cf:{ENV_TYPE}",
-            'TIMEOUT': 60*60*24,
-        },
-    }
-
-AWS_PRELOAD_METADATA = True
-COLLECTFAST_CACHE = 'collectfast'
-COLLECTFAST_THREADS = 10
-COLLECTFAST_STRATEGY = 'collectfast.strategies.filesystem.FileSystemStrategy'
-
-
-# These may be required if caching the entire site.
-# CACHE_MIDDLEWARE_ALIAS 
-# CACHE_MIDDLEWARE_SECONDS
-# CACHE_MIDDLEWARE_KEY_PREFIX
 
 
 # DJANGO-COMPRESSOR SETTINGS
@@ -528,6 +480,55 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_EVENT_QUEUE_PREFIX: f"celery:{ENV_TYPE}"
 CELERY_TASK_RESULT_EXPIRES = 21600  # 6 hours.
 
+
+# CACHE
+if 'local' in ENV_TYPE:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+            'LOCATION': '%s:%s' % (
+                os.environ['DJANGO_MEMCACHED_IP'],
+                os.environ['DJANGO_MEMCACHED_PORT']),
+            "KEY_PREFIX": f"{PROJECT_NAME}:{ENV_TYPE}",
+            'TIMEOUT': 300,
+        },
+        'collectfast': {
+            'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+            'LOCATION': '/tmp/django_cache',
+        },
+    }
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django_redis.cache.RedisCache',
+            'LOCATION': f"redis://{REDIS_URL}/0",
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient"
+            },
+            "KEY_PREFIX": f"{PROJECT_NAME}:{ENV_TYPE}",
+            'TIMEOUT': 300,
+        },
+        'collectfast': {
+            'BACKEND': 'django_redis.cache.RedisCache',
+            'LOCATION': f"redis://{REDIS_URL}/0",
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient"
+            },
+            "KEY_PREFIX": f"{PROJECT_NAME}:cf:{ENV_TYPE}",
+            'TIMEOUT': 60*60*24,
+        },
+    }
+
+AWS_PRELOAD_METADATA = True
+COLLECTFAST_CACHE = 'collectfast'
+COLLECTFAST_THREADS = 10
+COLLECTFAST_STRATEGY = 'collectfast.strategies.filesystem.FileSystemStrategy'
+
+
+# These may be required if caching the entire site.
+# CACHE_MIDDLEWARE_ALIAS 
+# CACHE_MIDDLEWARE_SECONDS
+# CACHE_MIDDLEWARE_KEY_PREFIX
 
 
 
