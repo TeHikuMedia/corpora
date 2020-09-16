@@ -184,35 +184,12 @@
     - django-celery
   ignore_errors: "{{server_role == 'secondary'}}" # need a way to ignore beat when not on server   
 
-# - name: Build solr schema
-#   shell: . {{ virtualenv_path }}/bin/activate
-#          && . {{ virtualenv_path }}/bin/postactivate
-#          && cd {{ application_path }}
-#          && python3 manage.py build_solr_schema > /etc/solr/conf/schema.xml # since solr is on same server, this is easy.
-#   notify:
-#     - stop solr schema
-#     - start solr schema
-#     - rebuild django solr index
-#   tags: 
-#     - django
-#   when: server_type != 'media'
 
-# - fetch: src={{ virtualenv_path }}/schema.xml dest=/tmp/
-  #when: env_type != 'production'
-
-# NOTE WE NEED TO PUT THE SCHEMA.XML ONTO THE SOLR SERVER AND RESTART SOLR!
-# rebuild needs to happen after that!
-
-# - name: rebuild index
-#   shell: . {{ virtualenv_path }}/bin/activate
-#          && . {{ virtualenv_path }}/bin/postactivate
-#          && cd {{ application_path }}
-#          && python3 manage.py rebuild_index --noinput
-#   register: solr_schema
-#   tags: 
-#     - django
-  #when: env_type != 'production'
-
-
-
+- name: Setting up django vagrant aliases
+  template:
+    src: bash_aliases.sh.j2
+    dest: /home/vagrant/.bash_aliases
+  tags:
+    - django
+  when: env_type == 'local'
 

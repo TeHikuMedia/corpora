@@ -109,3 +109,4 @@
     - web
   tags:
     - deploy-app
+    - deploy-django
