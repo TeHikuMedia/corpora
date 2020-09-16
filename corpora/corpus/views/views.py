@@ -287,7 +287,10 @@ class StatsView(SiteInfoMixin, ListView):
         approved_sentences = sentences.filter(quality_control__approved=True)
         approved_recordings = recordings.filter(quality_control__approved=True)
 
-        seconds = float(length['duration__sum'])
+        if length['duration__sum']:
+            seconds = float(length['duration__sum'])
+        else:
+            seconds = 0
         hours = int(seconds/(60.0*60))
         minutes = int((seconds - (60*60.0)*hours)/60.0)
         seconds = int(seconds - (60*60.0)*hours - 60.0*minutes)

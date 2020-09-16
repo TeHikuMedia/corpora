@@ -28,7 +28,8 @@ class License(models.Model):
         choices=LANGUAGES,
         max_length=16,
         verbose_name=_('language'),
-        default=LANGUAGE_CODE)
+        default=LANGUAGE_CODE,
+        unique=True)
 
     # should the site have alink to this? or each person can choose a icense?
     # initially just have one license in the database and that's the only one

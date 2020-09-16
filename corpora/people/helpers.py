@@ -9,6 +9,9 @@ from corpus.base_settings import \
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from .models import Person, KnownLanguage
 
+from license.models import License
+from corpus.models import Sentence
+
 from allauth.account.models import EmailAddress
 from rest_framework.authentication import TokenAuthentication
 from reo_api.authentication import ApplicationAPITokenAuthentication
@@ -187,6 +190,30 @@ def get_current_known_language_for_person(person):
 
     except ObjectDoesNotExist:
         return None
+
+
+def get_supported_languages():
+    '''
+    Get **supported** languages. We really mean available
+    but that conflicts with a Django language templatetage. 
+    For us **supported** is a language where we've 
+    registered a License with the Language. This means the
+    Django app can support what ever languages but we dont
+    present the language to the end user until there's a license
+    asscociated with it.
+    '''
+
+    supported = []
+    for language in LANGUAGES:
+        if (License.objects.filter(language=language[0]).exists()
+                and
+                Sentence.objects\
+                .filter(language=language[0])\
+                .filter(quality_control__approved=True).exists()
+                ):
+            supported.append(language)
+
+    return supported
 
 
 def get_num_supported_languages():

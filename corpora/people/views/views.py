@@ -269,13 +269,14 @@ def choose_language(request):
 
 
 def set_language(request):
-    logger.debug('SET LANGAUGE')
-
     url = '/'+'/'.join(request.META['HTTP_REFERER'].split('/')[3:])
     match = resolve(url)
     logger.debug('MATCH: {0}'.format(match))
     if match:
-        url = '{0}:{1}'.format(match.namespace, match.url_name)
+        if match.namespace:
+            url = f'{match.namespace}:{match.url_name}'
+        else:
+            url = match.url_name
     else:
         url = 'people:choose_language'
 

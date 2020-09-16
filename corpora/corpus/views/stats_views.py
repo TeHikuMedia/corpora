@@ -101,7 +101,10 @@ class RecordingStatsView(JSONResponseMixin, SiteInfoMixin, TemplateView):
             created__lt=start_day+timezone_shift)\
             .aggregate(Sum('duration'))
 
-        total_recordings = r['duration__sum']/60
+        if r['duration__sum']:
+            total_recordings = r['duration__sum']/60
+        else:
+            total_recordings = 0
         total_reviews = 0
         counter = 0
         tomorrow = next_day + day_offset
