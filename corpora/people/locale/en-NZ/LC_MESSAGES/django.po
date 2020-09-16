@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-16 12:55+1200\n"
+"POT-Creation-Date: 2020-09-16 13:08+1200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,35 +19,35 @@ msgstr ""
 
 #: people/models.py:20
 msgid "name"
-msgstr "ingoa"
+msgstr ""
 
 #: people/models.py:21
 msgid "Name of tribe."
-msgstr "Ingoa o te iwi."
+msgstr ""
 
 #: people/models.py:27
 msgid "Tribe"
-msgstr "Iwi"
+msgstr ""
 
 #: people/models.py:28 people/models.py:244
 msgid "Tribes"
-msgstr "Ngā Iwi"
+msgstr ""
 
 #: people/models.py:63
 msgid "group"
-msgstr "rōpū"
+msgstr ""
 
 #: people/models.py:64
 msgid "groups"
-msgstr "rōpū"
+msgstr ""
 
 #: people/models.py:80
 msgid "Full Name"
-msgstr "Ingoa"
+msgstr ""
 
 #: people/models.py:83
 msgid "full name"
-msgstr "ingoa"
+msgstr ""
 
 #: people/models.py:99
 msgid "Username - this will be publicly viewable"
@@ -59,59 +59,59 @@ msgstr ""
 
 #: people/models.py:182
 msgid "Person"
-msgstr "Tangata"
+msgstr ""
 
 #: people/models.py:183
 msgid "People"
-msgstr "Tāngata"
+msgstr ""
 
 #: people/models.py:198
 msgid "Male"
-msgstr "Tāne"
+msgstr ""
 
 #: people/models.py:199
 msgid "Female"
-msgstr "Wahine"
+msgstr ""
 
 #: people/models.py:200
 msgid "Other"
-msgstr "Āhua Kē"
+msgstr ""
 
 #: people/models.py:201
 msgid "Transexual (Male to Female)"
-msgstr "Whakawahine"
+msgstr ""
 
 #: people/models.py:202
 msgid "Transexual (Female to Male)"
-msgstr "Whakatāne"
+msgstr ""
 
 #: people/models.py:208
 msgid "How old are you?"
-msgstr "E hia ō tau?"
+msgstr ""
 
 #: people/models.py:209
 msgid "age"
-msgstr "ō tau"
+msgstr ""
 
 #: people/models.py:212
 msgid "gender"
-msgstr "tāne/wahine"
+msgstr ""
 
 #: people/models.py:213
 msgid "Gender"
-msgstr "Tāne/Wahine"
+msgstr ""
 
 #: people/models.py:226 people/models.py:275
 msgid "person"
-msgstr "tangata"
+msgstr ""
 
 #: people/models.py:230
 msgid "Which tribe(s) do you identify with?"
-msgstr "Nō (t)ēhea iwi koe?"
+msgstr ""
 
 #: people/models.py:232
 msgid "tribe"
-msgstr "iwi"
+msgstr ""
 
 #: people/models.py:239
 msgid "Demographic"
@@ -159,7 +159,7 @@ msgstr ""
 
 #: people/models.py:263
 msgid "language"
-msgstr "reo"
+msgstr ""
 
 #: people/models.py:269
 msgid "level of proficiency"
@@ -183,10 +183,8 @@ msgstr ""
 
 #: people/tasks.py:299
 #: people/templates/people/stats/person_qc_stats_view_detail.html:125
-#, fuzzy
-#| msgid "Today"
 msgid "today"
-msgstr "I tēnei rā"
+msgstr ""
 
 #: people/tasks.py:300
 msgid "yesterday"
@@ -215,7 +213,7 @@ msgstr ""
 
 #: people/templates/account/email.html:12
 msgid "E-mail Addresses"
-msgstr "Īmēra"
+msgstr ""
 
 #: people/templates/account/email.html:14
 msgid "The following e-mail addresses are associated with your account:"
@@ -248,7 +246,7 @@ msgstr ""
 
 #: people/templates/account/email.html:47
 msgid "Warning:"
-msgstr "Kia tūpato:"
+msgstr ""
 
 #: people/templates/account/email.html:47
 msgid ""
@@ -332,7 +330,7 @@ msgstr ""
 
 #: people/templates/account/email_confirm.html:23
 msgid "Confirm"
-msgstr "Aē"
+msgstr ""
 
 #: people/templates/account/email_confirm.html:33
 #, python-format
@@ -344,7 +342,7 @@ msgstr ""
 #: people/templates/account/login.html:5 people/templates/account/login.html:46
 #: people/templates/account/login.html:78
 msgid "Sign In"
-msgstr "Tomo mai"
+msgstr ""
 
 #: people/templates/account/login.html:119
 #, python-format
@@ -361,7 +359,7 @@ msgstr ""
 #: people/templates/account/logout.html:8
 #: people/templates/account/logout.html:17
 msgid "Sign Out"
-msgstr "Puta atu"
+msgstr ""
 
 #: people/templates/account/logout.html:10
 msgid "Are you sure you want to sign out?"
@@ -479,14 +477,14 @@ msgstr ""
 #: people/templates/account/signup.html:5
 #: people/templates/socialaccount/signup.html:6
 msgid "Signup"
-msgstr "Rēhita"
+msgstr ""
 
 #: people/templates/account/signup.html:31
 #: people/templates/account/signup.html:56
 #: people/templates/socialaccount/signup.html:9
 #: people/templates/socialaccount/signup.html:20
 msgid "Sign Up"
-msgstr "Rēhita"
+msgstr ""
 
 #: people/templates/account/signup.html:99
 msgid "You can also sign up with: "
@@ -555,7 +553,7 @@ msgstr ""
 
 #: people/templates/people/choose_language_form.html:106
 msgid "Save"
-msgstr "Tiakina"
+msgstr ""
 
 #: people/templates/people/competition/competition.html:119
 msgid "TĪMATA"
@@ -578,7 +576,7 @@ msgstr ""
 msgid "Rules"
 msgstr ""
 
-#: people/templates/people/competition/nav.html:59 people/views/views.py:408
+#: people/templates/people/competition/nav.html:59 people/views/views.py:410
 msgid "Help"
 msgstr ""
 
@@ -594,7 +592,7 @@ msgstr ""
 #: people/templates/people/email/magiclogin.txt:9
 #: people/templates/people/email/weekly_stats_update.html:42
 msgid "Hello"
-msgstr "Kia ora"
+msgstr ""
 
 #: people/templates/people/email/freq_stats_update.html:43
 #: people/templates/people/email/freq_stats_update.txt:11
@@ -612,7 +610,7 @@ msgstr ""
 #: people/templates/people/stats/group_leaderboard.html:83
 #: people/templates/people/stats/person_recording_stats_view_detail.html:76
 msgid "recordings"
-msgstr "kapohanga reo"
+msgstr ""
 
 #: people/templates/people/email/freq_stats_update.html:51
 #: people/templates/people/email/freq_stats_update.txt:15
@@ -628,10 +626,8 @@ msgstr ""
 #: people/templates/people/email/freq_stats_update.html:68
 #: people/templates/people/email/freq_stats_update.txt:26
 #: people/templates/people/email/weekly_stats_update.html:50
-#, fuzzy
-#| msgid "recordings"
 msgid "approved recordings"
-msgstr "kapohanga reo"
+msgstr ""
 
 #: people/templates/people/email/freq_stats_update.html:69
 #: people/templates/people/email/freq_stats_update.txt:27
@@ -651,10 +647,8 @@ msgstr ""
 #: people/templates/people/email/freq_stats_update.txt:40
 #: people/templates/people/email/weekly_stats_update.html:61
 #: people/templates/people/email/weekly_stats_update.txt:19
-#, fuzzy
-#| msgid "Sentences"
 msgid "Record Sentences"
-msgstr "Rerenga kōrero"
+msgstr ""
 
 #: people/templates/people/email/magiclogin.html:42
 #: people/templates/people/email/magiclogin.txt:11
@@ -681,39 +675,39 @@ msgstr ""
 #: people/templates/people/stats/groups_leaderboard.html:67
 #: people/templates/people/stats/leaderboard.html:32
 msgid "Recordings"
-msgstr "Kapohanga Reo"
+msgstr ""
 
 #: people/templates/people/email/weekly_stats_update.txt:11
 msgid "Approved"
-msgstr "Kua whakaaetia"
+msgstr ""
 
 #: people/templates/people/person.html:9
 msgid "Welcome to People!"
-msgstr "Haere Mai!"
+msgstr ""
 
 #: people/templates/people/person.html:10
 msgid "This is a long welcome message."
-msgstr "Ka nui te roa o tēnei mihi."
+msgstr ""
 
 #: people/templates/people/profile.html:75
 msgid "You haven't recorded any corpus yet."
-msgstr "Kāhore anō koe kia kapo i ō kōrero."
+msgstr ""
 
 #: people/templates/people/profile.html:78
 msgid "Start Recording"
-msgstr "Tīmataria te kapohanga"
+msgstr ""
 
 #: people/templates/people/profile.html:85
 msgid "Sentences"
-msgstr "Rerenga kōrero"
+msgstr ""
 
 #: people/templates/people/profile.html:90
 msgid "Record"
-msgstr "Kapohia"
+msgstr ""
 
 #: people/templates/people/profile.html:95
 msgid "All done! You've recorded a corpus for all sentnces."
-msgstr "Kua oti i a koe te kapo kōrero mō ngā rerenga katoa."
+msgstr ""
 
 #: people/templates/people/stats/group_leaderboard.html:77
 #: people/templates/people/stats/group_leaderboard.html:97
@@ -722,7 +716,7 @@ msgstr "Kua oti i a koe te kapo kōrero mō ngā rerenga katoa."
 #: people/templates/people/stats/groups_leaderboard.html:73
 #: people/templates/people/stats/leaderboard.html:34
 msgid "Score"
-msgstr "Tatau"
+msgstr ""
 
 #: people/templates/people/stats/group_leaderboard.html:81
 msgid "hours"
@@ -732,16 +726,12 @@ msgstr ""
 #: people/templates/people/stats/group_leaderboard.html:141
 #: people/templates/people/stats/leaderboard.html:29
 #: people/templates/people/stats/person_qc_stats_view_list.html:27
-#, fuzzy
-#| msgid "name"
 msgid "Username"
-msgstr "Ingoa"
+msgstr ""
 
 #: people/templates/people/stats/group_leaderboard.html:142
-#, fuzzy
-#| msgid "group"
 msgid "# Groups"
-msgstr "rōpū"
+msgstr ""
 
 #: people/templates/people/stats/group_leaderboard.html:143
 msgid "Email Verified?"
@@ -753,10 +743,8 @@ msgstr ""
 
 #: people/templates/people/stats/groups_leaderboard.html:41
 #: people/templates/people/stats/groups_leaderboard.html:61
-#, fuzzy
-#| msgid "group"
 msgid "Group"
-msgstr "rōpū"
+msgstr ""
 
 #: people/templates/people/stats/groups_leaderboard.html:44
 msgid "Members"
@@ -781,10 +769,9 @@ msgid "%% Reviewed"
 msgstr ""
 
 #: people/templates/people/stats/groups_leaderboard.html:91
-#, fuzzy, python-format
-#| msgid "Approved"
+#, python-format
 msgid "%% Approved"
-msgstr "Kua whakaaetia"
+msgstr ""
 
 #: people/templates/people/stats/leaderboard.html:30
 msgid "UUID"
@@ -835,28 +822,24 @@ msgid "# Reviewed"
 msgstr ""
 
 #: people/templates/people/stats/person_qc_stats_view_list.html:29
-#, fuzzy
-#| msgid "Approved"
 msgid "# Approved"
-msgstr "Kua whakaaetia"
+msgstr ""
 
 #: people/templates/people/stats/person_qc_stats_view_list.html:30
 msgid "# Good Votes"
 msgstr ""
 
 #: people/templates/people/stats/person_qc_stats_view_list.html:31
-#, fuzzy
-#| msgid "Bad Token"
 msgid "# Bad Votes"
-msgstr "Kua hē"
+msgstr ""
 
 #: people/templates/people/stats/person_recording_stats_view_detail.html:66
 msgid "Today"
-msgstr "I tēnei rā"
+msgstr ""
 
 #: people/templates/people/stats/person_recording_stats_view_detail.html:71
 msgid "seconds"
-msgstr "hēkona"
+msgstr ""
 
 #: people/templates/socialaccount/authentication_error.html:5
 #: people/templates/socialaccount/authentication_error.html:8
@@ -937,10 +920,8 @@ msgid "Group leaderboard of all the groups contributing corpusto our project."
 msgstr ""
 
 #: people/views/stats_views.py:420
-#, fuzzy
-#| msgid "group"
 msgid "Top 20 Groups "
-msgstr "rōpū"
+msgstr ""
 
 #: people/views/stats_views.py:421
 msgid "Groups in the Top 20 of the competition."
@@ -982,7 +963,7 @@ msgstr ""
 
 #: people/views/views.py:56
 msgid "Profile"
-msgstr "Ngā Kōrero Mōu"
+msgstr ""
 
 #: people/views/views.py:57
 msgid "Edit your profile to help us enhance our corpus."
@@ -993,30 +974,14 @@ msgstr ""
 msgid "Today is %(month)s %(day)s."
 msgstr ""
 
-#: people/views/views.py:351
+#: people/views/views.py:353
 msgid "Competition"
 msgstr ""
 
-#: people/views/views.py:353
+#: people/views/views.py:355
 msgid "Compete with groups and others to win amaing prizes."
 msgstr ""
 
-#: people/views/views.py:410
+#: people/views/views.py:412
 msgid "Support and documentation for competitions."
 msgstr ""
-
-#~ msgid ""
-#~ "If you have not created an account yet, then please\n"
-#~ "  <a href=\"%(signup_url)s\">sign up</a> first."
-#~ msgstr ""
-#~ "Mehemea kāhore anō koe kia rēhita, whakakīngia mai koa te puka <a href="
-#~ "\"%(signup_url)s\">rēhita</a> i te tuatahi."
-
-#~ msgid "minutes"
-#~ msgstr "mīneti"
-
-#~ msgid "Asexual"
-#~ msgstr "Kore ai"
-
-#~ msgid "When were you born?"
-#~ msgstr "Nō nāhea koe i whānau mai ai?"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-16 12:55+1200\n"
+"POT-Creation-Date: 2020-09-16 13:08+1200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,15 +19,15 @@ msgstr ""
 
 #: license/models.py:17
 msgid "Name of license"
-msgstr "Ingoa o te raihana"
+msgstr ""
 
 #: license/models.py:19
 msgid "Please provide a description of the license."
-msgstr "Tuhia mai koa he whakamāramatanga mō te raihana."
+msgstr ""
 
 #: license/models.py:21
 msgid "The actual license text."
-msgstr "Ngā kupu ake o te raihana."
+msgstr ""
 
 #: license/models.py:24
 msgid ""
@@ -41,7 +41,7 @@ msgstr ""
 
 #: license/models.py:53
 msgid "Accepted licenses"
-msgstr "Raihana i whakaaetia"
+msgstr ""
 
 #: license/templates/license/license_modal.html:32
 msgid "Loading..."
@@ -49,26 +49,24 @@ msgstr ""
 
 #: license/templates/license/license_modal.html:87
 msgid "License"
-msgstr "Raihana"
+msgstr ""
 
 #: license/templates/license/license_modal.html:95
 #, python-format
 msgid "You must accept the above %(license.name|title)s license to continue."
 msgstr ""
-"Me matua whakaae koe ki te raihana %(license.name|title)s i runga ake nei ka "
-"haere tonu ai."
 
 #: license/templates/license/license_modal.html:100
 msgid "Cancel"
-msgstr "Hoki Whakamuri"
+msgstr ""
 
 #: license/templates/license/license_modal.html:102
 msgid "Accept"
-msgstr "Whakaae"
+msgstr ""
 
 #: license/templates/license/license_modal.html:114
 msgid "Woops"
-msgstr "Auē"
+msgstr ""
 
 #: license/templates/license/license_modal.html:117
 msgid "Something went wrong. Please try again later or refresh your browser."
@@ -76,4 +74,4 @@ msgstr ""
 
 #: license/views/api.py:38
 msgid "You're not allowed to view this information."
-msgstr "E kore koe e āhei ki te titiro ki ēnei kōrero."
+msgstr ""
