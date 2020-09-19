@@ -201,9 +201,10 @@ class PersonSerializer(serializers.HyperlinkedModelSerializer):
         elif 'username' in validated_data.keys():
             # Don't create a user!
             instance.username = validated_data['username']
-            if instance.user.username != instance.username:
-                instance.user.username = instance.username
-                instance.user.save()
+            if instance.user:
+                if instance.user.username != instance.username:
+                    instance.user.username = instance.username
+                    instance.user.save()
             new_email = None
         else:
             new_email = None

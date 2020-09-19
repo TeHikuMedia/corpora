@@ -1,7 +1,7 @@
 
 class Profile{
   constructor(pk, target_element_selector, target_alert_element_selector=null, debug=false){
-    this.base_url = '/api/persons/'+pk+'/'
+    this.base_url = '/api/profile/'+pk+'/'
     this.target_element = $(target_element_selector)
     this.alert_element = (target_alert_element_selector==null) ? null : $(target_alert_element_selector);
     this.data = null
