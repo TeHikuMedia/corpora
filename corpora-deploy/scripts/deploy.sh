@@ -4,13 +4,6 @@
 
 # Default deploytment tags
 tag='deploy'
-# if [[ -z "$SERVER_TYPE" ]]; then
-# 	tag='deploy'
-# elif [[ "$SERVER_TYPE" == "web" ]]; then
-# 	tag='deploy-web'
-# elif [[ "$SERVER_TYPE" == "media" ]]; then
-# 	tag='deploy-media'
-# fi
 
 # Overwrite ansible tags
 if [[ -n "$TAGS" ]]; then
@@ -34,31 +27,10 @@ elif [[ "$ENV_TYPE" == "staging" ]]; then
 
 elif [[ "$ENV_TYPE" == "production" ]]; then
 	echo "Running production deployment with -t $tag"
-
-	# if [[ -z "$SERVER_TYPE" ]] && [[ -z "$TAGS" ]]; then
-
-	# 	ansible-playbook \
-	# 		-i inventory/aws_ec2.yml \
-	# 		--vault-password-file=~/.vault_pass.txt \
-	# 		--private-key=$KEY_PATH \
-	# 		production.yml \
-	# 		-t $tag-web
-
-	# 	ansible-playbook \
-	# 		-i inventory/aws_ec2.yml \
-	# 		--vault-password-file=~/.vault_pass.txt \
-	# 		--private-key=$KEY_PATH \
-	# 		production.yml \
-	# 		-t $tag-media
-	# else
 	ansible-playbook \
 		-i inventory/aws_ec2.yml \
 		--vault-password-file=~/.vault_pass.txt \
 		--private-key=$KEY_PATH \
 		production.yml \
 		-t $tag
-	# fi
 fi
-
-
-

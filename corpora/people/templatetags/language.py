@@ -24,4 +24,3 @@ def get_known_languages(request):
 @register.simple_tag()
 def get_supported_languages():
     return get_supported()
-
