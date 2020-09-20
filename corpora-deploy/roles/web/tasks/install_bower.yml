@@ -1,25 +1,10 @@
 ---
 
-# - name: Create node symlink
-#   file:
-#     src: /usr/bin/nodejs
-#     dest: /usr/bin/node
-#     force: yes
-#     state: link
-# # notes about this node symlink - https://github.com/nodejs/node-v0.x-archive/issues/3911
-
-
-# Using Debian, as root
-- name: Get Node files
-  shell: curl -sL https://deb.nodesource.com/setup_11.x | bash -
-
-- name: install nodejs
-  apt:
-    name:
-      - nodejs
-    state: latest
-
 - name: Install bower
-  command: npm install -g bower@latest
+  npm:
+    name: bower
+    state: latest
+    global: yes
 
-# do yarn stuff but upgrade debian first!
+- name: Add access to npm package for fontawesome
+  command: npm config set @fortawesome:registry https://npm.fontawesome.com/{{fontawesome_token}}
