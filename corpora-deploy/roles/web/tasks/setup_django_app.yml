@@ -6,12 +6,16 @@
     extra_args: --upgrade
     virtualenv: "{{ virtualenv_path }}"
   when: upgrade_pip_app
+  notify:
+    - restart all
 
 - name: Install packages required by the Django app inside virtualenv
   pip:
     virtualenv: "{{ virtualenv_path }}"
     requirements: "{{ requirements_file }}"
     state: latest
+  notify:
+    - restart all
 
 - include_tasks: install_audio_segmenter.yaml
   tags:
@@ -27,7 +31,8 @@
     - django
     - translations
   when: build_language_files
-
+  notify:
+    - restart all
 
 - name: Make/update language translation files
   shell: . {{ virtualenv_path }}/bin/activate
@@ -41,6 +46,8 @@
     - mi
     - en-NZ
   when: env_type == 'local' and build_language_files
+  notify:
+    - restart all
 
 - set_fact:
     ec2_tag_server_role:  "primary"

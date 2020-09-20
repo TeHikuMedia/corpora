@@ -26,7 +26,7 @@
 - name: Create the SSH private key file
   copy: content="{{ github_wahi_korero }}"
         dest=/home/{{ansible_user}}/.ssh/id_rsa_wahi_korero
-        mode=0600        
+        mode=0600
   tags: 
     - segmenter
 

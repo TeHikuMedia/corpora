@@ -348,7 +348,11 @@ files. We also use a separate bucket for static files, because Corpora
 needs protected s3 files (e.g. recordings).
 '''
 ENVIRONMENT_TYPE = os.environ['ENVIRONMENT_TYPE']
+
+COLLECTFAST_CACHE = 'collectfast'
+COLLECTFAST_THREADS = 10
 if ENVIRONMENT_TYPE != 'local':
+    AWS_PRELOAD_METADATA = True
     AWS_STATIC_BUCKET_NAME = os.environ['AWS_STATIC_BUCKET']
     AWS_STATIC_DEFAULT_ACL = 'public-read'
     COMPRESS_URL = 'https://'+os.environ['AWS_CLOUDFRONT_CNAME']+'/'
@@ -361,6 +365,11 @@ if ENVIRONMENT_TYPE != 'local':
     # AWS_IS_GZIPPED = True
     CORS_ORIGIN_WHITELIST = CORS_ORIGIN_WHITELIST + \
         ('https://' + os.environ['AWS_CLOUDFRONT_CNAME'],)
+
+else:
+    COLLECTFAST_STRATEGY = 'collectfast.strategies.filesystem.FileSystemStrategy'
+
+
 
 LOGGING = {
     'version': 1,
@@ -519,10 +528,6 @@ else:
         },
     }
 
-AWS_PRELOAD_METADATA = True
-COLLECTFAST_CACHE = 'collectfast'
-COLLECTFAST_THREADS = 10
-COLLECTFAST_STRATEGY = 'collectfast.strategies.filesystem.FileSystemStrategy'
 
 
 # These may be required if caching the entire site.

@@ -15,9 +15,7 @@
          && python manage.py rebuild_index --noinput
 
 - name: restart all
-  supervisorctl:
-    name: all
-    state: restarted
+  shell: supervisorctl restart all
 
 - name: restart application
   supervisorctl: name={{ application_name }}_{{item}} state=restarted
