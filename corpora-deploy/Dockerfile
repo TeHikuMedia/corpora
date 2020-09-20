@@ -12,5 +12,15 @@ RUN python3 -m pip install netaddr
 
 WORKDIR /deploy
 COPY . /deploy
+RUN rm /deploy/ansible.cfg
+RUN mv /deploy/ansible_docker.cfg /deploy/ansible.cfg
 
-ENTRYPOINT ["/deploy/scripts/setup.sh"]
+# ENTRYPOINT ["/deploy/scripts/setup.sh"]
+
+
+# docker build . -t corpora-deploy
+# docker run -dit --name corpora-deploy corpora-deploy
+# docker exec -it corpora-deploy /bin/bash
+# docker rm corpora-deploy 
+# docker logs corpora-deploy -f
+# docker run -dit --name corpora-deploy --entrypoint /deploy/scripts/deploy.sh -e ENV_TYPE=staging -e TAGS=deploy-now -e VAULT_PASS= corpora-deploy

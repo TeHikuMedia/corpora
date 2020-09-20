@@ -2,6 +2,9 @@
 
 . /deploy/scripts/setup.sh
 
+echo "$ANSIBLE_VAULT_PASS"
+echo "$AWS_SECRET_ACCESS_KEY"
+
 # Default deploytment tags
 tag='deploy'
 # if [[ -z "$SERVER_TYPE" ]]; then

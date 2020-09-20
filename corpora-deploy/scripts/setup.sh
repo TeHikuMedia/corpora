@@ -3,7 +3,7 @@
 # Setup system for running ansible
 
 SSH_PATH=~/.ssh
-KEY_FILE=wharekorero_2020_04.pem
+KEY_FILE=corpora_2020.pem
 KEY_PATH=$SSH_PATH/$KEY_FILE
 
 echo "$ANSIBLE_VAULT_PASS" > ~/.vault_pass.txt
@@ -25,7 +25,7 @@ key=$(\
 	--vault-password-file=~/.vault_pass.txt \
 	--extra-vars=@env_vars/vault.yml \
 	-m debug \
-	-a 'msg="{{ kuaka_ec2_key }}"' |\
+	-a 'msg="{{ corpora_ec2_key }}"' |\
 	grep '"msg":' | cut -d'"' -f4)
 
 

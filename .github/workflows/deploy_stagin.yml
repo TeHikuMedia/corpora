@@ -1,0 +1,52 @@
+name: Deploy Staging
+
+on:
+  push:
+    branches:
+      - develop
+      - combine-deploy
+    paths:
+      - "corpora/**"
+      - "requirements.txt"
+
+jobs:
+
+  deploy-web:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+
+    - uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-southeast-2
+    - uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Pull docker image
+      env:
+        DOCKER_IMAGE: 473856431958.dkr.ecr.ap-southeast-2.amazonaws.com/corpora/deploy:latest
+      run: |
+        docker pull $DOCKER_IMAGE
+
+    - name: Deploy branch on pull request
+      if: ${{ github.head_ref != null }}
+      env:
+        BRANCH: ${{ github.head_ref }}
+        DOCKER_IMAGE: 473856431958.dkr.ecr.ap-southeast-2.amazonaws.com/corpora/deploy:latest
+      run: |
+        docker run --entrypoint /deploy/scripts/deploy.sh \
+        -e ENV_TYPE=staging -e SERVER_TYPE=web -e BRANCH=$BRANCH \
+        -e ANSIBLE_VAULT_PASSWORD=${{secrets.ANSIBLE_VAULT_PASS}} $DOCKER_IMAGE
+
+    - name: Deploy branch for deployment
+      if: ${{ github.head_ref == null }}
+      env:
+        BRANCH: develop
+        DOCKER_IMAGE: 473856431958.dkr.ecr.ap-southeast-2.amazonaws.com/corpora/deploy:latest
+      run: |
+        docker run --entrypoint /deploy/scripts/deploy.sh \
+        -e ENV_TYPE=staging -e SERVER_TYPE=web -e BRANCH=$BRANCH \
+        -e ANSIBLE_VAULT_PASSWORD=${{secrets.ANSIBLE_VAULT_PASS}} $DOCKER_IMAGE

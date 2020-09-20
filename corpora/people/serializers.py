@@ -179,10 +179,6 @@ class PersonSerializer(serializers.HyperlinkedModelSerializer):
         else:
             demographic = None
 
-        # I found my problem. I first need to check the the value of the
-        # validated data isn't '' - because if it is we shoulnd't be
-        # setting it! This is what caused my strange username already
-        # exists error I'm sur eof it
         if 'user' in validated_data.keys():
             new_username = validated_data['username']
             new_email = validated_data['user']['email']
@@ -199,7 +195,6 @@ class PersonSerializer(serializers.HyperlinkedModelSerializer):
                 user.save()
                 instance.user = user
         elif 'username' in validated_data.keys():
-            # Don't create a user!
             instance.username = validated_data['username']
             if instance.user:
                 if instance.user.username != instance.username:
@@ -263,9 +258,6 @@ class PersonSerializer(serializers.HyperlinkedModelSerializer):
         if 'username' in validated_data.keys():
             instance.username = validated_data['username']
 
-        # logger.debug(demographic)
-        # remove all current relations
-
         if demographic:
             for tribe in demo.tribe.all():
                 demo.tribe.remove(tribe)
@@ -277,8 +269,6 @@ class PersonSerializer(serializers.HyperlinkedModelSerializer):
 
         if 'known_languages' in validated_data.keys():
             validated_languages = validated_data['known_languages']
-            # logger.debug(validated_languages)
-            # logger.debug(validated_data)
             for vl in validated_languages:
                 logger.debug(vl)
                 try:

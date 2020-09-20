@@ -3,6 +3,9 @@ This step is only necessary if you want to build a "deployment machine" locally.
 A deployment machine is a Linux machine with the packages required to deploy this project using ansible.
 We created this docker container so that we can use Git Actions for continuous deployment. Currently this docker container only supports deployment to staging and production environments. Perhaps we should look at including a local deployment.
 
+We use our env_vars/vault.yml file to copy over required credentials such as AWS access and
+the ec2 key (env_vars/base.yml:ec2_key_pair) used to ssh into the machines created in this deployment.
+
 Before you start, you'll need some environment variables.
 The first is a `ANSIBLE_VAULT_PASSWORD` to access credentials in the ansible vault
 (ask one of the developers for theirs).
@@ -20,7 +23,33 @@ docker run \
   corpora-deploy
 ```
 
+#### Help with Docker
+Below are useful commands when having issues with docker
 
+```bash
+# Build
+docker build . -t corpora-deploy
+# Run the docker container with a name
+docker run -dit --name corpora-deploy corpora-deploy
+# Run a bash terminal for the running ^ container
+docker exec -it corpora-deploy /bin/bash
+# Removes the docker image?
+docker rm corpora-deploy 
+# Show logs
+docker logs corpora-deploy -f
+# Sample deployment command
+docker run -dit --name corpora-deploy --entrypoint /deploy/scripts/deploy.sh -e ENV_TYPE=staging -e TAGS=deploy-now -e VAULT_PASS= corpora-deploy
+```
+
+#### Pushing corpora-deploy docker to AWS ECR
+```bash
+# Get & run login
+$(aws ecr get-login --no-include-email)
+# Tag our image
+docker tag corpora-deploy 473856431958.dkr.ecr.ap-southeast-2.amazonaws.com/corpora/deploy
+# Push image to repo
+docker push 473856431958.dkr.ecr.ap-southeast-2.amazonaws.com/corpora/deploy
+```
 
 
 To deploy the kuaka platform, you will need the following packages: 
