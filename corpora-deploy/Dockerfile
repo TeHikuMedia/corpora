@@ -11,5 +11,4 @@ RUN python3 -m pip install netaddr
 
 WORKDIR /deploy
 COPY . /deploy
-RUN rm /deploy/ansible.cfg
-RUN mv /deploy/ansible_docker.cfg /deploy/ansible.cfg
+COPY ansible_docker.cfg /deploy/ansible.cfg

@@ -39,6 +39,7 @@ jobs:
       run: |
         docker run --entrypoint /deploy/scripts/deploy.sh \
         -e ENV_TYPE=staging -e SERVER_TYPE=web -e BRANCH=$BRANCH \
+        -e TAGS=deploy-django \
         -e ANSIBLE_VAULT_PASSWORD=${{secrets.ANSIBLE_VAULT_PASS}} $DOCKER_IMAGE
 
     - name: Deploy branch for deployment
@@ -49,4 +50,5 @@ jobs:
       run: |
         docker run --entrypoint /deploy/scripts/deploy.sh \
         -e ENV_TYPE=staging -e SERVER_TYPE=web -e BRANCH=$BRANCH \
+        -e TAGS=deploy-django \
         -e ANSIBLE_VAULT_PASSWORD=${{secrets.ANSIBLE_VAULT_PASS}} $DOCKER_IMAGE
