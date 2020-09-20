@@ -13,12 +13,15 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.templatetags.static import static
 from django.db.models import Count, Q
 
-from people.helpers import get_current_language,\
-    get_num_supported_languages,\
-    get_or_create_person,\
-    get_unknown_languages,\
-    set_current_language_for_person,\
-    set_language_cookie
+from people.helpers import (
+    get_current_language,
+    get_num_supported_languages,
+    get_or_create_person,
+    get_unknown_languages,
+    set_current_language_for_person,
+    set_language_cookie,
+    get_supported_languages
+)
 
 from corpus.helpers import get_next_sentence, get_sentences
 
@@ -62,7 +65,11 @@ class ProfileDetail(
         if created:
             demographic.save()
 
-        known_languages = KnownLanguage.objects.filter(person=person)
+        known_languages = (
+            KnownLanguage.objects
+            .filter(person=person)
+            .filter(language__in=[i[0] for i in get_supported_languages()])
+        )
 
         if len(known_languages) == 0:
             url = reverse('people:choose_language') + '?next=people:profile'
