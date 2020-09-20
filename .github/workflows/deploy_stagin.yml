@@ -38,9 +38,8 @@ jobs:
         DOCKER_IMAGE: 473856431958.dkr.ecr.ap-southeast-2.amazonaws.com/corpora/deploy:latest
       run: |
         docker run --entrypoint /deploy/scripts/deploy.sh \
-        -e ENV_TYPE=staging -e SERVER_TYPE=web -e BRANCH=$BRANCH \
-        -e TAGS=deploy-django \
-        -e ANSIBLE_VAULT_PASSWORD=${{secrets.ANSIBLE_VAULT_PASS}} $DOCKER_IMAGE
+        -e ENV_TYPE=staging -e TAGS=deploy-django \
+        -e ANSIBLE_VAULT_PASS=${{secrets.ANSIBLE_VAULT_PASS}} $DOCKER_IMAGE
 
     - name: Deploy branch for deployment
       if: ${{ github.head_ref == null }}
@@ -49,6 +48,5 @@ jobs:
         DOCKER_IMAGE: 473856431958.dkr.ecr.ap-southeast-2.amazonaws.com/corpora/deploy:latest
       run: |
         docker run --entrypoint /deploy/scripts/deploy.sh \
-        -e ENV_TYPE=staging -e SERVER_TYPE=web -e BRANCH=$BRANCH \
-        -e TAGS=deploy-django \
-        -e ANSIBLE_VAULT_PASSWORD=${{secrets.ANSIBLE_VAULT_PASS}} $DOCKER_IMAGE
+        -e ENV_TYPE=staging -e TAGS=deploy-django \
+        -e ANSIBLE_VAULT_PASS=${{secrets.ANSIBLE_VAULT_PASS}} $DOCKER_IMAGE
