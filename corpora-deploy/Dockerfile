@@ -1,5 +1,5 @@
-FROM python:3.7.9-slim
-# 473856431958.dkr.ecr.ap-southeast-2.amazonaws.com/corpora/deploy:latest
+# FROM python:3.7.9-slim
+FROM 473856431958.dkr.ecr.ap-southeast-2.amazonaws.com/corpora/deploy:latest
 
 RUN apt-get update
 RUN apt-get install -y python3 python3-pip openssh-client
