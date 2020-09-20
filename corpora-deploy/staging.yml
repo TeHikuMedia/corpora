@@ -103,7 +103,7 @@
     - ensure-ec2-running
     - ensure-web-running
     - run-tests
-
+    - deploy-django
 
 # we need to wait somewhere until the instance is finally booted, then we need to re-process the inventory!!!
 # could wrape provision and deplay in includes so that error on hosts isn't displayed when doing local deployment
