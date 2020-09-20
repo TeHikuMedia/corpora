@@ -1,5 +1,4 @@
-# FROM python:3.7.9-slim
-FROM 473856431958.dkr.ecr.ap-southeast-2.amazonaws.com/corpora/deploy:latest
+FROM python:3.7.9-slim
 
 RUN apt-get update
 RUN apt-get install -y python3 python3-pip openssh-client
@@ -14,13 +13,3 @@ WORKDIR /deploy
 COPY . /deploy
 RUN rm /deploy/ansible.cfg
 RUN mv /deploy/ansible_docker.cfg /deploy/ansible.cfg
-
-# ENTRYPOINT ["/deploy/scripts/setup.sh"]
-
-
-# docker build . -t corpora-deploy
-# docker run -dit --name corpora-deploy corpora-deploy
-# docker exec -it corpora-deploy /bin/bash
-# docker rm corpora-deploy 
-# docker logs corpora-deploy -f
-# docker run -dit --name corpora-deploy --entrypoint /deploy/scripts/deploy.sh -e ENV_TYPE=staging -e TAGS=deploy-now -e VAULT_PASS= corpora-deploy

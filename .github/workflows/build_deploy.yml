@@ -39,7 +39,7 @@ jobs:
         aws-region: ap-southeast-2
     - uses: aws-actions/amazon-ecr-login@v1
 
-    - run: docker build ./corpora-deploy -t corpora-deploy
+    - run: docker build ./corpora-deploy -t corpora-deploy --file gitactions.Dockerfile
 
     - name: Push docker image
       env:
