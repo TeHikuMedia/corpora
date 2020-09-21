@@ -40,7 +40,7 @@ msgstr ""
 
 #: corpora/templates/corpora/footer.html:45
 msgid "Record"
-msgstr "E Leo"
+msgstr "ʻŌlelo"
 
 #: corpora/templates/corpora/footer.html:46
 #: corpora/templates/corpora/logged_in_nav_buttons.html:33
@@ -73,6 +73,8 @@ msgid ""
 "Copyright &copy; 2017 - %(current_year)s Te Reo Irirangi o Te Hiku o Te Ika."
 "<br>All content collected at %(site)s falls under the %(license)s License."
 msgstr ""
+"Copyright &copy; 2017 - %(current_year)s Te Reo Irirangi o Te Hiku o Te Ika."
+"<br>All content collected at %(site)s falls under the %(license)s License."
 
 #: corpora/templates/corpora/footer.html:72 corpora/views/views.py:77
 msgid "Privacy Policy"
@@ -85,7 +87,7 @@ msgstr ""
 
 #: corpora/templates/corpora/home.html:57
 msgid "SPEAK"
-msgstr "E Leo"
+msgstr "E ʻŌlelo"
 
 #: corpora/templates/corpora/home.html:63
 msgid "LISTEN"
@@ -93,7 +95,7 @@ msgstr "E Hoʻolohe"
 
 #: corpora/templates/corpora/home.html:84
 msgid "Kōrero Māori on your mobile"
-msgstr ""
+msgstr "ʻŌlelo Hawaiʻi on your mobile"
 
 #: corpora/templates/corpora/home.html:134
 msgid "Rongorongo Competition"
