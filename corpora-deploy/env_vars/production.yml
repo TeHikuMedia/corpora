@@ -2,7 +2,7 @@
 
 env_type: prod
 apt_upgrade: no
-git_branch: master
+git_branch: tumu
 setup_git_repo: yes
 
 # AWS Settings
