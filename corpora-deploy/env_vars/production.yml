@@ -7,12 +7,10 @@ setup_git_repo: yes
 
 # AWS Settings
 webserver_instance_type: t3.medium # migrate to t2.medium
+webserver_asg_instance_type: t3.small # migrate to t2.medium
 solrserver_instance_type: t3.medium
 debian_distro: buster
 number_webserver_instances: 1
-domain_name: koreromaori.com
-cloudfront_subdomain: cdn
-cloudfront_cname: "{{cloudfront_subdomain}}.{{domain_name}}"
 
 # AWS SSL ARN FOR LOAD BALANCING
 # elb_ssl_arn: arn:aws:acm:ap-southeast-2:473856431958:certificate/54d41cd9-172a-4bd5-b377-07819ddf1258
@@ -96,15 +94,15 @@ upgrade_pip_app: yes
 django_settings_file: settings.py
 django_include_fixtures: yes
 django_isnot_production: false
-django_file_storage: storages.backends.s3boto.S3BotoStorage
+django_file_storage: storages.backends.s3boto3.S3BotoStorage
 create_django_superuser: no
-aws_bucket: "{{project_name}}-{{env_type}}-{{aws_region}}"
-aws_staticfiles_bucket: "{{project_name}}-{{env_type}}-static-{{aws_region}}"
+aws_bucket: "{{project_name}}-production-{{aws_region}}"
+aws_staticfiles_bucket: "{{project_name}}-production-static-{{aws_region}}"
 run_django_syncdb: yes
 # run_django_south_migration: yes
 run_django_migrations: yes
 run_django_collectstatic: yes
-run_django_clearstatic: yes
+run_django_clearstatic: no
 build_language_files: no
 
 # run_django_createinitialrevisions: yes
