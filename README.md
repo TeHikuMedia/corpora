@@ -1,3 +1,4 @@
+![Deploy Production](https://github.com/TeHikuMedia/corpora/workflows/Deploy%20Production/badge.svg)
 ![Deploy Staging](https://github.com/TeHikuMedia/corpora/workflows/Deploy%20Staging/badge.svg)
 
 # corpora
