@@ -1,0 +1,38 @@
+---
+
+- name: stop solr schema
+  service: name=tomcat7 state=stopped
+  notify: start solr schema
+
+- name: start solr schema
+  service: name=tomcat7 state=started
+  notify: rebuild django solr index
+
+- name: rebuild django solr index
+  shell: . {{ virtualenv_path }}/bin/activate
+         && . {{ virtualenv_path }}/bin/postactivate
+         && cd {{ application_path }}
+         && python manage.py rebuild_index --noinput
+
+- name: restart all
+  shell: supervisorctl restart all
+
+- name: restart application
+  supervisorctl: name={{ application_name }}_{{item}} state=restarted
+  loop: "{{django_settings}}"
+
+- name: restart nginx
+  service: name=nginx state=restarted enabled=yes
+
+- name: reload nginx
+  service: name=nginx state=reloaded
+
+- name: rebuild search index
+  shell: . {{ virtualenv_path }}/bin/activate
+         && . {{ virtualenv_path }}/bin/postactivate
+         && cd {{ application_path }}
+         && python manage.py rebuild_index --noinput
+
+# THESE TASKS ARE PERFORMED FOR THE WEBSERVER AS WELL! WE NEED TO IGNORE THEM
+# WE NEED TO USE THE ANSBILE_HOST_EC2 DICT HERE
+

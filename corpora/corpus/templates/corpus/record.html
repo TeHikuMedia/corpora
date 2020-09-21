@@ -137,9 +137,9 @@ a.btn{
 
 {% addtoblock "js-include" %}<script type="text/javascript" src="{% static 'corpus/js/ajax.post.js' %}"></script>{% endaddtoblock %}
 {% addtoblock "js-include" %}<script type="text/javascript" src="{% static 'bower_components/js-cookie/src/js.cookie.js' %}"></script>{% endaddtoblock %}
-{% addtoblock "js-include" %}<script type="text/javascript" src="{% static 'bower_components/opus-recorder/dist/recorder.min.js' %}"></script>{% endaddtoblock %}
 
 {% comment %}
+{% addtoblock "js-include" %}<script type="text/javascript" src="{% static 'bower_components/opus-recorder/dist/recorder.min.js' %}"></script>{% endaddtoblock %}
 {% addtoblock "js-include" %}<script type="text/javascript" src="https://webrtc.github.io/adapter/adapter-latest.js"></script>{% endaddtoblock %}
 {% endcomment %}
 
@@ -148,10 +148,12 @@ a.btn{
 {% addtoblock "js-end" %}
 <script type="text/javascript">
 
+{% include 'corpus/js/recorder.min.js' %}
 {% include 'corpus/js/sentence.js' %}
 {% include 'corpus/js/player.js' %}
 {% include 'corpus/js/visualize.js' %}
 {% include 'corpus/js/record.3.js' %}
+
 
 var visRecorder;
 

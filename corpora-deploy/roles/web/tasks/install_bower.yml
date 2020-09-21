@@ -1,0 +1,10 @@
+---
+
+- name: Install bower
+  npm:
+    name: bower
+    state: latest
+    global: yes
+
+- name: Add access to npm package for fontawesome
+  command: npm config set @fortawesome:registry https://npm.fontawesome.com/{{fontawesome_token}}

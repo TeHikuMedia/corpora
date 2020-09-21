@@ -19,6 +19,8 @@ from django.utils import timezone
 
 from corpora.utils.tmp_files import prepare_temporary_environment
 
+from helpers.media_manager import MediaManager
+
 import datetime
 
 from django.core.files import File
@@ -26,9 +28,10 @@ import wave
 import contextlib
 import os
 import stat
-import commands
+import subprocess
 import ast
 import sys
+import json
 
 from django.core.cache import cache
 
@@ -172,7 +175,6 @@ def transcode_audio(recording_pk):
         recording.pk, recording.audio_file.name)
 
     is_running = cache.get(key, False)
-
     result = ''
     if not is_running:
         codecs = []
@@ -239,6 +241,7 @@ def encode_audio(recording, test=False, codec='aac'):
     '''
     Encode audio into required formats. Also sets recording duration.
     '''
+    
     if not isinstance(codec, list):
         codec_list = [codec]  # Backwards compatibility
     else:
@@ -250,78 +253,42 @@ def encode_audio(recording, test=False, codec='aac'):
         'wav': ['pcm_s16le', 'wav', 16000, 1]
     }
 
-    file_path, tmp_stor_dir, tmp_file, absolute_directory = \
-        prepare_temporary_environment(recording)
+    M = MediaManager(recording.audio_file)
 
-    # If a video doesn't have audio this will fail.
-    command = 'ffprobe -v quiet -show_entries stream -print_format json ' + \
-              tmp_file
-    data = ast.literal_eval(commands.getoutput(command))
-    streams = data['streams']
-
-    audio = False
-    for stream in streams:
+    for stream in M.streams:
         if stream['codec_type'] in 'audio':
             audio = True
 
     if audio:
         file_name = recording.get_recording_file_name()
-
-        code = \
-            "ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 {0}".format(
-                tmp_file)
-
-        data = commands.getstatusoutput(code)
-        recording.duration = float(data[1])
+        if file_name is None:
+            file_name = 'audio'
 
         for codec in codec_list:
 
-            if codec in 'wav':
-                file_name = file_name + '_16kHz'
-            extension = codecs[codec][1]
-
-            if codec in 'wav':
-                code = "ffmpeg -i {0} -vn -acodec {1} -ar {2} -ac {3} {4}/{5}.{6}".format(
-                    tmp_file,
-                    codecs[codec][0], codecs[codec][2], codecs[codec][3],
-                    tmp_stor_dir, file_name, extension)
-            else:
-                code = "ffmpeg -i {0} -vn -acodec {1} {2}/{3}.{4}".format(
-                    tmp_file, codecs[codec][0], tmp_stor_dir, file_name, extension)
-
-            logger.debug('Running: '+code)
-            data = commands.getstatusoutput(code)
-            logger.debug(data[1])
-
-            logger.debug(u'FILE FILENAME: \t{0}'.format(file_name))
-            if file_name is None:
-                file_name = 'audio'
-
             if 'aac' in codec:
-                recording.audio_file_aac.save(
-                    file_name+'.'+extension,
-                    File(open(tmp_stor_dir+'/{0}.{1}'.format(
-                        file_name, extension))))
+                M.convert_to_aac()
+                try:
+                    recording.audio_file_aac.save(
+                        file_name+'.'+'m4a',
+                        File(open(M.versions['aac']['file_path'], 'rb')))
+                except Exception as e:
+                    logger.error(e)
             elif 'wav' in codec:
-                recording.audio_file_wav.save(
-                    file_name+'.'+extension,
-                    File(open(tmp_stor_dir+'/{0}.{1}'.format(
-                        file_name, extension))))
+                M.convert_to_wave()
+                try:
+                    recording.audio_file_wav.save(
+                        file_name+'.'+'wav',
+                        File(open(M.versions['wav']['file_path'], 'rb')))
+                except Exception as e:
+                    logger.error(e)
+            logger.debug(M.versions)
 
-            code = 'rm '+tmp_stor_dir+'/{0}.{1}'.format(file_name, extension)
-            logger.debug('Running: '+code)
-            data = commands.getstatusoutput(code)
-            logger.debug(data[1])
-
-    if not audio:
+    else:
         logger.debug('No audio stream found.')
         return False
 
-    data = commands.getstatusoutput('rm ' + tmp_file)
-    logger.debug('Removed tmp file %s' % (tmp_file))
-
-    data = commands.getstatusoutput('rm -r ' + tmp_stor_dir)
-    logger.debug('Removed tmp stor dir %s' % (tmp_stor_dir))
+    del M
 
     set_s3_content_deposition(recording)
 

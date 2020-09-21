@@ -168,6 +168,12 @@ class RecordingQualityControl(models.Model):
         except:
             return u'old sentence?'
 
+    def __str__(self):
+        try:
+            return u'Recording QC: {0}'.format(self.recording.pk)
+        except:
+            return u'old sentence?'
+
 
 class SentenceQualityControl(models.Model):
 
@@ -189,7 +195,8 @@ class SentenceQualityControl(models.Model):
         help_text='Flag for deletion.')
 
     updated = models.DateTimeField(auto_now=True)
-    person = models.ForeignKey('people.Person', null=True, blank=True)
+    person = models.ForeignKey(
+        'people.Person', null=True, blank=True, on_delete=models.SET_NULL)
 
     sentence = models.ForeignKey(
         'corpus.Sentence',
@@ -235,6 +242,11 @@ class SentenceQualityControl(models.Model):
         except:
             return 'migration error?'
 
+    def __str__(self):
+        try:
+            return u'Sentence QC: {0}'.format(self.sentence.pk)
+        except:
+            return 'migration error?'
 
 class Source(models.Model):
     SOURCE_TYPES = (
@@ -274,7 +286,8 @@ class Source(models.Model):
     added_by = models.ForeignKey(
         'people.Person',
         null=True,
-        blank=True)
+        blank=True,
+        on_delete=models.SET_NULL)
     source_url = models.URLField(
         null=True,
         blank=True,
@@ -290,6 +303,8 @@ class Source(models.Model):
     def __unicode__(self):
         return "{0} by {1}".format(self.source_name, self.author)
 
+    def __str__(self):
+        return "{0} by {1}".format(self.source_name, self.author)
 
 class Sentence(models.Model):
     text = models.CharField(
@@ -335,6 +350,9 @@ class Sentence(models.Model):
             raise ValidationError('Duplicate sentence')
 
     def __unicode__(self):
+        return self.text
+
+    def __str__(self):
         return self.text
 
     def get_features(self):
@@ -424,6 +442,12 @@ class Recording(models.Model):
         except:
             return self.get_sentence_text()
 
+    def __str__(self):
+        try:
+            return self.get_sentence_text() + u" by " + self.get_person_name()
+        except:
+            return self.get_sentence_text()
+
     def audio_file_admin(self):
         url = self.get_recording_file_url()
         return mark_safe("""
@@ -432,14 +456,20 @@ class Recording(models.Model):
             onclick="window.open('%s','popup','width=400,height=200'); return false;"
             >%s</a>""" % (url, url, url))
 
-    def get_recording_file_url(self):
+    def get_recording_file_url(self, request=None):
         from django.urls import reverse
         from django.contrib.sites.models import Site
-        current_site = Site.objects.get_current()
+        
+        if request:
+            domain = request.META['HTTP_HOST']
+        else:
+            current_site = Site.objects.get_current()
+            domain = current_site.domain
+
         try:
             url = "https://{1}{0}".format(
                 reverse('corpus:recording_file', kwargs={'pk': self.pk}),
-                current_site.domain)
+                domain)
         except:
             url = ""
         return url
@@ -563,6 +593,9 @@ class Text(models.Model):
         # unique_together = (("original_file_md5", "content_type", "person"),)
 
     def __unicode__(self):
+        return str(self.original_file)
+
+    def __str__(self):
         return str(self.original_file)
 
     def save(self, *args, **kwargs):

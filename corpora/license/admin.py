@@ -4,7 +4,11 @@ from .models import \
     License, AcceptLicense, SiteLicense
 
 
-admin.site.register(License)
+@admin.register(License)
+class LicenseAdmin(admin.ModelAdmin):
+	list_display = (
+		'license_name', 'language'
+		)
 
 
 @admin.register(AcceptLicense)

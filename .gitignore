@@ -52,7 +52,6 @@ coverage.xml
 # Django stuff:
 *.log
 local_settings.py
-*.mo
 
 # IPython Notebook
 .ipynb_checkpoints
@@ -80,3 +79,17 @@ bower_components/
 
 fontawesome-pro*
 wahi_korero*
+
+
+#*django.mo
+
+node_modules/
+package-lock.json
+
+
+# Ansible
+vault.yml
+id_rsa*
+
+# Vagrant
+.vagrant

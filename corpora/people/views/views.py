@@ -10,15 +10,18 @@ from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.core.exceptions import ObjectDoesNotExist
 
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 from django.db.models import Count, Q
 
-from people.helpers import get_current_language,\
-    get_num_supported_languages,\
-    get_or_create_person,\
-    get_unknown_languages,\
-    set_current_language_for_person,\
-    set_language_cookie
+from people.helpers import (
+    get_current_language,
+    get_num_supported_languages,
+    get_or_create_person,
+    get_unknown_languages,
+    set_current_language_for_person,
+    set_language_cookie,
+    get_supported_languages
+)
 
 from corpus.helpers import get_next_sentence, get_sentences
 
@@ -36,10 +39,13 @@ from corpora.mixins import SiteInfoMixin, EnsureCsrfCookieMixin
 
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.views import APIView
-
+from rest_framework.authtoken.models import Token
 from people.competition import get_valid_group_members
 
 from django.core.cache import cache
+from django.contrib.auth.models import User
+
+from django.core.signing import TimestampSigner, loads, SignatureExpired
 
 import logging
 logger = logging.getLogger('corpora')
@@ -59,7 +65,11 @@ class ProfileDetail(
         if created:
             demographic.save()
 
-        known_languages = KnownLanguage.objects.filter(person=person)
+        known_languages = (
+            KnownLanguage.objects
+            .filter(person=person)
+            .filter(language__in=[i[0] for i in get_supported_languages()])
+        )
 
         if len(known_languages) == 0:
             url = reverse('people:choose_language') + '?next=people:profile'
@@ -266,13 +276,14 @@ def choose_language(request):
 
 
 def set_language(request):
-    logger.debug('SET LANGAUGE')
-
     url = '/'+'/'.join(request.META['HTTP_REFERER'].split('/')[3:])
     match = resolve(url)
     logger.debug('MATCH: {0}'.format(match))
     if match:
-        url = '{0}:{1}'.format(match.namespace, match.url_name)
+        if match.namespace:
+            url = f'{match.namespace}:{match.url_name}'
+        else:
+            url = match.url_name
     else:
         url = 'people:choose_language'
 
@@ -425,5 +436,51 @@ class Help(SiteInfoMixin, ListView):
         context['qualified'] = qualified
         context['not_qualified'] = not_qualified
         # for group in groups:
+
+        return context
+
+
+
+class MagicLogin(TemplateView):
+    '''
+    View which processes our /macgic/ login stuff
+    '''
+    template_name = 'people/magic.html'
+
+    def get(self, request, *args, **kwargs):
+        key = request.GET.get('key')
+        signer = TimestampSigner()
+        try:
+            value = signer.unsign(key, max_age=1200)
+            payload = loads(value)
+            email = payload['email']
+            user = User.objects.get(email=email)
+            person = Person.objects.get(user=user)
+            token, created = Token.objects.get_or_create(user=user)
+            request.user = user
+            self.person = person
+            self.token = token
+
+            usa = request.META['HTTP_USER_AGENT'].lower()
+            if 'iphone' in usa or 'ipad' in usa:
+                url = "koreromaori://login/?token={0}".format(token)
+                response = HttpResponse("", status=302)
+                response['Location'] = url
+                return response
+
+        except SignatureExpired:
+            self.person = None
+            self.token = None
+        
+        return super(MagicLogin, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+
+        context = \
+            super(MagicLogin, self).get_context_data(**kwargs)
+
+        context['token'] = self.token
+        context['person'] = self.person
+        context['user'] = self.request.user
 
         return context

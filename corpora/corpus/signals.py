@@ -15,6 +15,9 @@ from corpora.celery_config import app
 
 from django.core.cache import cache
 
+import logging
+logger = logging.getLogger('corpora')
+
 # @receiver(models.signals.post_save, sender=Sentence)
 # @receiver(models.signals.post_save, sender=Recording)
 # def create_quality_control_instance_when_object_created(
@@ -24,9 +27,9 @@ from django.core.cache import cache
 #             content_type=ContentType.objects.get_for_model(instance)
 #         )
 #     if created:
-#         print "Created QC object {0}".format(qc.pk)
+#         print("Created QC object {0}".format(qc.pk))
 #     else:
-#         print "QC object {0} exists".format(qc.pk)
+#         print("QC object {0} exists".format(qc.pk))
 
 
 @receiver(models.signals.pre_save, sender=Sentence)
@@ -45,7 +48,7 @@ def clear_quality_control_instance_when_object_modified(
                     )
                 qcs.delete()
                 # for qc in qcs:
-                #     print "Clearing quality control"
+                #     print("Clearing quality control")
                 #     qc.delete()
 
         except ObjectDoesNotExist:
@@ -87,7 +90,7 @@ def split_sentence_when_period_in_sentence(sender, instance, **kwargs):
             new_sentence = Sentence.objects.create(
                 text=parts[i]+'.',
                 language=instance.language)
-            print "Created {0}".format(new_sentence)
+            print("Created {0}".format(new_sentence))
 
 
 # @receiver(models.signals.pre_save, sender=Sentence)
@@ -161,6 +164,7 @@ def set_recording_length_on_save(sender, instance, created, **kwargs):
             is_running = cache.get(key, False)
 
             if not is_running:
+                logger.debug('sending transcode_audio')
                 time = timezone.now()
                 transcode_audio.apply_async(
                     args=[instance.pk],
@@ -178,7 +182,7 @@ def set_recording_length_on_save(sender, instance, created, **kwargs):
                 # us a transcription quickly.
                 transcribe_recording.apply_async(
                     args=[instance.pk],
-                    countdown=5,
+                    countdown=30,
                     task_id='transcribe_audio-{0}-{1}-{2}'.format(
                         p_pk,
                         instance.pk,

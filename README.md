@@ -11,12 +11,36 @@ other technologies can work in te reo Māori, ʻōlelo Hawaiʻi, and other indig
 
 You can help us add more languages by translating this app. The current project is live at https://koreromaori.com/. If you'd like to lead a copora gathering campaign for your language, get in touch as we'd love to help.
 
+# Getting Started
+
+## Local Development
+Please see `corpora-deploy` for details on getting a local environment running.
+
+## Docker
+We've temporarily stopped working on a docker port. The docs below are kept for reference.
+
+### Running Django manually
+You might need to run django administration commands such as makemessages which is used to create locale files for multi-language support. In order to do this you should mount your repo into the docker image when you run it so those changes are reflected in your local files,
+
+```bash
+docker run -it --env-file=local.env --mount type=bind,source="$(pwd)"/corpora,target=/webapp/corpora/corpora tehiku/corpora:local-dev /bin/bash
+```
+The `local.env` file has all the environment variables required to get django running.
+
+### Docker Images
+Currently we are hosting the docker images here: https://hub.docker.com/repository/docker/tehiku/corpora
+
+We probably want some more docs here about different docker images for say different language and/or environments.
+
 # Kōrero Māori
 Kōrero Māori is the project that's funding the build of corpora. Kōrero Māori is an initiative started by Te Hiku Media and supported by a number of organizations. The goal is to train machines to transcribe thousands of hours or native language speaker audio recordings to make native te reo Māori more accessible to language learners as our native speaker population is in decline.
 
 We are always looking for more support either financially or through in kind contributions. If you're keen to get involved please get in touch by emailing us at koreromaori@tehiku.nz.
 
 ## Current Funding
+- Papa Reo, MBIE SSIF, Data Science Platform - https://papareo.nz
+
+## Past Funding
 - Ka Hao Fund, Te Puni Kōkiri - https://www.tpk.govt.nz/en
 
 ## Project Partners

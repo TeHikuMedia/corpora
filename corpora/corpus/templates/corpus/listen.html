@@ -80,10 +80,13 @@ div.content{
         ><i class="fas fa-check-circle fa-fw"></i><span>Approve</span></a>
       {% endif %}
 
-      <a href="#" class="good disabled toggle-after-playback" data-key="good"><i class="fas fa-check fa-fw"></i>&nbsp;Ka Tika</a>
-      <a href="#" class="bad disabled toggle-after-playback"  data-key="bad"><i class="fas fa-times fa-fw"></i>&nbsp;Kia Kaha</a>
+      <a href="#" class="good disabled toggle-after-playback" data-key="good">
+        <i class="fas fa-check fa-fw"></i>&nbsp;{% trans 'Good Job' %}</a>
+      <a href="#" class="bad disabled toggle-after-playback"  data-key="bad">
+        <i class="fas fa-times fa-fw"></i>&nbsp;{% trans 'Try Again' %}</a>
 
-      <a href="javascript:void(0)" id="next disabled" class="next"><i class="fas fa-step-forward fw"></i>&nbsp;Skip</a>    
+      <a href="javascript:void(0)" id="next disabled" class="next">
+        <i class="fas fa-step-forward fw"></i>&nbsp;{% trans 'Skip' %}</a>    
 
       <br>  
       <a href="javascript:void(0)" id="help" style="font-size: 16px; outline: none; margin-top: 8px;" 

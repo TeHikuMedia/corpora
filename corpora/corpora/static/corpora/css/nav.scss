@@ -62,13 +62,24 @@
   .dropdown-menu{
 
     a{
-        color: $brand_dark;
-        font-size: .8em;
-     }
-     li{
-      margin-left: 15px;
-      margin-right: 15px;
-     }
+      color: $brand_dark;
+      font-size: .8em;
+    }
+    li{
+      margin-left: 0px;
+      margin-right: 0px;
+      padding: 0px 15px;
+      width: 100%;
+      cursor: pointer;
+    }
+    li:hover{
+      background-color: $brand_light;
+      a{color: white;}
+    }
+    li.active{
+      background-color: $brand_lightest;
+      a{color: $brand_primary;}
+    }
 
      right: 0;
      left: auto;
@@ -76,4 +87,27 @@
 
 
 
+}
+
+.dropdown-toggle::after{
+  display: none !important;
+}
+
+
+.navbar{
+  ul{
+    flex-wrap: unset !important;
+    /*overflow: auto;*/
+    // overflow-x: scroll;
+    // overflow-y: visible;
+    li{
+      display: inline-block;
+    }
+    li.active{
+      border-bottom: 2px solid white;
+    }
+  }
+    a{
+        color: white;
+    }
 }

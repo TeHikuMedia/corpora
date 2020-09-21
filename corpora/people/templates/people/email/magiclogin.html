@@ -1,0 +1,47 @@
+{% extends 'people/email/base_email_actioned.html' %}
+{% load static sekizai_tags i18n compress %}
+{% block subject %}{{subject}}{% endblock %}
+
+
+{% block heading %}
+<h1>{{site.name}}</h1>
+{% endblock %}
+
+
+
+{% block main    %}
+{% compress css inline %}
+<style type="text/x-scss">
+@import 'corpora/static/corpora/css/_colors.scss';
+h1{
+    color: $brand_primary;
+}
+p, ul, li, td{
+    font-family: 'Raleway', sans-serif;
+}
+li{
+	list-style-type: none;
+}
+span{
+	font-size: 1.5em;
+	color: $brand_primary;
+	font-weight: 700;
+}
+.btn{
+	display: inline-block;
+	padding: 8px;
+	border-radius: 4px;
+	background-color: $brand_primary;
+	color: white;
+	margin: 5px;
+	font-weight: 400;
+}
+</style>
+{% endcompress %}
+<p>{% trans 'Hello'%}{% if person %} {{person}}{% endif %},</p>
+<p>{% trans "You've requested a login for" %} {{site.name}}.</p>
+<p style="text-align: center;"><a href="{{link}}" class="btn" style="font-weight: 700; font-size: 1.5em; display: inline-block; width: 150px">Log In</a></p>
+<p>If this wasn't you, you may disregard this email.</p>
+{% endblock %}
+{% block footer  %}
+{% endblock %}

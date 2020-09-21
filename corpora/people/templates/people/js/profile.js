@@ -1,7 +1,7 @@
 
 class Profile{
   constructor(pk, target_element_selector, target_alert_element_selector=null, debug=false){
-    this.base_url = '/api/persons/'+pk+'/'
+    this.base_url = '/api/profile/'+pk+'/'
     this.target_element = $(target_element_selector)
     this.alert_element = (target_alert_element_selector==null) ? null : $(target_alert_element_selector);
     this.data = null
@@ -95,6 +95,12 @@ class Profile{
     });
     
 
+    $(this.target_element).find('.select2-selection').on('blur', function(){
+      self.change_counter += 1
+      self.logger('counter = '+self.change_counter)
+      self.logger('Chagned')
+      self.save()
+    });
 
 
     var elem = '<div class="alert " role="alert"></div>'

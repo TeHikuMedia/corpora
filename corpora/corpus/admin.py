@@ -8,6 +8,8 @@ from .models import \
     RecordingQualityControl, Sentence, Recording, Source, Text, \
     SentenceQualityControl
 
+from corpus.tasks import transcode_audio
+import time
 from corpus.views.views import RecordingFileView
 from .parser import save_sentences_from_text
 from .helpers import approve_sentence
@@ -49,7 +51,7 @@ class RecordingQualityControlAdmin(admin.ModelAdmin):
                     'approved', 'trash', 'follow_up', 'noise', 'star')
     date_hierarchy = 'updated'
     raw_id_fields = ('person', 'approved_by', 'recording')
-
+    list_filter = ('recording__language', 'updated')
 
 @admin.register(SentenceQualityControl)
 class SentenceQualityControlAdmin(admin.ModelAdmin):
@@ -57,7 +59,7 @@ class SentenceQualityControlAdmin(admin.ModelAdmin):
                     'approved', 'approved_by', 'trash', )
     date_hierarchy = 'updated'
     raw_id_fields = ('person', 'approved_by', 'sentence')
-
+    list_filter = ('sentence__language', 'updated', )
 
 @admin.register(Sentence)
 class SentenceAdmin(admin.ModelAdmin):
@@ -66,6 +68,7 @@ class SentenceAdmin(admin.ModelAdmin):
     inlines = [SentenceQualityControlInline, RecordingsInline]
     search_fields = ['text']
     actions = ('approve_sentences',)
+    list_filter = ('language', 'updated', )
 
     def get_queryset(self, request):
         qs = super(SentenceAdmin, self).get_queryset(request)
@@ -141,10 +144,14 @@ class RecordingAdmin(admin.ModelAdmin):
         'duration',
         'audio_file',
         'audio_file_aac',
+        'audio_file_wav',
         'audio_file_admin',
         'updated',
         'created',
     )
+
+    list_filter = ('language', 'created', 'quality_control__approved', 'quality_control__trash',)
+
 
     raw_id_fields = ('person', 'sentence')
 
@@ -152,6 +159,8 @@ class RecordingAdmin(admin.ModelAdmin):
         'person__user__email',
         'person__full_name',
         'person__user__username']
+
+    actions = ('encode_audio',)
 
     def audio_file_aac(self, obj):
         return 'test'
@@ -195,6 +204,20 @@ class RecordingAdmin(admin.ModelAdmin):
     get_approved_by.short_description = 'Approved By'
     get_approved_by.admin_order_field = 'quality_control__approved'
 
+    def encode_audio(self, request, queryset):
+        for obj in queryset:
+            transcode_audio.apply_async(
+                    args=[obj.pk, ],
+                    task_id='transcode_audio-{0}-{1}'.format(
+                        obj.pk,
+                        time.strftime('%d%m%y%H%M%S'))
+                    )
+            messages.add_message(
+                request, messages.INFO,
+                'Sent encode task for {0}.'.format(obj))
+    encode_audio.short_description = "Encode audio"
+
+
 
 @admin.register(Source)
 class SourceAdmin(admin.ModelAdmin):
@@ -237,6 +260,7 @@ class TextAdmin(admin.ModelAdmin):
     readonly_fields = ('updated', 'original_file_md5', 'cleaned_file_md5',)
     raw_id_fields = ('source', )
     actions = ('save_sentences', )
+    list_filter = ('primary_language',)
 
     def save_sentences(self, request, queryset):
         for obj in queryset:

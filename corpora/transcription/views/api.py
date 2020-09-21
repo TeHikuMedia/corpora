@@ -6,6 +6,7 @@ from transcription.serializers import \
     TranscriptionSegmentSerializer,\
     AudioFileTranscriptionSerializer
 
+from reo_api.models import UserAPI
 from rest_framework import viewsets, permissions, pagination
 from rest_framework.response import Response
 
@@ -13,13 +14,30 @@ from people.helpers import get_person
 from django.core.cache import cache
 from django.shortcuts import get_object_or_404
 
-from corpus.views.api import TenResultPagination
+from corpus.views.api import TenResultPagination, OneHundredResultPagination
 
 from transcription.utils import build_vtt, compile_aft
 from transcription.transcribe import transcribe_segment
 
+from transcription.tasks import transcribe_recording
+
 import logging
 logger = logging.getLogger('corpora')
+
+
+class UserAPIPermissions(permissions.BasePermission):
+    '''
+    We're not using a new model for access to this API. This is a 
+    temporary implementation to now close the API until we move
+    things to somethign better.
+    '''
+    message = "Public beta testing is now closed. Please contact koreromaori@tehiku.nz for developer access."
+
+    def has_permission(self, request, view):
+        if request.user.is_staff:
+            return True
+        u, created = UserAPI.objects.get_or_create(user=request.user)
+        return u.enabled
 
 
 class TranscriptionPermissions(permissions.BasePermission):
@@ -69,26 +87,51 @@ class TranscriptionPermissions(permissions.BasePermission):
 
 class TranscriptionViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows transcriptions to be viewed or edited.
+    This API Endpoint is for the automatic transcriptions of recordings
+    that the backend does. This helps us more efficiently review
+    recordings based on their word error rate calculated from the
+    transcription.
 
-    This api provides acces to a audio_file_url field. This allows the retrival
-    of an audio file in the m4a container with the aac audio codec. To retrieve
-    an audio file in the wave format at 16kHz and 16bits, append the query
-    ?format=wav to the url given by the audio_file_url field.
+    ### Query Parameters
+    - `filter`: Filter results by the following,
+       - `recording:ID`: Filter result by recording id.
     """
 
     # TODO: Allow someone to get a list of ALL of their transcriptions.
 
     queryset = Transcription.objects.all()
     serializer_class = TranscriptionSerializer
-    permission_classes = (TranscriptionPermissions,)
-    pagination_class = TenResultPagination
+    permission_classes = (UserAPIPermissions, TranscriptionPermissions)
+    pagination_class = OneHundredResultPagination
 
     def get_queryset(self):
         person = get_person(self.request)
-        queryset = AudioFileTranscription.objects\
-            .filter(uploaded_by=person)
+        queryset = Transcription.objects\
+            .all()\
+            .order_by('-updated')
 
+        filter_by = self.request.query_params.get('filter')
+        filt = None
+        value = None
+        if filter_by:
+            parts = filter_by.split(':')
+            if len(parts)==2:
+                filt = parts[0].lower()
+                value = parts[1]
+                if filt == 'recording':
+                    queryset = queryset.filter(recording__pk=value)
+
+        logger.debug(queryset)
+        if self.request.user.is_superuser and len(queryset)<2:
+            if len(queryset) == 0:
+                if filt=='recording':
+                    transcribe_recording(value)
+            elif queryset[0].metadata is None:
+                # Let's transcribe this recording again
+                # under this very certain circumstance
+                # which is Pronunciation analysis
+                transcribe_recording(queryset[0].pk)
+        transcribe_recording(value)
         return queryset
 
 
@@ -135,7 +178,7 @@ class TranscriptionSegmentViewSet(viewsets.ModelViewSet):
 
     queryset = TranscriptionSegment.objects.all()
     serializer_class = TranscriptionSegmentSerializer
-    permission_classes = (TranscriptionSegmentPermissions,)
+    permission_classes = (UserAPIPermissions, TranscriptionSegmentPermissions)
     pagination_class = TenResultPagination
 
     def get_queryset(self):
@@ -232,7 +275,7 @@ class AudioFileTranscriptionViewSet(viewsets.ModelViewSet):
 
     queryset = AudioFileTranscription.objects.all()
     serializer_class = AudioFileTranscriptionSerializer
-    permission_classes = (AudioFileTranscriptionPermissions,)
+    permission_classes = (UserAPIPermissions, AudioFileTranscriptionPermissions)
     pagination_class = TenResultPagination
 
     def get_queryset(self):

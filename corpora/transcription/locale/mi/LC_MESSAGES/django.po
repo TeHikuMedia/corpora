@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-03 14:39+1300\n"
+"POT-Creation-Date: 2020-09-16 12:55+1200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,25 +17,25 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: transcription/models.py:166
+#: transcription/models.py:279
 msgid ""
 "Name for your audio file. If this is not provided,             your file "
 "name will be used."
 msgstr ""
 
-#: transcription/models.py:173
+#: transcription/models.py:286
 msgid ""
 "            Supported file extensions include            .aac, .mp3, .wav, ."
 "aiff, and .m4a. "
 msgstr ""
 
-#: transcription/models.py:181
+#: transcription/models.py:294
 msgid ""
 "            HE-AAC encoded version of audio_file            for low bitrate "
 "playback."
 msgstr ""
 
-#: transcription/models.py:197
+#: transcription/models.py:313
 msgid ""
 "            A Person ID. This field is populated automatically if            "
 "not provided."
@@ -53,70 +53,98 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: transcription/urls.py:11
+#: transcription/transcribe.py:299
+msgid "Done"
+msgstr ""
+
+#: transcription/transcribe.py:315
+msgid "Error"
+msgstr ""
+
+#: transcription/urls.py:15
 msgid "^dashboard/"
 msgstr ""
 
-#: transcription/urls.py:16
+#: transcription/urls.py:20
 msgid "^transcriptions/(?P<pk>[0-9]+)"
 msgstr ""
 
-#: transcription/urls.py:21
+#: transcription/urls.py:25
 msgid "^transcriptions/"
 msgstr ""
 
-#: transcription/urls.py:27
+#: transcription/urls.py:31
 msgid "^speak/"
 msgstr ""
 
-#: transcription/views/api.py:35
+#: transcription/urls.py:37
+msgid "^speak2/"
+msgstr ""
+
+#: transcription/urls.py:43
+msgid "^review/"
+msgstr ""
+
+#: transcription/utils.py:389
+msgid "Waiting"
+msgstr ""
+
+#: transcription/views/api.py:54
 msgid "Only staff can read transcription lists."
 msgstr ""
 
-#: transcription/views/api.py:41
+#: transcription/views/api.py:60
 msgid "Reading transcription lists not allowed."
 msgstr ""
 
-#: transcription/views/api.py:48
+#: transcription/views/api.py:67
 msgid "Only staff can read transcriptions."
 msgstr ""
 
-#: transcription/views/api.py:63
+#: transcription/views/api.py:82
 msgid "You're not allowed to edit this transcription."
 msgstr ""
 
-#: transcription/views/api.py:65
+#: transcription/views/api.py:84
 msgid "Reading transcriptions is not allowed."
 msgstr ""
 
-#: transcription/views/views.py:79
+#: transcription/views/views.py:80
 msgid "Reo API Dashboard"
 msgstr ""
 
-#: transcription/views/views.py:80
+#: transcription/views/views.py:81
 msgid "Dashboard"
 msgstr ""
 
-#: transcription/views/views.py:106
+#: transcription/views/views.py:107 transcription/views/views.py:129
 msgid "Try the speech recognizer!"
 msgstr ""
 
-#: transcription/views/views.py:107
+#: transcription/views/views.py:108 transcription/views/views.py:130
 msgid "Kōrero Demo"
 msgstr ""
 
-#: transcription/views/views.py:125
+#: transcription/views/views.py:151
+msgid "Review API and Data"
+msgstr ""
+
+#: transcription/views/views.py:152
+msgid "Kōrero Māori Review for Admins"
+msgstr ""
+
+#: transcription/views/views.py:177
 msgid "Edit your transcription."
 msgstr ""
 
-#: transcription/views/views.py:126
+#: transcription/views/views.py:178
 msgid "Edit Transcription"
 msgstr ""
 
-#: transcription/views/views.py:167
+#: transcription/views/views.py:219
 msgid "List of your transcriptions."
 msgstr ""
 
-#: transcription/views/views.py:168
+#: transcription/views/views.py:220
 msgid "Transcriptions"
 msgstr ""

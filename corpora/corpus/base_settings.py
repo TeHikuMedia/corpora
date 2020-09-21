@@ -11,9 +11,9 @@ EXTRA_LANG_INFO = {
         'name': 'Maori',
         'name_local': u'Māori',
     },
-    'en_NZ': {
+    'en-NZ': {
         'bidi': False,  # right-to-left
-        'code': 'en_NZ',
+        'code': 'en-NZ',
         'name': 'New Zealand English',
         'name_local': u'New Zealand English',
     },
@@ -35,10 +35,22 @@ EXTRA_LANG_INFO = {
         'name': 'Cook Islands Maori',
         'name_local': u'Māori Kūki ʻĀirani',
     },
+    'moh': {
+        'bidi': False,  # right-to-left
+        'code': 'moh',
+        'name': 'Mohawk',
+        'name_local': u'Kanienʼkéha',
+    },
+    'en-US': {
+        'bidi': False,  # right-to-left
+        'code': 'en-US',
+        'name': 'American English',
+        'name_local': u'English',
+    },
 }
 
 LANG_INFO = \
-    dict(django.conf.locale.LANG_INFO.items() + EXTRA_LANG_INFO.items())
+    {**django.conf.locale.LANG_INFO, **EXTRA_LANG_INFO}
 
 # update the language info
 django.conf.locale.LANG_INFO = LANG_INFO
@@ -56,10 +68,12 @@ LANGUAGES = (
 
     ('mi',    _('Maori')),
     ('haw',    _('Hawaiian')),
-    ('smo',    _('Samoan')),
-    ('rar',    _('Cook Island Maori')),
+    # ('smo',    _('Samoan')),
+    # ('rar',    _('Cook Island Maori')),
     # ('en',    _('English')),
-    ('en_NZ', _('New Zealand English')),
+    ('en-NZ', _('New Zealand English')),
+    # ('en_US', _('American English')),
+    # ('moh', _('Mohawk')),
 )
 
 DIALECTS = (
@@ -114,3 +128,18 @@ ACCENTS = (
 )
 
 LANGUAGE_CODE = 'mi'
+
+
+LANGUAGE_DOMAINS = {
+    'dev.olelomaoli.com': 'haw',
+    'dev.koreromaori.com': 'mi',
+    'dev.koreromaori.io': 'mi',
+    'olelohawaii.com': 'haw',
+    'koreromaori.com': 'mi',
+    'koreromaori.io': 'mi',
+    'corporalocal.com': 'mi',
+    'corporalocal.nz': 'mi',
+    'corporalocal.io': 'mi',
+    'corpora.com': 'en-NZ',
+    'corporadocker.nz': 'mi',
+}

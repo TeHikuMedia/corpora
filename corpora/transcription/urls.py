@@ -6,6 +6,9 @@ from transcription.views.views import \
     AudioFileTranscriptionListView, DashboardView, \
     ReviewView, TranscribeView2
 
+from corpus.views.static import WaveWorker, EncoderWorker, EncoderWorkerWasm
+
+
 urlpatterns = [
 
     url(
@@ -40,5 +43,9 @@ urlpatterns = [
         _(r'^review/'),
         ReviewView.as_view(),
         name='review'),
+
+    url((r'^workers/waveWorker\.min\.js'), WaveWorker.as_view(), name='waveworker'),
+    url((r'^workers/encoderWorker\.min\.js'), EncoderWorker.as_view(), name='encoderworker'),
+    url((r'^workers/encoderWorker\.min\.wasm'), EncoderWorkerWasm.as_view(), name='encoderworkerwasm'),
 
 ]

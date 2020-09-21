@@ -3,7 +3,6 @@ from django.conf import settings
 import os
 import pwd
 import grp
-import commands
 import stat
 from subprocess import Popen, PIPE
 
@@ -122,22 +121,24 @@ lets hope this is okay".format(tmp_file))
     # Will just replace file since we only doing one encode.
     if 'http' in file_path:
         url = get_file_url(file)
-        code = 'wget "'+url+'" -O ' + tmp_file
+        code = ['wget', tmp_file, '-O']
     else:
-        code = "cp '%s' '%s'" % (file_path, tmp_file)
-    result = commands.getstatusoutput(code)
+        code = ['cp', file_path, tmp_file]
+
+    p = Popen(code)
+    result, error = p.communicate()
 
     # Turn this off as it's too much output
     try:
         # logger.debug(result[1])
-        result = ' '.join([str(i) for i in result])
+        error = ' '.join([str(i) for i in error])
     except:
         pass
         # logger.debug(result)
 
-    if not os.path.exists(tmp_file) or 'ERROR 404' in result:
+    if not os.path.exists(tmp_file) or 'ERROR 404' in error:
         logger.error('ERROR GETTING: ' + tmp_file)
-        logger.error(result)
+        logger.error(error)
         raise ValueError
     else:
         logger.debug('Downloaded: ' + os.path.abspath(tmp_file))

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+
+{% if not token %}
+Your token is expired. Please request a new one.
+{% endif %}
+
+{{token}}
+{{person}}
+{{user}}
+{{email}}
+
+{% endblock %}

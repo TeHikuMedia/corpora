@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-03 14:39+1300\n"
+"POT-Creation-Date: 2020-09-16 12:55+1200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,25 +17,29 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: license/models.py:15
+#: license/models.py:17
 msgid "Name of license"
 msgstr "Ingoa o te raihana"
 
-#: license/models.py:17
+#: license/models.py:19
 msgid "Please provide a description of the license."
 msgstr "Tuhia mai koa he whakamāramatanga mō te raihana."
 
-#: license/models.py:19
+#: license/models.py:21
 msgid "The actual license text."
 msgstr "Ngā kupu ake o te raihana."
 
-#: license/models.py:22
+#: license/models.py:24
 msgid ""
 "How the license should be displayed. This field is meant                    "
 "to include style e.g. html."
 msgstr ""
 
-#: license/models.py:42
+#: license/models.py:30
+msgid "language"
+msgstr ""
+
+#: license/models.py:53
 msgid "Accepted licenses"
 msgstr "Raihana i whakaaetia"
 
@@ -70,6 +74,6 @@ msgstr "Auē"
 msgid "Something went wrong. Please try again later or refresh your browser."
 msgstr ""
 
-#: license/views/api.py:36
+#: license/views/api.py:38
 msgid "You're not allowed to view this information."
 msgstr "E kore koe e āhei ki te titiro ki ēnei kōrero."

@@ -28,7 +28,7 @@ from django.views.decorators.cache import cache_page
 
 from corpora.mixins import SiteInfoMixin
 
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 
 
 class HomeView(SiteInfoMixin, TemplateView):
@@ -49,7 +49,7 @@ class HomeView(SiteInfoMixin, TemplateView):
 
 
 def home(request):
-    # if request.user.is_authenticated():
+    # if request.user.is_authenticated:
     #     return redirect('people:profile')
     # else:
     groups = Group.objects.all().order_by('name')
@@ -139,7 +139,7 @@ class AudioileView(RedirectView):
         access = cache.get(key)
         # logger.debug('CAN VIEW:  {0} {1}'.format(key, access))
 
-        if (u.is_authenticated() and u.is_staff) or (p == m.person) or (access):
+        if (u.is_authenticated and u.is_staff) or (p == m.person) or (access):
             try:
                 url = audio_file.path
                 url = audio_file.url

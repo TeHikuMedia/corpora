@@ -1,0 +1,29 @@
+---
+
+# Set specific permissions for git stuff
+- name: set repo perms
+  become: true
+  file:
+    path: "{{item}}"
+    owner: "{{ ansible_user }}"
+    group: "{{ gunicorn_group }}"
+    recurse: yes
+    state: directory
+  tags:
+    - git 
+  with_items:
+    - "{{project_path}}"
+
+- name: Update repo
+  become: false
+  git:
+    repo: "{{ git_repo }}" 
+    dest: "{{ project_path }}" 
+    version: "{{ git_branch }}"
+    accept_hostkey: yes
+    force: yes
+    key_file: "/home/{{ansible_user}}/.ssh/id_rsa"
+  when: setup_git_repo
+  tags: git
+  notify:
+    - restart all

@@ -1,0 +1,23 @@
+---
+
+- local_action: ec2_instance_info
+  become: no
+  args:
+    region: ap-southeast-2
+    filters:
+      "tag:Name": "{{ webserver_name }}"
+      "tag:server_type": "web"
+  register:
+    ec2_webserver_facts
+  when: env_type != 'local'
+
+- set_fact:
+    ec2_webserver: "{{ec2_webserver_facts.instances[0]}}"
+  tags:
+    django-celery  
+
+# Turning this off for now. Need a better strategy to be used accross all projects
+# - set_fact:
+#     server_role: "{{ ec2_webserver.tags['server_role'] }}"
+#   tags:
+#     django-celery

@@ -1,0 +1,9 @@
+---
+
+# SSH Credentials
+private_key: ~/.ssh/corpora_2020.pem
+
+# Repository Details
+branch: "master"
+
+certificate_domain_name: 'corpora.io'

@@ -24,6 +24,8 @@ from django.conf.urls import include, url
 
 urlpatterns = [
 
+    url(r'^magic', people_views.MagicLogin.as_view(), name="magic"),
+
     url(r'^$',
         views.HomeView.as_view(),
         name='home'),
@@ -33,8 +35,8 @@ urlpatterns = [
             views.privacy),
         name='privacy'),
 
-    url(r'^', include('corpus.urls', namespace='corpus')),
-    url(r'^', include('transcription.urls', namespace='transcription')),
+    url(r'^', include(('corpus.urls', 'corpus'), namespace='corpus')),
+    url(r'^', include(('transcription.urls', 'transcription'), namespace='transcription')),
 
 
     url(r'^i18n/', include('django.conf.urls.i18n')),
@@ -57,7 +59,7 @@ urlpatterns = [
             url='/accounts/login'),
         name='login'),
 
-    url(_(r'^people/'), include('people.urls', namespace='people')),
+    url(_(r'^people/'), include(('people.urls','people'), namespace='people')),
     # url(r'^people/profile', profile_redirect, name='profile-backwards-comp'),
 
     url(r'^rules/$',
@@ -94,13 +96,13 @@ urlpatterns = [
         people_views.Competition.as_view(),
         name='competition'),
 
-    url(_(r'^stats/person'),
-        stats_views.PersonRecordingStatsView.as_view(),
-        name='stats_person'),
-
     url(_(r'^stats/person_qc'),
         stats_views.PersonQCStatsView.as_view(),
         name='stats_person_qc'),
+
+    url(_(r'^stats/person'),
+        stats_views.PersonRecordingStatsView.as_view(),
+        name='stats_person'),
 
     url(_(r'^stats/people$'),
         stats_views.PeopleRecordingStatsView.as_view(),
@@ -123,7 +125,7 @@ urlpatterns = [
         name='stats'),
 
 
-    url(r'^', include('corpora.urls_api', namespace='api')),
+    url(r'^', include(('corpora.urls_api','api'), namespace='api')),
     url(r'^docs/', include_docs_urls(title='Corpora API', public=False)),
 
     url(

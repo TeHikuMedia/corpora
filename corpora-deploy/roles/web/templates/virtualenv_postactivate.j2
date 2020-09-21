@@ -1,0 +1,59 @@
+#!/bin/bash
+
+export DJANGO_SECRET_KEY="{{ django_secret_key }}"
+
+export DATABASE_USER="{{ db_user }}"
+export DATABASE_PASSWORD="{{ db_password }}"
+export DATABASE_NAME="{{ db_name }}"
+export DATABASE_HOST="{{ ec2_database.instance.endpoint }}"
+export DJANGO_ISNOT_PRODUCTION="{{ django_isnot_production }}"
+
+export PROJECT_NAME="{{project_name}}"
+export APPLICATION_USER="{{gunicorn_user}}"
+export APPLICATION_GROUP="{{gunicorn_group}}"
+
+export DJANGO_SETTINGS_MODULE="{{project_name}}.settings"
+
+export STATIC_PATH="{{nginx_static_dir}}"
+export MEDIA_PATH="{{ nginx_media_dir}}"
+
+export FILE_STORAGE="{{django_file_storage}}"
+export AWS_ID="{{aws_id}}"
+export AWS_SECRET="{{aws_secret}}"
+export AWS_BUCKET="{{aws_bucket}}"
+{% if env_type != 'local' %}
+export AWS_STATIC_BUCKET="{{aws_staticfiles_bucket}}"
+export AWS_CLOUDFRONT_DOMAIN="{{cloudfront_domain_name}}"
+export AWS_CLOUDFRONT_CNAME="{{cloudfront_cname}}"
+export AWS_ELASTICACHE_URL="{{elasticache_endpoint}}"
+{% endif %}
+export AWS_SECRET_S3="{{aws_secret_s3}}"
+export AWS_ID_S3="{{aws_id_s3}}"
+
+export ALLOWED_HOSTS="{{nginx_server_name}} {{nginx_server_name_aliases}} {{nginx_server_name_no_ssl}}" #note these will be space separated hosts
+export ALLOWED_HOSTS_INTERNAL="127.0.0.1"
+
+export DJANGO_MEMCACHED_IP="{% if env_type == 'local' %}{{item}}{% else %}{% for ip in groups[host_tag] %}{% if ip in hostvars[ip].groups.tag_server_role_primary %}{{ hostvars[ip].ec2_private_ip_address }}{% endif %}{% endfor %}{% endif %}" # memcached_listen
+export DJANGO_MEMCACHED_PORT="{{memcached_port}}"
+export DJANGO_CACHE_KEY_PREFIX="{{project_name}}"
+export DJANGO_CACHE_BASE_SECONDS="{{cache_base_seconds}}"
+# ^this prevents various sites, production/staging, etc from using the same cached objects. https://docs.djangoproject.com/en/1.8/topics/cache/#cache-key-prefixing
+
+
+export CELERY_HOST="{% if env_type == 'local' %}{{item}}{% else %}{% for ip in groups[host_tag] %}{% if ip in hostvars[ip].groups.tag_server_role_primary %}{{ hostvars[ip].ec2_private_ip_address }}{% endif %}{% endfor %}{% endif %}" #"{{rabbitmq_server_name}}"
+export CELERY_USER="{{rabbitmq_application_user}}"
+export CELERY_VHOST="{{rabbitmq_application_vhost}}"
+export CELERY_PORT="{{rabbitmq_port}}"
+export CELERY_PASSWORD="{{rabbitmq_application_password}}"
+export CELERY_MEDIA_QUEUE="{{celery_media_queue_name}}"
+
+export SOLR_SERVER_IP="{{item}}" # solr will be on webserver for now as it doesn't have much usage.
+
+export SERVER_TYPE="{{server_type}}"
+export ENVIRONMENT_TYPE="{{env_type}}"
+
+export AUTO_SCALING_GROUP_NAME="ASG-{{ project_name }}-{{env_type}}-media"
+
+export TMP_STOR_DIR="{{application_tmp_dir}}"
+
+export TRANSCODE_API_TOKEN="{{koreromaori_transcode_api_token}}"

@@ -1,0 +1,89 @@
+---
+
+- name: Create the folder for the celery scripts
+  file: path={{ celery_scripts_dir }}
+        owner={{ celery_user }}
+        group={{ celery_group }}
+        mode=0774
+        state=directory
+  tags:
+    - celery
+    - flower
+
+
+# - name: Create the {{ celery_application_name }} script file
+#   template: src={{ celery_template_file }}
+#             dest={{ celery_scripts_dir }}/{{ celery_application_name }}_{{item}}_start
+#             owner={{ celery_user }}
+#             group={{ celery_group }}
+#             mode=0755
+#   tags:
+#     - celery
+#   with_items:
+#     - media # Media servers SHOULD NOT handle system critical tasks, e.g. queue celery, as that could prevent tasks from running at the proper time.
+#   when: env_type !='local' and ec2_server.tags['server_type']=='media'
+#   notify:
+#    - destroy media server ami
+#    - destroy media server ami 2
+#    - destroy media server ami 3
+
+- name: Create the {{ celery_application_name }} script file
+  template: src={{ celery_template_file }}
+            dest={{ celery_scripts_dir }}/{{ celery_application_name }}_{{item}}_start
+            owner={{ celery_user }}
+            group={{ celery_group }}
+            mode=0755
+  tags:
+    - celery
+  with_items:
+    - celery
+  when: env_type !='local'
+  notify:
+   - restart celery-celery
+
+- name: Remove beat files
+  file:
+    state: absent
+    path: "{{ celery_scripts_dir }}/{{ celery_application_name }}_beat_start"
+
+- name: Create the {{ celery_application_name }} BEAT script file
+  template: src={{ celery_template_file }}
+            dest={{ celery_scripts_dir }}/{{ celery_application_name }}_{{item}}_start
+            owner={{ celery_user }}
+            group={{ celery_group }}
+            mode=0755
+  tags:
+    - celery
+  with_items:
+    - beat
+  when: env_type !='local' #and ec2_server.tags['server_role']=='primary'
+  notify:
+   - restart celery-beat 
+
+- name: Create the {{ celery_application_name }} script file
+  template: src={{ celery_template_file }}
+            dest={{ celery_scripts_dir }}/{{ celery_application_name }}_{{item}}_start
+            owner={{ celery_user }}
+            group={{ celery_group }}
+            mode=0755
+  tags:
+    - celery
+  with_items:
+    - celery
+    - beat
+    # - django-beat
+    # - media
+  when: env_type =='local'
+  
+
+
+
+- name: Create the {{ flower_application_name }} script file
+  template: src={{ flower_template_file }}
+            dest={{ celery_scripts_dir }}/{{ flower_application_name }}_start
+            owner={{ celery_user }}
+            group={{ celery_group }}
+            mode=0755
+  when: setup_monitor
+  tags:
+    - flower

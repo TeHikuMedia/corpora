@@ -48,7 +48,6 @@ label[for=id_remember]{
   <small>You can use your same credentials for koreromaori.com and koreromaori.io.</small></p>
 </div></div>
 
-  {% get_providers as socialaccount_providers %}
 
 <div class="row"><div class="col">
   <form class="login" method="POST" action="{% url 'account_login' %}" style="text-align: center;" id="login_form">
@@ -97,6 +96,9 @@ label[for=id_remember]{
 
 <div class="row"><div class="col">
 
+  {% comment %}
+  {% get_providers as socialaccount_providers %}
+
   {% if socialaccount_providers %}
   <br>
   <b class="p-text-block">{% blocktrans %}You can also sign in with: {% endblocktrans %}</b>
@@ -111,6 +113,7 @@ label[for=id_remember]{
 
   {% else %}
   {% endif %}
+  {% endcomment %}
 
  <!--  <p class="p-text-block">{% blocktrans with site.name as site_name %}Don't have an account?<br><a href="{{ signup_url }}">Sign Up</a>
   {% endblocktrans %}</p>  -->

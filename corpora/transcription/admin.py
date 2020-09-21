@@ -19,6 +19,7 @@ class TranscriptionAdmin(admin.ModelAdmin):
     date_hierarchy = 'updated'
     raw_id_fields = ('recording',)
     readonly_fields = ('word_error_rate', )
+    list_filter = ('recording__language', 'updated',)
 
 
 @admin.register(AudioFileTranscription)

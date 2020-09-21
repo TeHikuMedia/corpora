@@ -29,11 +29,9 @@ import wave
 import contextlib
 import os
 import stat
-import commands
 import ast
 import sys
 import requests
-import urllib2
 import json
 import uuid
 from subprocess import Popen, PIPE
@@ -146,7 +144,7 @@ def transcribe_audio_quick(file_object):
             uuid.uuid4(), file_object.name.split('.')[-1])
         )
 
-    f = file(tmp_file, 'wb')
+    f = open(tmp_file, 'wb')
     for chunk in file_object.chunks():
         f.write(chunk)
     f.close()
@@ -384,3 +382,39 @@ def transcribe_aft_async(pk):
 
     erase_all_temp_files(aft)
     return "Transcribed {0} with {1} errors".format(aft, errors)
+
+
+def calculate_word_probabilities(metadata):
+    words = []
+    i = 0
+    while i < len(metadata):
+        word = ''
+        word_probs = []
+        start_time = None
+        m = metadata[i]
+        while m['char'] != ' ':
+            if start_time is None:
+                start_time = m['start_time']
+            word = word + m['char']
+            word_probs.append(m['prob'])
+            if i+1 >= len(metadata):
+                break
+            i = i+1
+            m = metadata[i]
+        words.append({'word': word, 'prob': p_word(word_probs), 'start': start_time})
+        i = i+1
+    return words
+
+
+# The probability that a word is incorrect before the nth letter:
+def p_not_word(n, probabilities):
+    if n == 0:
+        return 0
+    else:
+        return probabilities[n - 1] * p_not_word(n - 1, probabilities)  + \
+            (1 - probabilities[n - 1])
+
+# The probability of a word being correctly emitted, given the character
+# probabilities:
+def p_word(probabilities):
+    return 1 - p_not_word(len(probabilities), probabilities)

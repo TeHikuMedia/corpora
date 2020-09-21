@@ -26,4 +26,5 @@ urlpatterns = [
         autocomplete.GroupAutocomplete.as_view(),
         name='groups-autocomplete',
     ),
+
 ]

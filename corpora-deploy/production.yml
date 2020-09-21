@@ -1,0 +1,247 @@
+### production ###
+
+- name: "Launch all production {{ application_name }} servers"
+  hosts: localhost
+  serial: "100%"
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/production.yml
+    - group_vars/remote.yml
+    - group_vars/production.yml
+    - env_vars/vault.yml
+  vars:
+    - server_type: web
+  roles:
+    - ec2
+    # - load-balance
+    - s3
+    # - cloudfront
+  tags:
+    - production
+    - launch
+    - launch-production
+    - remote
+
+- name: "Ensure production {{ application_name }} WEB server is running"
+  hosts: localhost
+  vars:
+    server_type: web
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/production.yml
+    - env_vars/vault.yml
+    - group_vars/remote.yml
+    - group_vars/production.yml
+  roles:
+    - ensure-ec2-running
+  tags:
+    - production
+    - provision
+    - deploy
+    - web
+    - provision-web
+    - provision-production
+    - provision-production-web
+    - deploy-web
+    - deploy-production
+    - deploy-production-webb
+    - remote
+    - ensure-ec2-running
+    - ensure-web-running
+    - run-tests
+
+# https://stackoverflow.com/questions/30226113/ansible-ssh-prompt-known-hosts-issue/39083724#39083724
+# We do this to register these new hosts as known hosts.
+- name: Store known hosts of 'all' the hosts in the inventory file
+  hosts: localhost
+  connection: local
+  vars:
+    # host_key_checking: False
+    ssh_known_hosts_command: "ssh-keyscan -T 10"
+    ssh_known_hosts_file: "{{ lookup('env','HOME') + '/.ssh/known_hosts' }}"
+    ssh_known_hosts_tags: 
+      - "tag_project_env_server_type_{{webserver_instance_hosttag}}"
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/production.yml
+    - env_vars/vault.yml
+    - group_vars/remote.yml
+    - group_vars/production.yml
+  tasks:
+    - name: Get host address stuff
+      shell: "echo {{groups[item][0]}}"
+      register: hosts
+      with_items: "{{ssh_known_hosts_tags}}"
+    - set_fact:
+        ssh_known_hosts: "{{ hosts.results | map(attribute='stdout') | list }}"
+    - name: For each host, scan for its ssh public key
+      shell: "ssh-keyscan {{ item }},`dig +short {{ item }}`"
+      with_items: "{{ ssh_known_hosts }}"
+      register: ssh_known_host_results
+      ignore_errors: yes
+    - name: Add/update the public key in the '{{ ssh_known_hosts_file }}'
+      known_hosts:
+        name: "{{ item.item }}"
+        key: "{{ item.stdout }}"
+        path: "{{ ssh_known_hosts_file }}"
+      with_items: "{{ ssh_known_host_results.results }}"
+      ignore_errors: yes
+  tags:
+    - production
+    - provision
+    - deploy
+    - web
+    - provision-web
+    - provision-production
+    - provision-production-web
+    - deploy-web
+    - deploy-production
+    - deploy-production-web
+    - provision-production
+    - deploy-production
+    - remote
+    - ensure-ec2-running
+    - ensure-web-running
+    - run-tests
+    - deploy-django
+
+# we need to wait somewhere until the instance is finally booted, then we need to re-process the inventory!!!
+# could wrape provision and deplay in includes so that error on hosts isn't displayed when doing local deployment
+- name: "Provision production {{ application_name }} web servers"
+  hosts: "tag_project_env_server_type_{{webserver_instance_hosttag}}"
+  remote_user: admin
+  become: true
+  vars:
+    - setup_bitbucket_repo: yes
+    - update_apt_cache: yes
+    - rebuild_database: no
+    - server_type: web    
+    - host_tag: tag_project_env_server_type_{{application_name}}_{{env_type}}_web    
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/production.yml
+    - env_vars/vault.yml
+    - group_vars/remote.yml
+    - group_vars/production.yml
+  roles:
+    - base-common
+    - ec2-db
+  tags:
+    - production
+    - provision
+    - provision-production
+    - web
+    - remote
+
+
+- name: "Deploy to production {{ application_name }} WEB servers"
+  hosts: tag_project_env_server_type_{{ project_name }}_{{env_type}}_web
+  serial: "100%"
+  remote_user: admin
+  become: true
+  vars:
+    - setup_bitbucket_repo: yes
+    - update_apt_cache: yes                 # "{{ lookup('file', '/tmp/ec2_solrserver_private_ip') }}"   
+    - ec2_solrserver_private_ip: 127.0.0.1  # moving solr to same instance for now since it has such low usage 
+    - server_type: web
+    - host_tag: tag_project_env_server_type_{{application_name}}_{{env_type}}_web
+    - ansible_user: admin
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/production.yml  
+    - env_vars/vault.yml
+    - group_vars/remote.yml
+    - group_vars/production.yml
+  roles: 
+    - get-rds-facts
+    - web-common
+    - web
+    - nginx
+    - celery
+  tags:
+    - production
+    - deploy
+    - deploy-primary
+    - deploy-web
+    - deploy-production
+    - deploy-production-web
+    - remote
+
+
+- name: "Deploy to Django production {{ application_name }} WEB server"
+  hosts: tag_project_env_server_type_{{ project_name }}_{{env_type}}_web
+  serial: "100%"
+  remote_user: admin
+  become: true
+  vars:
+    - setup_bitbucket_repo: yes
+    - update_apt_cache: yes                 # "{{ lookup('file', '/tmp/ec2_solrserver_private_ip') }}"   
+    - ec2_solrserver_private_ip: 127.0.0.1  # moving solr to same instance for now since it has such low usage 
+    - server_type: web
+    - host_tag: tag_project_env_server_type_{{application_name}}_{{env_type}}_web
+    - ansible_user: admin
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/production.yml  
+    - env_vars/vault.yml
+    - group_vars/remote.yml
+    - group_vars/production.yml
+  roles: 
+    - get-rds-facts # and other facts?
+    - web
+  tags:
+    - production
+    - deploy-django
+
+
+# # Use the secondary machine to create an AMI for autoscaling
+# - name: "Set up autoscaling for {{ application_name }}"
+#   hosts: localhost
+#   vars:
+#     - server_role: secondary
+#     - server_type: web
+#   vars_files:
+#     - env_vars/base.yml
+#     - env_vars/production.yml  
+#     - env_vars/vault.yml
+#     - group_vars/production.yml    
+#     - group_vars/remote.yml
+#   roles:
+#     - ensure-ec2-stopped
+#     - autoscale
+#   tags:
+#     - production    
+#     - deploy-asg
+#     - deploy-production
+#     - deploy-production-asg
+#     - scale
+#     - scale-asg
+#     - scale-production
+#     - scale-production-asg
+#     - remote
+#     # deploy
+
+
+# - name: Set securtity groups
+#   hosts: localhost
+#   serial: "100%"
+#   vars_files:
+#     - env_vars/base.yml
+#     - env_vars/production.yml
+#     - env_vars/vault.yml
+#     - group_vars/remote.yml
+#     - group_vars/production.yml
+#   vars:
+#     - server_type: web
+#   roles:
+#     - load-balance
+#   tags:
+#     - production
+#     - launch
+#     - launch-production
+#     - deploy
+#     - scale
+#     - deploy-web
+#     - remote
+#     - load-balance-security
+#   # - provision

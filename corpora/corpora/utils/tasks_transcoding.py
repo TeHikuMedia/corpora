@@ -16,7 +16,7 @@ import wave
 import contextlib
 import os
 import stat
-import commands
+import subprocess
 import ast
 import sys
 
@@ -75,7 +75,9 @@ def encode_audio(obj, test=False, codec='aac'):
     # If a video doesn't have audio this will fail.
     command = 'ffprobe -v quiet -show_entries stream -print_format json ' + \
               tmp_file
-    data = ast.literal_eval(commands.getoutput(command))
+    p = subprocess.Popen(command.split(' '))
+    output, error = p.communicate()
+    data = ast.literal_eval(output)
     streams = data['streams']
 
     audio = False
@@ -100,8 +102,9 @@ def encode_audio(obj, test=False, codec='aac'):
                     "-c:a aac -b:a 64k")  # -profile:a aac_he
 
         logger.debug('Running: '+code)
-        data = commands.getstatusoutput(code)
-        logger.debug(data[1])
+        p = subprocess.Popen(code.split(' '))
+        output, error = p.communicate()
+        logger.debug(output)
 
         logger.debug(u'FILE FILENAME: \t{0}'.format(file_name))
         if file_name is None:
@@ -120,18 +123,25 @@ def encode_audio(obj, test=False, codec='aac'):
 
         code = 'rm '+tmp_stor_dir+'/{0}.{1}'.format(file_name, extension)
         logger.debug('Running: '+code)
-        data = commands.getstatusoutput(code)
-        logger.debug(data[1])
+        p = subprocess.Popen(code.split(' '))
+        output, error = p.communicate()
+        logger.debug(output)
 
     if not audio:
         logger.debug('No audio stream found.')
         return False
 
     # Need a better way to check this!
-    data = commands.getstatusoutput('rm ' + tmp_file)
+    code = 'rm ' + tmp_file
+    p = subprocess.Popen(code.split(' '))
+    output, error = p.communicate()
+    logger.debug(output)
     logger.debug('Removed tmp file %s' % (tmp_file))
 
-    data = commands.getstatusoutput('rm -r ' + tmp_stor_dir)
+    code = 'rm -r ' + tmp_stor_dir
+    p = subprocess.Popen(code.split(' '))
+    output, error = p.communicate()
+    logger.debug(output)
     logger.debug('Removed tmp stor dir %s' % (tmp_stor_dir))
 
     set_s3_content_deposition(obj)

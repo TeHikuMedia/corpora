@@ -12,7 +12,7 @@ import codecs
 from .models import Sentence
 
 MIN_SENTENCE_LENGTH = 12
-MAX_SENTENCE_LENGTH = 12*8
+MAX_SENTENCE_LENGTH = 12*8*10*10
 
 
 def save_sentences_from_text(text_obj):
@@ -47,7 +47,7 @@ def get_textfile_contents(file_obj):
     contents = file_obj.read()
 
     # convert to unicode if it's a plain str
-    if not isinstance(contents, unicode):  # NOQA ignore F821
+    if not isinstance(contents, str):  # NOQA ignore F821
         contents = codecs.decode(contents, 'utf-8')
 
     return contents
@@ -61,12 +61,14 @@ def get_sentences(text):
     # for sentence in nltk.sent_tokenize(text):
 
     # assume all linebreaks denote end of sentence
-    for line in map(unicode.strip, text.splitlines()):
+    for line in map(str.strip, text.splitlines()):
         if not line or line.startswith('# '):
             continue
+        line = line.replace('Mr.', 'Mika')
+        line = line.replace('Mrs.', 'Miki')
 
         for sentence in map(normalise_sentence, line.split('.')):
-            if len(sentence) < MIN_SENTENCE_LENGTH or has_english(sentence) or len(sentence) > MAX_SENTENCE_LENGTH:
+            if len(sentence) < MIN_SENTENCE_LENGTH or len(sentence) > MAX_SENTENCE_LENGTH:  # has_english(sentence)
                 continue
             yield {'sentence': sentence}
 
@@ -96,3 +98,13 @@ def has_english(text):
     if has_bad_letter(text) or has_bad_cluster(text) or has_bad_end(text):
         return True
     return False
+
+
+
+### Hawaiian notes
+# need to keep Mr. & Mrs. 
+# Mrs. = Miki
+# Mr. = Mika
+
+#         line = line.replace('Mr.', 'Mika')
+        # line = line.replace('Mrs.', 'Miki')

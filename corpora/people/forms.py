@@ -50,8 +50,11 @@ class KnownLanguageFormWithPerson(forms.ModelForm):
         #         self.fields['dialect'].choices.append(i)
 
         self.fields['language'].disabled = True
-        self.fields['accent'].choices = BLANK_CHOICE_DASH + list(language_accents)
-        self.fields['dialect'].choices = BLANK_CHOICE_DASH + list(language_dialects)
+
+        if language_accents:
+            self.fields['accent'].choices = BLANK_CHOICE_DASH + list(language_accents)
+        if language_dialects:
+            self.fields['dialect'].choices = BLANK_CHOICE_DASH + list(language_dialects)
 
         # temporarily disabling accents
         del self.fields['accent']
@@ -80,7 +83,7 @@ class GroupsForm(forms.ModelForm):
         request = kwargs.pop('request')
         super(GroupsForm, self).__init__(*args, **kwargs)
 
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated:
             self.fields['groups'].help_text = \
                 "If you can't find your group, log in or sign up to create " \
                 "a new one."

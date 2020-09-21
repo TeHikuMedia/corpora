@@ -4,13 +4,26 @@ from people.models import \
 
 from people.helpers import get_person
 from rest_framework import viewsets, permissions
+from rest_framework.views import APIView
 
 from people.serializers import PersonSerializer,\
                          TribeSerializer, \
                          DemographicSerializer,\
-                         KnownLanguageSerializer
+                         KnownLanguageSerializer, \
+                         MagicLoginSerializer
 
 from rest_framework import mixins
+from rest_framework import status
+from rest_framework.response import Response
+
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
+
+from corpora.email_utils import EMail
+from django.contrib.sites.shortcuts import get_current_site
+
+from django.core.signing import TimestampSigner, dumps
+
 
 import logging
 logger = logging.getLogger('corpora')
@@ -52,7 +65,7 @@ class PersonPermissions(permissions.BasePermission):
         if request.user.is_staff and request.user.is_authenticated:
             self.message = _("Only staff can view this information.")
             return True
-        elif view.action in 'retrieve update partial_update':
+        elif request.method.lower() in 'post put':
             return True
         else:
             self.message = _("You're not allowed to view this information.")
@@ -90,6 +103,9 @@ class PersonViewSet(viewsets.ModelViewSet):
     serializer_class = PersonSerializer
     permission_classes = (PersonPermissions,)
 
+    # def get_queryset(self):
+
+
 
 class TribeViewSet(viewsets.ModelViewSet):
     """
@@ -118,6 +134,10 @@ class KnownLanguageViewSet(viewsets.ModelViewSet):
     serializer_class = KnownLanguageSerializer
     permission_classes = (PersonPermissions,)
 
+    def get_queryset(self):
+        person = get_person(self.request)
+        return KnownLanguage.objects.filter(person=person)
+
 
 class ProfilePermissions(PersonPermissions):
     """
@@ -126,6 +146,12 @@ class ProfilePermissions(PersonPermissions):
 
     def has_permission(self, request, view):
         return True
+
+    def has_object_permission(self, request, view, obj):
+        person = get_person(request)
+        if obj.id == person.id:
+            return True
+        return False
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
@@ -145,4 +171,41 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         person = get_person(self.request)
-        return [person]
+        queryset = Person.objects.filter(pk=person.pk)
+        return queryset
+
+
+class MagicLoginView(APIView):
+    '''
+    Post an email to this endpoint and a magic login link will
+    be sent to that email if it exists
+    '''
+
+    def post(self, request, format=None):
+        errors = {'error': 'You must post an email field.'}
+        serializer = MagicLoginSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                user = User.objects.get(email=request.data["email"])
+                # request.user = user
+                signer = TimestampSigner()
+                payload = dumps({"email": user.email})
+                value = signer.sign(payload)
+                site = get_current_site(request)
+                link = "https://{0}/magic/?key={1}".format(site.domain, value)
+                email = EMail(to=user.email, subject='Login Link for {0}'.format(site.name), request=request)
+                ctx = {'email': user.email, 'link': link, 'request': request, 'site': site}
+                email.text('people/email/magiclogin.txt', ctx)
+                email.html('people/email/magiclogin.html', ctx)  # Optional
+                email.send()
+
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except ObjectDoesNotExist:
+                errors = {'error': 'Email does not exist.'}
+                pass
+        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+

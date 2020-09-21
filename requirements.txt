@@ -1,32 +1,27 @@
-# pip # ensure we use the latest pip = we should update the BASE pip - not the virtual env one!
-
-Django==1.11.24
+Django~=3.0.0
 boto
 boto3
 Pillow
-Celery
+celery[redis]
 django-celery-beat
-flower #used to monitor Celery
+flower
 django-compressor
 django-libsass
 libsass
 # django-compressor-toolkit
 django-sekizai
 gunicorn
-psycopg2
+#psycopg2
+psycopg2-binary
 pycrypto
 pytz
-django-storages
+django-storages~=1.9.1
 django-bower
-django-yarn
 
-# Better static files stuff with CDNs
-# whitenoise - mneed to look at django static files stuff
+
 
 django-debug-toolbar
 
-# changing social auth app
-# certifi==2015.04.28
 certifi
 requests
 django-allauth
@@ -35,14 +30,13 @@ django-ckeditor
 
 simplejson
 
-# Search
-django-haystack
-pysolr
-celery-haystack
 
 # Bindings for Memchaced
 pylibmc
 python-memcached # => move to this oen as it's thread safe?
+
+# Redis
+django-redis
 
 # Django wrapper for AWS SES (Simple Email Service)
 django-ses
@@ -53,14 +47,15 @@ lxml
 premailer
 
 # API
-djangorestframework
+djangorestframework==3.11.1
+
 # API Docs
 django-coreapi
 pygments
-markdown==2.6.11 # set to this version until DRF supports 3.0
+markdown
 
 # Autocomplete
-django-autocomplete-light==3.2.10
+django-autocomplete-light>=3.2.10
 
 #Support
 pyyaml
@@ -75,10 +70,6 @@ jellyfish==0.6
 django-analytical
 
 
-Collectfast
+Collectfast==2.2.0
 
 django-cors-headers
-
-
-# Tests
-tox

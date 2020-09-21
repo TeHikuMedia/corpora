@@ -1,0 +1,129 @@
+upstream wsgi_server_{{item}} {
+  # fail_timeout=0 means we always retry an upstream even if it failed
+  # to return a good HTTP response (in case the Unicorn master nukes a
+  # single worker for timing out).
+
+  server unix:{{ virtualenv_path }}/run/gunicorn_{{item}}.sock fail_timeout=0;
+}
+
+#server {
+##    listen 80;
+#    listen [::]:80;
+#    server_name {{ nginx_server_names[item] }};
+#    return 301 https://$server_name$request_uri;
+#}
+
+server {
+    listen      81;
+    location /health-check {
+        access_log off;
+        default_type text/plain;
+        return 200 'OK';
+    }
+}
+
+#server {
+#    server_name {{ nginx_server_names_aliases[item] }};
+#    return 301 https://$host$request_uri;
+#}
+
+server {
+
+    {% if env_type == 'DELETETOTURNON-staging' %}
+    satisfy any;
+    deny  all;
+
+    auth_basic "Staging Server Authorization Required";
+    auth_basic_user_file /etc/nginx/passwdfile;
+    {% endif %}
+
+    listen      80;
+    listen [::]:80;
+    server_name {{ nginx_server_names[item] }} {{ nginx_server_names_aliases[item] }};
+
+    proxy_set_header X-Forwarded-Proto $scheme;
+    if ( $http_x_forwarded_proto != 'https' ) {
+        return 301 https://$host$request_uri;
+    }
+
+    client_max_body_size 5G;
+
+    access_log {{ nginx_access_log_file }};
+    error_log {{ nginx_error_log_file }};
+
+    location /static/ {
+        alias   {{ nginx_static_dir }};
+    }
+
+    location /media/ {
+        alias   {{ nginx_media_dir }};
+    }
+
+    {% if env_type == 'staging' %}
+    location ~ ^/(api|recording-file)/ {
+        if (-f {{ virtualenv_path }}/maintenance_on.html) {
+            return 503;
+        }
+
+        auth_basic "off";
+        allow all;
+
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+        proxy_read_timeout 60s; 
+        proxy_connect_timeout 70s;
+        proxy_send_timeout 100s;
+
+        proxy_pass http://wsgi_server_{{item}};
+        break;
+    }
+    {% endif %}
+
+    location / {
+        if (-f {{ virtualenv_path }}/maintenance_on.html) {
+            return 503;
+        }
+
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+        proxy_read_timeout 300s; # adding this to enable uploads that take a long time.
+        proxy_connect_timeout 70s;
+        proxy_send_timeout 100s;
+
+
+        # Try to serve static files from nginx, no point in making an
+        # *application* server like Unicorn/Rainbows! serve static files.
+        if (!-f $request_filename) {
+            proxy_pass http://wsgi_server_{{item}};
+            break;
+        }
+
+    }
+
+    # Error pages
+    error_page 500 502 504 /500.html;
+    location = /500.html {
+        root {{ application_path }}/{{project_name}}/templates/;
+    }
+
+
+
+    error_page 503 /maintenance_on.html;
+    location = /maintenance_on.html {
+        root {{ virtualenv_path }}/;
+    }
+
+    #error_page 503 @maintenance;
+    #location @maintenance {
+    #    rewrite ^(.*)$ /maintenance_on.html break;
+    #}
+
+}

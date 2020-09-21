@@ -323,7 +323,7 @@ class GroupsStatsView(SiteInfoMixin, UserPassesTestMixin, ListView):
 to our project.")
 
     def test_func(self):
-        return self.request.user.is_staff and self.request.user.is_authenticated()
+        return self.request.user.is_staff and self.request.user.is_authenticated
 
     def get_queryset(self):
         # language = get_current_language(self.request)
@@ -422,7 +422,7 @@ class Top20(GroupsStatsView):
 
     def test_func(self):
         return self.request.user.is_staff and \
-            self.request.user.is_authenticated()
+            self.request.user.is_authenticated
 
     def get_context_data(self, **kwargs):
         context = \
@@ -470,7 +470,7 @@ class MahiTahi(GroupsStatsView):
 
     def test_func(self):
         return self.request.user.is_staff and \
-            self.request.user.is_authenticated()
+            self.request.user.is_authenticated
 
     def get_context_data(self, **kwargs):
         context = \

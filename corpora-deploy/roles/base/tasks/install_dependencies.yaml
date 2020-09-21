@@ -1,0 +1,22 @@
+
+
+- name: Install ffmpeg dependencies
+  apt: name={{ item }} update_cache={{ update_apt_cache }} state=latest
+  with_items:
+    - libass-dev
+    - libfreetype6-dev
+    - libtheora-dev
+    - libtool
+    - libvorbis-dev
+    - pkg-config
+    - texinfo
+    - zlib1g-dev
+    - autoconf
+    - automake
+    - build-essential
+    - wget
+    - yasm
+
+  tags: 
+    - ffmpeg
+    - packages 

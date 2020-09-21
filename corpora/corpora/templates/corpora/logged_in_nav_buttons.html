@@ -5,32 +5,13 @@
 {% addtoblock "css" %}
 <style type="text/x-scss">
 
-.navbar{
-  ul{
-    flex-wrap: unset !important;
-    overflow: auto;
-    li{
-      display: inline-block;
-    }
-    li.active{
-      border-bottom: 2px solid white;
-    }
-  }
-    a{
-        color: white;
-    }
-}
-.dropdown-toggle::after{
-  display: none !important;
-}
 </style>
 {% endaddtoblock %}
 
 
 <nav class="navbar navbar-expand">
   <div class="container">
-  {% cache 500 navbar request.user.is_staff request.user_isauthenticated request.path %}
-
+  
   <a class="navbar-brand" href="/">{{request.site.name}}</a>
   
   {% get_available_languages as available_languages %}
@@ -92,45 +73,29 @@
       </a>
     </li>
     {% endif %}
-
-    
-    {% comment %}TURN OFF LANGUAGE SELECT FOR NOW{% endcomment %}
-    {% if available_languages|length > 999999999999 %}
-    <li class="dropdown nav-item">
-    {% get_current_language request as current_language %}
-    {% get_known_languages request as known_languages %}
-    {% if not known_languages %}
-    {% get_available_languages as known_languages %} {% endif %}    <!-- <div class="btn-group"> -->
-      <a href="#" role="button" class="dropdown-toggle nav-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fa fa-fw fa-lg fa-language"></i>
-        <div>{% get_language_info for current_language as lang %}{% trans 'Language' %} <i class="fa fa-caret-down"></i></div>
-      </a>
-
-      <ul class="dropdown-menu">
-        {% comment %}Instead we'll want to get the KnownLanguages for the Person {% endcomment %}
-        {% get_language_info_list for known_languages as languages %}
-        {% for lang in languages %}
-            <li><a href="#" onclick="$('form[id=language_selector_form] input[name=language]').val('{{lang.code}}');$('form[id=language_selector_form]').submit();">
-            {% if lang.code == current_language %}<i class="fa fa-fw fa-check"></i>{% endif %}
-            {{ lang.name_translated }}</a></li>
-        {% endfor %}
-            <li><a href="{% url 'people:choose_language' %}?next=people:profile">Add/Edit Language</a></li>
-      </ul>
-    </li>
-    {% endif %}
     
 {% else %}
 
 
-    {% if available_languages|length > 999999 %}
+{% endif %}
+
+    {% if available_languages|length > 1 %}
     <li class="dropdown nav-item">
     {% get_current_language request as current_language %}
+    
+    {% comment %}
     {% get_known_languages request as known_languages %}
-    {% if not known_languages %}
-    {% get_available_languages as known_languages %} {% endif %}
+    {% if not known_languages %}{% endif %}
+    <!-- JUST SHOW ALL LANGUAGES ALWAUS? -->
+    {% endcomment %}
+
+    {% get_supported_languages as known_languages %}
     <!-- <div class="btn-group"> -->
       <a href="#" role="button" class="dropdown-toggle nav-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fa fa-fw fa-lg fa-language"></i>
+
+        <span style="font-weight: 500;">{{current_language|upper}}</span>
+        <!-- <i class="fa fa-fw fa-lg fa-language"></i> -->
+
         <div>{% get_language_info for current_language as lang %}{% trans 'Language' %} <i class="fa fa-caret-down"></i></div>
       </a>
 
@@ -138,47 +103,53 @@
         {% comment %}Instead we'll want to get the KnownLanguages for the Person {% endcomment %}
         {% get_language_info_list for known_languages as languages %}
         {% for lang in languages %}
-            <li><a href="#" onclick="$('form[id=language_selector_form] input[name=language]').val('{{lang.code}}');$('form[id=language_selector_form]').submit();">
+        <li
+          class="{% if lang.code == current_language %}active{%endif%}"
+          onclick="$('form[id=language_selector_form] input[name=language]').val('{{lang.code}}');$('form[id=language_selector_form]').submit();">
+          <a href="#">
             {% if lang.code == current_language %}<i class="fa fa-fw fa-check"></i>{% endif %}
-            {{ lang.name_translated }}</a></li>
+            {{ lang.name_translated }}</a>
+        </li>
         {% endfor %}
-            <li><a href="{% url 'people:choose_language' %}?next=people:profile">Add/Edit Language</a></li>
+        <!-- <li><a href="{% url 'people:choose_language' %}?next=people:profile">Add/Edit Language</a></li> -->
       </ul>    
     </li>
     {% endif %}
 
-{% endif %}
-
     {% url 'people:profile' as path %}
-    <li class="nav-item {% if path in request.get_full_path %}active{% endif %}">
-      <a class="nav-link" href="{{path}}" >
+    <li class="dropdown nav-item {% if path in request.get_full_path %}active{% endif %}">
+      <a href="#" role="button" class="dropdown-toggle nav-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fa fa-lg fa-fw fa-user-circle"></i>
-        <div >{% trans 'Profile' %}</div>
+        <div >{% trans 'Account' %} <i class="fa fa-caret-down"></i></div>
       </a>
+      <ul class="dropdown-menu">
+        <li>
+          <a class="nav-link" href="{{path}}" >{% trans 'Profile' %}</a>
+        </li>
+
+
+        {% if request.user.is_authenticated %}
+        <li>
+          <a class="nav-link" href="#" onclick="$('form[id=logout]').submit();">
+            <i class="fas fa-fw fa-lg fa-sign-out"></i>&nbsp;{% trans 'Log Out' %}
+          </a>        
+        </li>
+        {% else %}
+        <li>
+          <a class="nav-link" href="{% url 'account_login' %}?next={{request.path}}" >
+            <i class="fas fa-fw fa-lg fa-sign-in"></i>&nbsp;{% trans 'Log In' %}
+          </a>        
+        </li>
+        {% endif %}
+
+      </ul>
+
     </li>
 
-{% if request.user.is_authenticated %}
 
-    <li class="nav-item">
-      <a class="nav-link" href="#" onclick="$('form[id=logout]').submit();">
-        <i class="fas fa-fw fa-lg fa-sign-out"></i>
-        <div>{% trans 'Log Out' %}</div>
-      </a>        
-    </li>
-
-{% else %}
-
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'account_login' %}?next={{request.path}}" >
-        <i class="fas fa-fw fa-lg fa-sign-in"></i>
-        <div>{% trans 'Log In' %}</div>
-      </a>        
-    </li>
-{% endif %}
 
 
   </ul>
-  {% endcache %}
   <form method="post" action="{% url 'account_logout' %}" style="display: inline-block;" id="logout" class="hidden" >
       
           {% csrf_token %}
@@ -187,12 +158,12 @@
           {% endif %}
       
   </form>
-  <form class="hidden" action="{% url 'people:set_language' %}" method="post" id="language_selector_form" >
-      
-          {% csrf_token %}
-          <input name="language" type="hidden" value="{{current_language}}" />
-      
+
+  <form class="hidden" action="{% url 'people:set_language' %}" method="post" id="language_selector_form" >      
+    {% csrf_token %}
+    <input name="language" type="hidden" value="{{current_language}}" />
   </form>
+
 </div>
 </nav>
 

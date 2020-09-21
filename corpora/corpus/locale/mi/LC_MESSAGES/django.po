@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-03 14:39+1300\n"
+"POT-Creation-Date: 2020-09-16 12:55+1200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,160 +17,152 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: corpus/admin.py:86 corpus/admin.py:163 corpus/models.py:460
+#: corpus/admin.py:106 corpus/admin.py:203 corpus/models.py:494
 msgid "None"
 msgstr "Hore kau"
 
-#: corpus/aggregate.py:79
+#: corpus/aggregate.py:81
 msgid "seconds"
 msgstr ""
 
-#: corpus/aggregate.py:79
+#: corpus/aggregate.py:81
 msgid "minutes"
 msgstr ""
 
-#: corpus/base_settings.py:36
+#: corpus/base_settings.py:69
 msgid "Maori"
 msgstr "Māori"
 
-#: corpus/base_settings.py:51 corpus/base_settings.py:65
+#: corpus/base_settings.py:70
+msgid "Hawaiian"
+msgstr ""
+
+#: corpus/base_settings.py:74
+#, fuzzy
+#| msgid "New Zealand"
+msgid "New Zealand English"
+msgstr "Aotearoa"
+
+#: corpus/base_settings.py:89 corpus/base_settings.py:103
 msgid "Te Tai Tokerau"
 msgstr "Te Tai Tokerau"
 
-#: corpus/base_settings.py:52
+#: corpus/base_settings.py:90
 msgid "Tainui"
 msgstr "Tainui"
 
-#: corpus/base_settings.py:53
+#: corpus/base_settings.py:91
 msgid "Te Tai Rawhiti"
 msgstr "Te Tai Rāwhiti"
 
-#: corpus/base_settings.py:54
+#: corpus/base_settings.py:92
 msgid "Te Tai Hauauru"
 msgstr "Te Tai Hauāuru"
 
-#: corpus/base_settings.py:55
+#: corpus/base_settings.py:93
 msgid "Mataatua"
 msgstr "Mātaatua"
 
-#: corpus/base_settings.py:56
+#: corpus/base_settings.py:94
 msgid "Te Puku o te Ika"
 msgstr "Te Puku o te Ika"
 
-#: corpus/base_settings.py:57
+#: corpus/base_settings.py:95
 msgid "Te Waipounamu"
 msgstr "Te Waipounamu"
 
-#: corpus/base_settings.py:66
+#: corpus/base_settings.py:104
 msgid "Te Tai Rāwhiti"
 msgstr ""
 
-#: corpus/base_settings.py:67
+#: corpus/base_settings.py:105
 msgid "Te Tai Hauāuru"
 msgstr ""
 
-#: corpus/base_settings.py:68
+#: corpus/base_settings.py:106
 msgid "Te Tai Tonga"
 msgstr ""
 
-#: corpus/base_settings.py:85
+#: corpus/base_settings.py:123
 msgid "Australian"
 msgstr "Ahitereiria"
 
-#: corpus/base_settings.py:86
+#: corpus/base_settings.py:124
 msgid "New Zealand"
 msgstr "Aotearoa"
 
-#: corpus/base_settings.py:87
+#: corpus/base_settings.py:125
 msgid "American"
 msgstr "Marikena"
 
-#: corpus/models.py:372 corpus/models.py:497
+#: corpus/models.py:390
 msgid "language"
 msgstr "reo"
 
-#: corpus/models.py:385
+#: corpus/models.py:403
 msgid "dialect"
 msgstr ""
 
-#: corpus/models.py:507
+#: corpus/models.py:531
+#, fuzzy
+#| msgid "language"
+msgid "primary language"
+msgstr "reo"
+
+#: corpus/models.py:537
+#, fuzzy
+#| msgid "language"
+msgid "secondary language"
+msgstr "reo"
+
+#: corpus/models.py:550
 msgid "updated"
 msgstr ""
 
-#: corpus/models.py:508
+#: corpus/models.py:554
 msgid "source"
 msgstr ""
 
-#: corpus/models.py:509
-msgid "uploaded file"
+#: corpus/models.py:572
+msgid "This can be any type of file."
 msgstr ""
 
-#: corpus/models.py:511
-msgid ".txt format"
+#: corpus/models.py:585
+msgid "This should a .txt file with ut8 encoding."
 msgstr ""
 
-#: corpus/models.py:514
+#: corpus/models.py:591
 msgid "text"
 msgstr ""
 
-#: corpus/models.py:515
+#: corpus/models.py:592
 msgid "texts"
 msgstr ""
 
-#: corpus/templates/corpus/listen.html:64
+#: corpus/templates/corpus/listen.html:67
 #: corpus/templates/corpus/sentence_list.html:38
 msgid "Save changes."
 msgstr "Tiakina ngā whakarerekētanga"
 
-#: corpus/templates/corpus/listen.html:75
+#: corpus/templates/corpus/listen.html:79
 #: corpus/templates/corpus/sentence_list.html:44
 msgid "Approve for recording?"
 msgstr "Kapohia te reo?"
 
-#: corpus/templates/corpus/qualitycontrol_list.html:24
-#: corpus/views/views.py:233
-msgid "Stats"
-msgstr "Tatauranga"
+#: corpus/templates/corpus/listen.html:84
+msgid "Good Job"
+msgstr "Ka Tika"
 
-#: corpus/templates/corpus/qualitycontrol_list.html:30
-#: corpus/templates/corpus/recordings_stats_list.html:29
-#: corpus/templates/corpus/recordings_stats_list.html:72
-msgid "Recordings"
-msgstr "Kapohanga Reo"
+#: corpus/templates/corpus/listen.html:86
+msgid "Try Again"
+msgstr "Kia Kaha"
 
-#: corpus/templates/corpus/qualitycontrol_list.html:32
-#: corpus/templates/corpus/qualitycontrol_list.html:42
-msgid "Number"
-msgstr "E hia"
+#: corpus/templates/corpus/listen.html:89
+#: corpus/templates/corpus/sentence_list.html:55
+msgid "Skip"
+msgstr "Skip"
 
-#: corpus/templates/corpus/qualitycontrol_list.html:33
-msgid "Duration"
-msgstr "Pēhea te roa"
-
-#: corpus/templates/corpus/qualitycontrol_list.html:34
-#: corpus/templates/corpus/qualitycontrol_list.html:43
-msgid "Approved"
-msgstr "Kua whakaaetia"
-
-#: corpus/templates/corpus/qualitycontrol_list.html:35
-#: corpus/templates/corpus/qualitycontrol_list.html:44
-msgid "Good"
-msgstr "E tika ana"
-
-#: corpus/templates/corpus/qualitycontrol_list.html:36
-#: corpus/templates/corpus/qualitycontrol_list.html:45
-msgid "Bad"
-msgstr "E hē ana"
-
-#: corpus/templates/corpus/qualitycontrol_list.html:40
-#: corpus/views/views.py:46
-msgid "Sentences"
-msgstr "Rerenga Kōrero"
-
-#: corpus/templates/corpus/qualitycontrol_list.html:53
-msgid "Recordings by Language Proficiency"
-msgstr "Ngā Kapohanga Reo i te Pakari o te Reo"
-
+# Used because haere tonu is confusing
 #: corpus/templates/corpus/record.html:109
 msgid "Redo"
 msgstr "Mahia anō"
@@ -179,85 +171,135 @@ msgstr "Mahia anō"
 msgid "Save"
 msgstr "Tiakina"
 
-#: corpus/templates/corpus/recordings_stats_list.html:41
-#: corpus/templates/corpus/recordings_stats_list.html:137
+#: corpus/templates/corpus/recordingqualitycontrol_list.html:24
+#: corpus/views/views.py:268
+msgid "Stats"
+msgstr "Tatauranga"
+
+#: corpus/templates/corpus/recordingqualitycontrol_list.html:30
+#: corpus/templates/corpus/recordings_stats_list.html:40
+#: corpus/templates/corpus/recordings_stats_list.html:83
+msgid "Recordings"
+msgstr "Kapohanga Reo"
+
+#: corpus/templates/corpus/recordingqualitycontrol_list.html:32
+#: corpus/templates/corpus/recordingqualitycontrol_list.html:42
+msgid "Number"
+msgstr "E hia"
+
+#: corpus/templates/corpus/recordingqualitycontrol_list.html:33
+msgid "Duration"
+msgstr "Pēhea te roa"
+
+#: corpus/templates/corpus/recordingqualitycontrol_list.html:34
+#: corpus/templates/corpus/recordingqualitycontrol_list.html:43
+msgid "Approved"
+msgstr "Kua whakaaetia"
+
+#: corpus/templates/corpus/recordingqualitycontrol_list.html:35
+#: corpus/templates/corpus/recordingqualitycontrol_list.html:44
+msgid "Good"
+msgstr "E tika ana"
+
+#: corpus/templates/corpus/recordingqualitycontrol_list.html:36
+#: corpus/templates/corpus/recordingqualitycontrol_list.html:45
+msgid "Bad"
+msgstr "E hē ana"
+
+#: corpus/templates/corpus/recordingqualitycontrol_list.html:40
+#: corpus/views/views.py:53
+msgid "Sentences"
+msgstr "Rerenga Kōrero"
+
+#: corpus/templates/corpus/recordingqualitycontrol_list.html:53
+msgid "Recordings by Language Proficiency"
+msgstr "Ngā Kapohanga Reo i te Pakari o te Reo"
+
+#: corpus/templates/corpus/recordings_stats_list.html:52
+#: corpus/templates/corpus/recordings_stats_list.html:148
 msgid "Reviews"
 msgstr ""
 
-#: corpus/templates/corpus/recordings_stats_list.html:103
-#: corpus/templates/corpus/recordings_stats_list.html:168
+#: corpus/templates/corpus/recordings_stats_list.html:114
+#: corpus/templates/corpus/recordings_stats_list.html:179
 msgid "Growth Rate"
 msgstr ""
 
-#: corpus/templates/corpus/sentence_list.html:56
-msgid "Skip"
-msgstr "Haere tonu"
-
-#: corpus/templates/corpus/sentence_list.html:69
+#: corpus/templates/corpus/sentence_list.html:68
 msgid "Confirm Delete"
 msgstr "Whakatūturuhia te Whakakāhoretanga"
 
-#: corpus/templates/corpus/sentence_list.html:75
+#: corpus/templates/corpus/sentence_list.html:74
 msgid "Are you sure you want to delete this sentence?"
 msgstr "E hiahia ana rānei koe ki te whakakāhore i tēnei rerenga kōrero?"
 
-#: corpus/templates/corpus/sentence_list.html:78
+#: corpus/templates/corpus/sentence_list.html:77
 msgid "Cancel"
 msgstr "Hoki Whakamuri"
 
-#: corpus/templates/corpus/sentence_list.html:79
+#: corpus/templates/corpus/sentence_list.html:78
 msgid "Delete"
 msgstr "Whakakāhore"
 
-#: corpus/urls.py:7
+#: corpus/urls.py:8
 msgid "^record/"
 msgstr "^hopu/"
 
-#: corpus/urls.py:10
+#: corpus/urls.py:11
 msgid "^listen/"
 msgstr "^whakarongo/"
 
-#: corpus/urls.py:17
+#: corpus/urls.py:18
 #, fuzzy
 #| msgid "Sentences"
 msgid "^sentences/"
 msgstr "rerenga_korero/"
 
-#: corpus/views/api.py:82
+#: corpus/urls.py:26
+msgid "^pronunciation/"
+msgstr ""
+
+#: corpus/views/api.py:93
 #, python-brace-format
 msgid "Only staff can {0}."
 msgstr "Mā ngā kaimahi anake te {0}."
 
-#: corpus/views/api.py:90
+#: corpus/views/api.py:101
 #, python-brace-format
 msgid "PONIES Method {0} not allowed."
 msgstr "E kore e āhei te tikanga PONIES {0}."
 
-#: corpus/views/api.py:166
+#: corpus/views/api.py:219
 msgid "Only staff can post/put sentences."
 msgstr "Mā ngā kaimahi anake te whakairi i ngā rerenga kōrero."
 
-#: corpus/views/api.py:248
-msgid "Only staff can read recording lists."
-msgstr "Mā ngā kaimahi anake e titiro ngā rārangi kapohanga reo."
+#: corpus/views/api.py:233
+#, fuzzy
+#| msgid "Only staff can post/put sentences."
+msgid "Only staff can get sentence lists."
+msgstr "Mā ngā kaimahi anake te whakairi i ngā rerenga kōrero."
 
-#: corpus/views/api.py:254
+#: corpus/views/api.py:239 corpus/views/api.py:407
 msgid "Reading recording lists not allowed."
 msgstr "E kore koe e āhei ki te titiro ki ngā rārangi kapohanga reo."
 
-#: corpus/views/api.py:261
+#: corpus/views/api.py:246 corpus/views/api.py:413
 msgid "Only staff can read recordings."
 msgstr "Mā ngā kaimahi anake e titiro ēnei kapohanga reo."
 
-#: corpus/views/api.py:274
+#: corpus/views/api.py:260 corpus/views/api.py:427
 msgid "You're not allowed to edit this recording."
 msgstr "E kore koe e āhei ki te whakarerekē i tēnei kapohanga reo."
 
-#: corpus/views/api.py:276
+#: corpus/views/api.py:262 corpus/views/api.py:429
 msgid "Reading recording is not allowed."
 msgstr "E kore koe e āhei ki te pānui i tēnei kapohanga reo."
 
-#: corpus/views/api.py:438 corpus/views/api.py:458
+#: corpus/views/api.py:401
+msgid "Only staff can read recording lists."
+msgstr "Mā ngā kaimahi anake e titiro ngā rārangi kapohanga reo."
+
+#: corpus/views/api.py:671 corpus/views/api.py:690
 #, python-brace-format
 msgid "{0} not allowed with this API                             endpoint."
 msgstr "{0} e kore e āhei koia tēnei te API whakamutunga."
@@ -270,34 +312,47 @@ msgstr ""
 msgid "Graph of recording growth over the last month."
 msgstr ""
 
-#: corpus/views/views.py:45
+#: corpus/views/views.py:52
 msgid "Approve sentences to use when gathering recordings."
 msgstr ""
 
-#: corpus/views/views.py:149
+#: corpus/views/views.py:90 corpus/views/views.py:170
 #, fuzzy
 #| msgid "Recordings"
 msgid "Record"
 msgstr "Kapohanga Reo"
 
-#: corpus/views/views.py:150
+#: corpus/views/views.py:91
+msgid ""
+"Help us teach computers the sounds        of a language by reading sentences."
+msgstr ""
+
+#: corpus/views/views.py:171
 msgid "Help us teach computers the sounds of a language by reading sentences."
 msgstr ""
 
-#: corpus/views/views.py:234
+#: corpus/views/views.py:269
 msgid "Statistics for all data."
 msgstr ""
 
-#: corpus/views/views.py:317
+#: corpus/views/views.py:355
 #, fuzzy
 #| msgid "^listen/"
 msgid "Listen"
 msgstr "^whakarongo/"
 
-#: corpus/views/views.py:318
+#: corpus/views/views.py:356
 msgid ""
 "Listen to and vote on recordings. This helps us improvethe quality of "
 "recordings we use."
+msgstr ""
+
+#: corpus/views/views.py:396
+msgid "Pronunciation"
+msgstr ""
+
+#: corpus/views/views.py:397
+msgid "Developing pronunciation..."
 msgstr ""
 
 #~ msgid "^stats/"

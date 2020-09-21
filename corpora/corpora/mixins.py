@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from people.helpers import get_or_create_person
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 
 
 class SiteInfoMixin(object):

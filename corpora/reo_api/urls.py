@@ -42,7 +42,7 @@ urlpatterns = [
     #         views.privacy),
     #     name='privacy'),
 
-    url(r'^', include('transcription.urls', namespace='transcription')),
+    url(r'^', include(('transcription.urls', 'reo_api'), namespace='transcription')),
 
     url(r'^i18n/', include('django.conf.urls.i18n')),
 

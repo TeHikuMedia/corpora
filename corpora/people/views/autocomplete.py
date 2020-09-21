@@ -21,7 +21,7 @@ class GroupAutocomplete(autocomplete.Select2QuerySetView):
 
     def has_add_permission(self, request):
         # any authenticated user can add a group
-        return request.user.is_authenticated()
+        return request.user.is_authenticated
 
     def get_queryset(self):
         qs = Group.objects.all().order_by('name')

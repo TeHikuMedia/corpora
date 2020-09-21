@@ -1,0 +1,24 @@
+{% extends 'people/email/base_email.txt' %}
+{% load static i18n %}
+
+{% block heading %}
+{% trans 'Login Link' %}
+{% endblock %}
+
+{% block main    %}
+{% trans 'Hello'%} {{person}},
+
+{% trans "You've requested a login for" %}{{site.name}}.
+
+Log In: {{link}}
+
+If this wasn't you, you can disregard this email.
+{% endblock %}
+
+{% block footer  %}
+Te Reo Irirangi o Te Hiku o Te Ika
+1 Melba Street
+Level 2
+Kaitaia 0410
+New Zealand
+{% endblock %}

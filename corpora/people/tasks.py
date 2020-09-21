@@ -383,7 +383,7 @@ def send_status_email(person_pk, frequency='weekly'):
             result = e.send(
                 from_addr='Kōrero Māori <koreromaori@tehiku.nz>',
                 fail_silently='False')
-        except Exception, e:
+        except Exception as e:
             result = 10
             pass
 

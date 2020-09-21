@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-FILE_UPLOAD_PERMISSIONS = 0644
+FILE_UPLOAD_PERMISSIONS = 0o644
 
 # So, we can get to a LB externally but not internally.
 # This if for public access to the LB
@@ -18,16 +18,16 @@ DEEPSPEECH_URL_PRIVATE = \
 
 
 DEEPSPEECH_URL_BETA = \
-    "http://172.31.10.32:5000/transcribe_with_metadata"
+    "http://lb-asr-deepspeech-51-gpu-1539186231.ap-southeast-2.elb.amazonaws.com/transcribe_with_metadata"
 
 DEEPSPEECH_URL_BETA_PUBLIC = \
-    "http://3.104.105.146:5000/transcribe_with_metadata"
+    "http://3.106.164.59:5000/transcribe_with_metadata"
 
 
 if 'local' in os.environ['ENVIRONMENT_TYPE']:
     DEEPSPEECH_URL = DEEPSPEECH_URL_BETA_PUBLIC
 elif 'staging' in os.environ['ENVIRONMENT_TYPE']:
-    DEEPSPEECH_URL = DEEPSPEECH_URL_PRIVATE
+    DEEPSPEECH_URL = DEEPSPEECH_URL_BETA
 else:
     DEEPSPEECH_URL = DEEPSPEECH_URL_PRIVATE
 

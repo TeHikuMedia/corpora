@@ -42,9 +42,14 @@ class MessageAction(models.Model):
         default=timezone.now)
     completed = models.BooleanField(default=False)
     action = models.CharField(choices=ACTIONS, max_length=1)
-    message = models.ForeignKey(Message)
-
-    target_type = models.ForeignKey(ContentType, null=True, blank=True)
+    message = models.ForeignKey(
+        Message,
+        on_delete=models.CASCADE)
+    target_type = models.ForeignKey(
+        ContentType,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL)
     target_id = models.PositiveIntegerField(
         null=True,
         blank=True,

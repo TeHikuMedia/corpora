@@ -27,6 +27,7 @@ router.register(r'demographics', people_api.DemographicViewSet)
 router.register(r'persons', people_api.PersonViewSet)
 router.register(r'profile', people_api.ProfileViewSet)
 
+
 router.register(r'knownlangauges', people_api.KnownLanguageViewSet)
 router.register(r'accept_license', license_api.AcceptLicenseViewSet)
 
@@ -44,6 +45,7 @@ urlpatterns = [
     url(r'^api-auth/', include(
         'rest_framework.urls',
         namespace='rest_framework')),
+    url(r'^api/magiclogin/$', people_api.MagicLoginView.as_view()),
 
 ]
 

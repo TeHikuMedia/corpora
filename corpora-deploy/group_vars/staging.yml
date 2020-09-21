@@ -1,0 +1,13 @@
+---
+
+# SSH Credentials
+private_key: ~/.ssh/corpora_2020.pem
+
+# Repository Details
+branch: "staging"
+
+certificate_domain_name: dev.koreromaori.com
+zone_domain_name: koreromaori.com
+domain_name: dev.koreromaori.com
+cloudfront_subdomain: staticdev
+cloudfront_cname: "{{cloudfront_subdomain}}.{{zone_domain_name}}"

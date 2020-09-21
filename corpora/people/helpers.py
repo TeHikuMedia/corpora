@@ -4,27 +4,48 @@ from django.utils import translation
 from django.conf import settings
 
 from corpus.base_settings import \
-    LANGUAGES
+    LANGUAGES, LANGUAGE_DOMAINS
 
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from .models import Person, KnownLanguage
 
+from license.models import License
+from corpus.models import Sentence
+
 from allauth.account.models import EmailAddress
 from rest_framework.authentication import TokenAuthentication
-
+from reo_api.authentication import ApplicationAPITokenAuthentication
+from django.contrib.auth.models import AnonymousUser 
 import logging
 logger = logging.getLogger('corpora')
 
 
-def get_or_create_person(request):
+def get_user(request):
     user = request.user
-
+    # logger.debug("GET USER? {0}".format(user))
     if user is None or user.is_anonymous:
         try:
             token_auth = TokenAuthentication()
             user, token = token_auth.authenticate(request)
+            # logger.debug('get user from token, {0} {1}'.format(user, token))
         except:
             pass
+
+    # If we're using an AppToken, return an anonymous user
+    try:
+        token_auth = ApplicationAPITokenAuthentication()
+        AppUser, token = token_auth.authenticate(request)
+        if AppUser:
+            # logger.debug("SET ANON USER {0}".format(AnonymousUser()))
+            return AnonymousUser()
+    except:
+        pass           
+
+    return user
+
+
+def get_or_create_person(request):
+    user = get_user(request)
 
     if user.is_anonymous:
         # Check if a session cookie exists
@@ -77,14 +98,7 @@ def get_or_create_person(request):
 
 
 def get_person(request):
-    user = request.user
-
-    if user is None or user.is_anonymous:
-        try:
-            token_auth = TokenAuthentication()
-            user, token = token_auth.authenticate(request)
-        except:
-            pass
+    user = get_user(request)
 
     if user.is_anonymous:
         # Check if a session cookie exists
@@ -131,30 +145,41 @@ def set_language_cookie(response, language):
 
 
 def set_current_language_for_person(person, language):
+    # First, deactivate active languages
+    active = KnownLanguage.objects.filter(person=person)
+    for kl in active:
+        kl.active = False
+        kl.save()
+
     try:
         kl = KnownLanguage.objects.get(person=person, language=language)
-        kl.active = True
-        kl.save()
     except ObjectDoesNotExist:
         kl = KnownLanguage.objects.create(person=person, language=language)
+    finally:
         kl.active = True
         kl.save()
+
     translation.activate(language)
 
 
 def get_current_language(request):
     language = translation.get_language()
-    if request.user.is_authenticated():
-        person = get_or_create_person(request)
+    person = get_or_create_person(request)
+    try:
+        active_language = \
+            KnownLanguage.objects.get(person=person, active=True)
+        return active_language.language
+    except ObjectDoesNotExist:
+        domain = request.META['SERVER_NAME']
         try:
-            active_language = \
-                KnownLanguage.objects.get(person=person, active=True)
-            return active_language.language
-
-        except ObjectDoesNotExist:
-            return language
-    else:
+            language = LANGUAGE_DOMAINS[domain]
+        except KeyError:
+            language = settings.LANGUAGE_CODE
         return language
+    except MultipleObjectsReturned:
+        active_language = \
+            KnownLanguage.objects.filter(person=person, active=True).first()
+        return active_language.language
 
 
 def get_current_known_language_for_person(person):
@@ -165,6 +190,30 @@ def get_current_known_language_for_person(person):
 
     except ObjectDoesNotExist:
         return None
+
+
+def get_supported_languages():
+    '''
+    Get **supported** languages. We really mean available
+    but that conflicts with a Django language templatetage. 
+    For us **supported** is a language where we've 
+    registered a License with the Language. This means the
+    Django app can support what ever languages but we dont
+    present the language to the end user until there's a license
+    asscociated with it.
+    '''
+
+    supported = []
+    for language in LANGUAGES:
+        if (License.objects.filter(language=language[0]).exists()
+                and
+                Sentence.objects\
+                .filter(language=language[0])\
+                .filter(quality_control__approved=True).exists()
+                ):
+            supported.append(language)
+
+    return supported
 
 
 def get_num_supported_languages():

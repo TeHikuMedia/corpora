@@ -1,0 +1,8 @@
+---
+
+ffmpeg_build_dir:   "/home/{{ansible_user}}/ffmpeg_build"
+ffmpeg_sources_dir: "/home/{{ansible_user}}/ffmpeg_sources"
+
+ffmpeg_source_file: "https://ffmpeg.org/releases/ffmpeg-3.3.2.tar.bz2"
+libvpx_source_file: "http://storage.googleapis.com/downloads.webmproject.org/releases/webm/libvpx-1.6.1.tar.bz2"
+fdk_aac_source_file: "https://github.com/mstorsjo/fdk-aac/archive/v0.1.6.tar.gz"

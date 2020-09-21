@@ -48,10 +48,13 @@
 
 
 {% addtoblock "js-include" %}<script type="text/javascript" src="{% static 'corpus/js/ajax.post.js' %}"></script>{% endaddtoblock %}
+{% comment %}
 {% addtoblock "js-include" %}<script type="text/javascript" src="{% static 'bower_components/opus-recorder/dist/recorder.min.js' %}"></script>{% endaddtoblock %}
+{% endcomment %}
 
 {% addtoblock "js-end" %}
 <script type="text/javascript">
+{% include 'corpus/js/recorder.min.js' %}
 
 
 $('button#record, pulse').on('mousedown touchstart', function(event){
@@ -97,11 +100,11 @@ window.setInterval(function(){
 var rec;
 if (Recorder.isRecordingSupported()){
 	var file_type = 'audio/ogg'
-	var encoderPath = "/static/bower_components/opus-recorder/dist/encoderWorker.min.js"
+	var encoderPath = "{% url 'transcription:encoderworker' %}"
 	
 	if (navigator.userAgent.search('Safari')>0){
 		if (navigator.userAgent.search('Chrome')<0){
-			encoderPath = "/static/bower_components/opus-recorder/dist/waveWorker.min.js"
+			encoderPath = "{% url 'transcription:waveworker' %}"
 			file_type = 'audio/wav'
 		}
 	}

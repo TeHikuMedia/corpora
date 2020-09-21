@@ -1,0 +1,10 @@
+# Custom aliases for Vagrant environment
+alias {{project_name}}-tests=". {{virtualenv_path}}/bin/activate && . {{virtualenv_path}}/bin/postactivate && cd {{application_path}} && python manage.py test --settings={{project_name}}.test_settings"
+alias {{project_name}}-collectstatic=". {{virtualenv_path}}/bin/activate && . {{virtualenv_path}}/bin/postactivate && cd {{application_path}} && python manage.py collectstatic --noinput"
+alias {{project_name}}-localshell=". {{virtualenv_path}}/bin/activate && . {{virtualenv_path}}/bin/postactivate && cd {{application_path}} && python manage.py shell"
+alias {{project_name}}-makemigrations=". {{virtualenv_path}}/bin/activate && . {{virtualenv_path}}/bin/postactivate && cd {{application_path}} && python manage.py makemigrations"
+alias {{project_name}}-migrate=". {{virtualenv_path}}/bin/activate && . {{virtualenv_path}}/bin/postactivate && cd {{application_path}} && python manage.py migrate"
+alias {{project_name}}-runserver=". {{virtualenv_path}}/bin/activate && . {{virtualenv_path}}/bin/postactivate && cd {{application_path}} && python manage.py runserver 0.0.0.0:8081"
+alias {{project_name}}-compilemessages=". {{ virtualenv_path }}/bin/activate && . {{ virtualenv_path }}/bin/postactivate && cd {{ application_path }} && python manage.py compilemessages"
+alias {{project_name}}-mi=". {{ virtualenv_path }}/bin/activate && . {{ virtualenv_path }}/bin/postactivate && cd {{ application_path }} && python manage.py makemessages -l mi"
+alias {{project_name}}-en-nz=". {{ virtualenv_path }}/bin/activate && . {{ virtualenv_path }}/bin/postactivate && cd {{ application_path }} && python manage.py makemessages -l en-NZ"

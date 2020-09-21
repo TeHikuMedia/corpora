@@ -43,8 +43,9 @@ def prepare_temporary_environment(model, test=False):
     else:
         code = "cp '%s' '%s'" % (file_path, tmp_file)
     logger.debug(code)
-    result = commands.getstatusoutput(code)
-    logger.debug(result[0])
+    p = subprocess.Popen(code.split(' '))
+    result, error = p.communicate()
+    logger.debug(result)
 
     try:
         logger.debug(result[1])

@@ -43,9 +43,8 @@ div.content{
         title="Approve" 
         data-content="{% trans 'Approve for recording?' %}"
         ><i class="fas fa-check-circle fa-fw"></i></a>
-      <a href="#" class="delete"
+      <a href="#" class="delete" id="confirmDelete"
         data-toggle="modal" 
-        data-target="#askDelete" 
         title="Delete" 
         ><i class="fas fa-trash fa-fw"></i></a>
       {% else %}
@@ -62,7 +61,7 @@ div.content{
 
 
 <!-- Modal -->
-<div class="modal fade" id="askDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- <div class="modal fade" id="askDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -80,7 +79,7 @@ div.content{
       </div>
     </div>
   </div>
-</div>
+</div> -->
 
 
 {% addtoblock "js" %}<script type="text/javascript" src="{% static 'bower_components/js-cookie/src/js.cookie.js' %}"></script>{% endaddtoblock %}

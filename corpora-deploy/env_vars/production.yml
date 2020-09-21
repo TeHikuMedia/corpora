@@ -1,0 +1,113 @@
+---
+
+env_type: prod
+apt_upgrade: no
+git_branch: master
+setup_git_repo: yes
+
+# AWS Settings
+webserver_instance_type: t3.medium # migrate to t2.medium
+solrserver_instance_type: t3.medium
+debian_distro: buster
+number_webserver_instances: 1
+domain_name: koreromaori.com
+cloudfront_subdomain: cdn
+cloudfront_cname: "{{cloudfront_subdomain}}.{{domain_name}}"
+
+# AWS SSL ARN FOR LOAD BALANCING
+# elb_ssl_arn: arn:aws:acm:ap-southeast-2:473856431958:certificate/54d41cd9-172a-4bd5-b377-07819ddf1258
+
+#memcached_instance_type: t2.small # right now we're using a localling installed memcache
+database_instance_type: db.t2.small
+
+# Database settings.
+db_user: "{{ application_name }}"
+db_name: "{{ application_name }}"
+db_password: password
+db_roles: "NOSUPERUSER,NOCREATEDB"
+
+# Gunicorn settings. For the number of workers, a good rule to follow is
+# 2 x number of CPUs + 1
+# note need to divide by two because we have 2 gunicorn apps running!
+gunicorn_num_workers: 2
+# A positive integer generally in the 2-4 x $(NUM_CORES) range.
+gunicorn_num_threads: 2
+
+
+# Setting this to 1 will restart the Gunicorn process each time
+# you make a request, basically reloading the code. Very handy
+# when developing. Set to 0 for unlimited requests (default).
+gunicorn_max_requests: 1000
+gunicorn_max_requests_jitter: 242
+gunicorn_keepalive: 5
+gunicorn_timeout: 300
+
+# Nginx settings.
+#nginx_server_name: "{{ inventory_hostname }}"
+nginx_server_name: "koreromaori.com"
+nginx_server_name_aliases: "www.corpora.io corpora.io www.koreromaori.com"
+nginx_server_name_no_ssl: "dummywebsitehereshould.fix.this"
+
+nginx_server_names:
+  corpora: "koreromaori.com"
+  reo_api: "koreromaori.io"
+nginx_server_names_aliases:
+  corpora: "www.corpora.io corpora.io www.koreromaori.com"
+  reo_api: "www.koreromaori.io"
+
+# memcached Settings:
+memcached_listen: 127.0.0.1
+memcached_port: 11211
+memcached_user: nobody
+memcached_max_memory_mb: 128
+memcached_max_connections: 1024
+memcached_key_limit: 1 # in MB note >1M is BAD!
+# django cache length in seconds - used so we can have diffrerent cache times for different envs
+cache_base_seconds: 120
+
+# RabbitMQ settings.
+rabbitmq_server_name: localhost
+rabbitmq_port: 5672
+rabbitmq_port_2: 4369
+rabbitmq_port_3: 25672
+rabbitmq_port_4_from: 35672
+rabbitmq_port_4_to: 35682
+rabbitmq_port_5: 15672
+rabbitmq_admin_user: admin
+rabbitmq_admin_password: password
+rabbitmq_application_vhost: "{{ application_name }}"
+rabbitmq_application_user: "{{ application_name }}"
+rabbitmq_application_password: password
+
+# Celery settings.
+celery_num_workers: 4 #
+celery_num_workers_secondary: 8 #
+celery_application_settings_file: settings.dev
+
+# SMTP settings.
+smtp_host: smtp.gmail.com
+
+# FFMPEG
+rebuild_ffmpeg: no
+
+# Application settings.
+upgrade_pip: yes
+upgrade_pip_app: yes
+django_settings_file: settings.py
+django_include_fixtures: yes
+django_isnot_production: false
+django_file_storage: storages.backends.s3boto.S3BotoStorage
+create_django_superuser: no
+aws_bucket: "{{project_name}}-{{env_type}}-{{aws_region}}"
+aws_staticfiles_bucket: "{{project_name}}-{{env_type}}-static-{{aws_region}}"
+run_django_syncdb: yes
+# run_django_south_migration: yes
+run_django_migrations: yes
+run_django_collectstatic: yes
+run_django_clearstatic: yes
+build_language_files: no
+
+# run_django_createinitialrevisions: yes
+install_bower_packages: yes
+prune_bower_packages: no
+install_people_fixture: no

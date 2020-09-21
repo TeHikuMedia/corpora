@@ -70,6 +70,7 @@ class KnownLanguageAdmin(admin.ModelAdmin):
         'level_of_proficiency',
         'dialect',
         'accent',
+        'active',
         )
 
 

@@ -1,9 +1,8 @@
 from __future__ import absolute_import, unicode_literals
 
 from corpora.utils.tmp_files import prepare_temporary_environment
-
-import commands
-
+import json
+import subprocess
 
 def get_media_duration(obj):
     '''
@@ -14,9 +13,14 @@ def get_media_duration(obj):
     file_path, tmp_stor_dir, tmp_file, absolute_directory = \
         prepare_temporary_environment(obj)
 
-    code = \
-        "ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 {0}".format(
-            tmp_file)
+    command = \
+        "ffprobe -v quiet -print_format json -show_format -show_streams {0}".format(tmp_file)
 
-    data = commands.getstatusoutput(code)
-    return float(data[1])
+    p = subprocess.Popen(
+        command.split(' '),
+        stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+    output, errors = p.communicate()
+    data = json.loads(output)
+
+    return float(data['format']['duration'])

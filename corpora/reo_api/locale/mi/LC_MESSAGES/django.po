@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-03 14:39+1300\n"
+"POT-Creation-Date: 2020-09-16 12:55+1200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: reo_api/templates/reo_api/footer.html:14 reo_api/views.py:43
+#: reo_api/templates/reo_api/footer.html:14 reo_api/views.py:44
 msgid "Documentation"
 msgstr ""
 
@@ -36,7 +36,7 @@ msgid "Dashboard"
 msgstr ""
 
 #: reo_api/templates/reo_api/footer.html:19
-#: reo_api/templates/reo_api/logged_in_nav_buttons.html:96
+#: reo_api/templates/reo_api/logged_in_nav_buttons.html:97
 msgid "Log Out"
 msgstr ""
 
@@ -69,11 +69,11 @@ msgid "API"
 msgstr ""
 
 #: reo_api/templates/reo_api/home.html:29
-#: reo_api/templates/reo_api/logged_in_nav_buttons.html:57
+#: reo_api/templates/reo_api/logged_in_nav_buttons.html:65
 msgid "Docs"
 msgstr ""
 
-#: reo_api/templates/reo_api/home.html:70 reo_api/views.py:37
+#: reo_api/templates/reo_api/home.html:70 reo_api/views.py:38
 msgid "Indigenous language tools powered by machine learning."
 msgstr ""
 
@@ -85,19 +85,19 @@ msgstr ""
 msgid "Speak Demo"
 msgstr ""
 
-#: reo_api/templates/reo_api/logged_in_nav_buttons.html:50
+#: reo_api/templates/reo_api/logged_in_nav_buttons.html:51
+msgid "VAD Demo"
+msgstr ""
+
+#: reo_api/templates/reo_api/logged_in_nav_buttons.html:58
 msgid "Browse the API"
 msgstr ""
 
-#: reo_api/templates/reo_api/logged_in_nav_buttons.html:76
-msgid "Account"
-msgstr ""
-
-#: reo_api/templates/reo_api/logged_in_nav_buttons.html:85
+#: reo_api/templates/reo_api/logged_in_nav_buttons.html:86
 msgid "Settings"
 msgstr ""
 
-#: reo_api/templates/reo_api/logged_in_nav_buttons.html:105
+#: reo_api/templates/reo_api/logged_in_nav_buttons.html:106
 msgid "Log In"
 msgstr ""
 
@@ -133,22 +133,18 @@ msgstr ""
 msgid "response info"
 msgstr ""
 
-#: reo_api/urls.py:67
-msgid "^people/"
-msgstr ""
-
-#: reo_api/views.py:36
+#: reo_api/views.py:37
 msgid "kōreromāori.io"
 msgstr ""
 
-#: reo_api/views.py:44
+#: reo_api/views.py:45
 msgid "API documentation."
 msgstr ""
 
-#: reo_api/views.py:50
+#: reo_api/views.py:51
 msgid "Browseable API"
 msgstr ""
 
-#: reo_api/views.py:51
+#: reo_api/views.py:52
 msgid "Browseable API."
 msgstr ""

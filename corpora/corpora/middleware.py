@@ -3,11 +3,15 @@
 from django.utils import translation
 from django.conf import settings
 from django.core.cache import cache
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from people.helpers import get_current_language, get_or_create_person
-from license.models import SiteLicense
+from people.models import KnownLanguage
+from license.models import SiteLicense, License
 from django.contrib.sites.shortcuts import get_current_site
 
-from urlparse import parse_qs
+from corpus.base_settings import LANGUAGE_DOMAINS
+
+from urllib.parse import parse_qs
 
 from uuid import uuid4 as uuid
 
@@ -87,6 +91,17 @@ class ExpoLoginMiddleware(object):
 
 
 class LanguageMiddleware(object):
+    '''
+    Sets the default language for the site when a user access it.
+    Nopte that in the settings we set a default language (mi), however
+    we'd like to be able to switch languages based on the domain name
+    without having different site IDs. Therefore we write a middleware
+    that detects what domainname is being used and chooses a lanaguage
+    based on that. we should probaly put that language and domainname
+    dictionary in the settigns somewhere and load that up.
+
+    '''
+
     def __init__(self, get_response):
         self.get_response = get_response
         # One-time configuration and initialization.
@@ -96,15 +111,25 @@ class LanguageMiddleware(object):
         # the view (and later middleware) are called.
 
         set_cookie = False
-        if request.COOKIES.has_key(settings.LANGUAGE_COOKIE_NAME):
+        if settings.LANGUAGE_COOKIE_NAME in request.COOKIES:
             language = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
         elif hasattr(request, 'user'):
-            if request.user.is_authenticated():
+            if request.user.is_authenticated:
                 current_language = get_current_language(request)
                 if current_language:
                     set_cookie = True
         else:
-            language = translation.get_language()
+
+            # Choose a language ebased on the host domainname
+            domain = request.META['SERVER_NAME']
+            
+            try:
+                language = LANGUAGE_DOMAINS[domain]
+            except KeyError:
+                language = settings.LANGUAGE_CODE
+
+            logger.debug('Explicitly setting language from domain: {0}:{1}'.format(domain, language))
+            # language = translation.get_language()
             # set_cookie = True
 
         translation.activate(language)
@@ -123,7 +148,9 @@ class LanguageMiddleware(object):
         # Code to be executed for each request/response after
         # the view is called.
 
-        translation.deactivate()  # Deactivates our langauge after we've processed the request.
+        # Deactivates our langauge after we've processed the request.
+        # WHY?
+        # translation.deactivate()  
         return response
 
 
@@ -141,11 +168,19 @@ class LicenseMiddleware(object):
         # the view (and later middleware) are called.
 
         try:
-            license = SiteLicense.objects.get(site=get_current_site(request))
-        except:
-            license = None
-
-        request.license = license
+            person = get_or_create_person(request)
+            try:
+                active = KnownLanguage.objects.get(active=True, person=person)
+                license = License.objects.get(language=active.language)
+            except ObjectDoesNotExist:
+                license = SiteLicense.objects.get(site=get_current_site(request))
+            except MultipleObjectsReturned:
+                licenses = License.objects.filter(language=active.language)
+                license = licenses[0]
+                logger.error('MORE THAN ONE LICENSE WITH SAME LANGUAGE!')
+            request.license = license
+        except Exception as e:
+            request.license = None
 
         response = self.get_response(request)
 

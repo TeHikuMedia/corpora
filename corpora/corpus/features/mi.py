@@ -5,7 +5,7 @@ you do like this:
 
 sentence = "ko wai au?"
 features = get_features(sentence)
-print '|'.join(sorted(features.elements()))
+print('|'.join(sorted(features.elements())))
 # prints
 #" | |ai|ai»|au|au»|i»|k|ko|ko»|o|o»|u»|w|wa|wai|«a|«au|«k|«ko|«w|«wa|ä|ȧ"
 

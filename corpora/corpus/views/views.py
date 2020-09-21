@@ -34,12 +34,13 @@ from corpus.aggregate import get_num_approved, get_net_votes
 
 from corpora.mixins import SiteInfoMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 import json
 
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 
 import logging
 logger = logging.getLogger('corpora')
@@ -59,7 +60,7 @@ class SentenceListView(
         context = super(SentenceListView, self).get_context_data(**kwargs)
         user = self.request.user
         person = get_person(self.request)
-        user.can_approve = user.is_staff and user.is_authenticated()
+        user.can_approve = user.is_staff and user.is_authenticated
         ct = ContentType.objects.get(model='sentence')
         context['content_type'] = ct.id
         context['user'] = user
@@ -98,7 +99,7 @@ class RecordView(
 def record(request):
     # Get the person object from the user
 
-    # if not request.user.is_authenticated():
+    # if not request.user.is_authenticated:
     # return redirect(reverse('account_login'))
 
     person = get_or_create_person(request)
@@ -155,7 +156,7 @@ def record(request):
     # Load up the page normally with request and object context
 
     request.user.can_approve = request.user.is_staff and \
-        request.user.is_authenticated()
+        request.user.is_authenticated
 
     ct = ContentType.objects.get(model='sentence')
 
@@ -192,7 +193,7 @@ class RecordingFileView(RedirectView):
     def get(self, request, *args, **kwargs):
         m = get_object_or_404(Recording, pk=kwargs['pk'])
         u = request.user
-        p = get_or_create_person(request)
+        p = get_person(request)
 
         rType = request.GET.get('json', False)
         audio_file = m.audio_file
@@ -201,6 +202,12 @@ class RecordingFileView(RedirectView):
         if f in 'wav':
             if m.audio_file_wav:
                 audio_file = m.audio_file_wav
+            else:
+                # Let's try to create the wave file
+                from corpus.tasks import encode_audio
+                result = encode_audio(m, codec='wav')
+                if m.audio_file_wav:
+                    audio_file = m.audio_file_wav
         else:
             if m.audio_file_aac:
                 audio_file = m.audio_file_aac
@@ -211,10 +218,13 @@ class RecordingFileView(RedirectView):
             uuid = 'None-Person-Object'
         key = '{0}:{1}:listen'.format(uuid, m.id)
         access = cache.get(key)
-        # logger.debug('   CAN VIEW: {0} {1}'.format(key, access))
+        logger.debug('   CAN VIEW: {0} {1}'.format(key, access))
+
 
         url = ''
-        if (u.is_authenticated() and u.is_staff) or (p == m.person) or (access):
+        if (u.is_authenticated and u.is_staff) or (p == m.person) or (access):
+            
+            # This code in mental!
             try:
                 url = audio_file.path
                 url = audio_file.url
@@ -223,9 +233,13 @@ class RecordingFileView(RedirectView):
                     url = self.get_redirect_url(filepath=audio_file.name)
                 except:
                     url = audio_file.url
-
+            if 'http' not in url:
+                url = 'https://'+ request.META['HTTP_HOST']+ url
+            logger.debug(url)
             if url:
                 if rType:
+                    if 'http' not in url:
+                        pass
                     return http.HttpResponse(
                         json.dumps({'url': url}),
                         content_type="application/json")
@@ -273,7 +287,10 @@ class StatsView(SiteInfoMixin, ListView):
         approved_sentences = sentences.filter(quality_control__approved=True)
         approved_recordings = recordings.filter(quality_control__approved=True)
 
-        seconds = float(length['duration__sum'])
+        if length['duration__sum']:
+            seconds = float(length['duration__sum'])
+        else:
+            seconds = 0
         hours = int(seconds/(60.0*60))
         minutes = int((seconds - (60*60.0)*hours)/60.0)
         seconds = int(seconds - (60*60.0)*hours - 60.0*minutes)
@@ -353,7 +370,7 @@ the quality of recordings we use.')
         ct = ContentType.objects.get(model='recording')
         user.can_review = False
         user.can_approve = False
-        if user.is_staff and user.is_authenticated():
+        if user.is_staff and user.is_authenticated:
             user.can_approve = True
         elif user.has_perms([
                 'corpus.add_recording',
@@ -372,3 +389,17 @@ the quality of recordings we use.')
         context['show_qc_stats'] = True
 
         return context
+
+
+class PronunciationView(SiteInfoMixin, UserPassesTestMixin, TemplateView):
+    template_name = "corpus/pronunciation.html"
+    x_title = _('Pronunciation')
+    x_description = _('Developing pronunciation...')
+
+
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.is_superuser
+
+
+
+

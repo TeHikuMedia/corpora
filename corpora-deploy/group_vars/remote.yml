@@ -1,0 +1,31 @@
+---
+
+# Setup -
+launch_solr_instance: no
+launch_memcache_instance: no
+launch_elasticache: yes
+
+# SSH Credentials
+private_key: ~/.ssh/corpora_2020.pem
+
+# Names for EC2 stuff.
+webserver_name: "{{ project_name }}-{{env_type}}-webserver"
+webserver_securitygroup_name: "{{ webserver_name }}"
+webserver_instance_tag: "{{project_name}}_{{env_type}}_web"
+webserver_instance_hosttag: "{{project_name}}_{{env_type}}_web"
+
+database_name: "{{project_name}}-{{env_type}}-database"
+database_security_group_name: "{{ database_name }}"
+
+memcache_server_name: "{{ project_name }}-{{env_type}}-memcached"
+memcache_securitygroup_name: "{[ memcache_server_name }}"
+
+current_instance_tag: "{{project_name}}_{{env_type}}_{{server_type}}"
+autoscaling_group_name: "{{ project_name }}-{{env_type}}-media"
+
+# Other remote things
+webserver_ami: ami-038cef7ea3fc80d8a # sydney, debian 10.5
+ebs_size: 64
+
+
+elasticache_endpoint: corpora-redis.9eqoln.ng.0001.apse2.cache.amazonaws.com

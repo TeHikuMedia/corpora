@@ -1,0 +1,5 @@
+LOCATION = [
+    {% for host in servers_to_monitor %}
+        "{{ hostvars[host].inventory_hostname }}{{ hostvars[host].ansible_default_ipv4.address }}|cmk-agent|prod|lan|tcp|wato|/" + FOLDER_PATH + "/",
+    {% endfor %}
+]

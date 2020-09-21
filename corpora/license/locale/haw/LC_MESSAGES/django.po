@@ -1,0 +1,77 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-07-31 19:37+1200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: license/models.py:17
+msgid "Name of license"
+msgstr ""
+
+#: license/models.py:19
+msgid "Please provide a description of the license."
+msgstr ""
+
+#: license/models.py:21
+msgid "The actual license text."
+msgstr ""
+
+#: license/models.py:24
+msgid ""
+"How the license should be displayed. This field is meant                    "
+"to include style e.g. html."
+msgstr ""
+
+#: license/models.py:30
+msgid "language"
+msgstr ""
+
+#: license/models.py:50
+msgid "Accepted licenses"
+msgstr ""
+
+#: license/templates/license/license_modal.html:32
+msgid "Loading..."
+msgstr ""
+
+#: license/templates/license/license_modal.html:87
+msgid "License"
+msgstr ""
+
+#: license/templates/license/license_modal.html:95
+#, python-format
+msgid "You must accept the above %(license.name|title)s license to continue."
+msgstr ""
+
+#: license/templates/license/license_modal.html:100
+msgid "Cancel"
+msgstr ""
+
+#: license/templates/license/license_modal.html:102
+msgid "Accept"
+msgstr ""
+
+#: license/templates/license/license_modal.html:114
+msgid "Woops"
+msgstr ""
+
+#: license/templates/license/license_modal.html:117
+msgid "Something went wrong. Please try again later or refresh your browser."
+msgstr ""
+
+#: license/views/api.py:38
+msgid "You're not allowed to view this information."
+msgstr ""

@@ -30,6 +30,8 @@ class Tribe(models.Model):
     def __unicode__(self):
         return self.name
 
+    def __str__(self):
+        return self.name
 
 class Group(models.Model):
     name = models.CharField(
@@ -52,6 +54,9 @@ class Group(models.Model):
         default=0, blank=True, editable=False)
 
     def __unicode__(self):
+        return self.name
+
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -184,6 +189,9 @@ class Person(models.Model):
     def __unicode__(self):
         return self.full_name
 
+    def __str__(self):
+        return self.full_name
+
 
 class Demographic(models.Model):
     SEX_CHOICES = (
@@ -304,20 +312,19 @@ def deactivate_other_known_languages_when_known_language_activated(
             kl.active = False
             kl.save()
 
+# This causes a headache?
+# @receiver(models.signals.post_save, sender=KnownLanguage)
+# def ensure_a_language_is_active(sender, instance, **kwargs):
+#     active_language = KnownLanguage.objects.filter(
+#         person=instance.person,
+#         active=True)
 
-@receiver(models.signals.post_save, sender=KnownLanguage)
-def ensure_a_language_is_active(sender, instance, **kwargs):
-    try:
-        active_language = KnownLanguage.objects.get(
-            person=instance.person,
-            active=True)
-    except ObjectDoesNotExist:
-        known_language = KnownLanguage.objects\
-            .filter(person=instance.person).first()
-
-        if known_language:
-            known_language.active = True
-            known_language.save()
+#     if active_language.count() == 0:
+#         known_language = KnownLanguage.objects\
+#             .filter(person=instance.person).first()
+#         if known_language:
+#             known_language.active = True
+#             known_language.save()
 
 
 @receiver(models.signals.post_delete, sender=KnownLanguage)

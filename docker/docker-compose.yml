@@ -1,0 +1,104 @@
+version: '3.7'
+services:
+  # TODO: Add celery-beat service.
+  flower:
+    image: "tehiku/corpora:local-dev"
+    depends_on:
+      - rabbitmq
+      - db
+      - initialise
+    env_file: local.env
+    working_dir: /webapp/corpora/corpora/
+    command: celery -A corpora flower --persistent=False --max_tasks=1000
+    expose:
+      - 5555
+    ports:
+      - 5555:5555
+    volumes:
+      - .:/webapp/corpora/
+      - logs_volume:/webapp/logs/
+  celery:
+    image: "tehiku/corpora:local-dev"
+    depends_on:
+      - rabbitmq
+      - db
+      - initialise
+    env_file: local.env
+    working_dir: /webapp/corpora/corpora/
+    command: >
+      celery 
+      -A corpora  
+      -Q celery worker 
+      -l info 
+      -n worker.corpora.%h
+    volumes:
+      - .:/webapp/corpora/
+      - logs_volume:/webapp/logs/
+  web:
+    image: "tehiku/corpora:local-dev"
+    expose:
+      - 8000
+    volumes:
+      - .:/webapp/corpora/
+      - static_volume:/webapp/public/static
+      - media_volume:/webapp/public/media
+      - logs_volume:/webapp/logs/
+    working_dir: /webapp/corpora/corpora/
+    command: gunicorn --name corpora --max-requests 3 --log-level=debug --bind=0.0.0.0:8000 corpora.wsgi:application
+    depends_on:
+      - rabbitmq
+      - memcached
+      - db
+      - initialise
+    env_file: local.env
+    links:
+      - db
+      - memcached
+      - rabbitmq
+  initialise:
+    build: .
+    image: "tehiku/corpora:local-dev"
+    volumes:
+      - .:/webapp/corpora/
+      - static_volume:/webapp/public/static
+      - media_volume:/webapp/public/media
+      - logs_volume:/webapp/logs/
+    working_dir: /webapp/corpora/corpora/
+    entrypoint: /webapp/corpora/entry.sh
+    env_file: local.env
+    depends_on:
+      - db
+     
+  db:
+    build: ./postgres
+    # image: postgres
+    # restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: corpora
+      POSTGRES_DB: corpora
+    expose:
+      - 5432
+  memcached:
+    image: memcached
+  rabbitmq:
+    image: rabbitmq
+    expose:
+      - 5672
+    env_file: local.env
+  nginx:
+    build: ./nginx
+    depends_on:
+      - web
+    volumes:
+      - static_volume:/webapp/public/static
+      - media_volume:/webapp/public/media
+      - logs_volume:/webapp/logs/
+    ports:
+      - 8001:80
+      - 8002:443
+
+volumes:
+  static_volume:
+  media_volume:
+  logs_volume:

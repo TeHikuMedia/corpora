@@ -84,10 +84,17 @@ class PersonSerializer(serializers.HyperlinkedModelSerializer):
             user = None
 
         try:
+            logger.debug(user)
+            logger.debug(validated_data)
+            if isinstance(validated_data['known_languages'], list):
+                if len(validated_data['known_languages']) == 0:
+                    del validated_data['known_languages']
+            logger.debug(validated_data)
             person, created = Person.objects.get_or_create(
                 user=user, **validated_data)
             logger.debug(person.user)
         except Exception as e:
+            logger.error(e)
             raise Exception(e)
         return person
 
@@ -146,36 +153,32 @@ class PersonSerializer(serializers.HyperlinkedModelSerializer):
     def update(self, instance, validated_data):
         person_object = self.instance
         user_object = person_object.user
-        instance.full_name = validated_data['full_name']
 
-        instance.receive_weekly_updates = \
-            validated_data['receive_weekly_updates']
-        instance.receive_daily_updates = \
-            validated_data['receive_daily_updates']
-        instance.receive_feedback = \
-            validated_data['receive_feedback']
-        instance.leaderboard = \
-            validated_data['leaderboard']
-
-        logger.debug('executing udpate on person model')
-        demographic = validated_data['demographic']
+        attrs = [
+            'full_name', 'receive_weekly_updates', 
+            'receive_daily_updates', 'receive_feedback', 'leaderboard',
+        ]
+        for attr in attrs:
+            if attr in validated_data.keys():
+                setattr(instance, attr, validated_data[attr])
+            ## Do we need to set the old values???
 
         demo, created = Demographic.objects.get_or_create(person=instance)
+        if 'demographic' in validated_data.keys():
+            demographic = validated_data['demographic']
 
-        try:
-            demo.gender = demographic['gender']
-        except KeyError:
-            demo.gender = None
+            try:
+                demo.gender = demographic['gender']
+            except KeyError:
+                demo.gender = None
 
-        try:
-            demo.age = demographic['age']
-        except KeyError:
-            demo.age = None
+            try:
+                demo.age = demographic['age']
+            except KeyError:
+                demo.age = None
+        else:
+            demographic = None
 
-        # I found my problem. I first need to check the the value of the
-        # validated data isn't '' - because if it is we shoulnd't be
-        # setting it! This is what caused my strange username already
-        # exists error I'm sur eof it
         if 'user' in validated_data.keys():
             new_username = validated_data['username']
             new_email = validated_data['user']['email']
@@ -192,8 +195,11 @@ class PersonSerializer(serializers.HyperlinkedModelSerializer):
                 user.save()
                 instance.user = user
         elif 'username' in validated_data.keys():
-            # Don't create a user!
             instance.username = validated_data['username']
+            if instance.user:
+                if instance.user.username != instance.username:
+                    instance.user.username = instance.username
+                    instance.user.save()
             new_email = None
         else:
             new_email = None
@@ -252,47 +258,55 @@ class PersonSerializer(serializers.HyperlinkedModelSerializer):
         if 'username' in validated_data.keys():
             instance.username = validated_data['username']
 
-        logger.debug(demographic)
-        # remove all current relations
-        for tribe in demo.tribe.all():
-            demo.tribe.remove(tribe)
+        if demographic:
+            for tribe in demo.tribe.all():
+                demo.tribe.remove(tribe)
 
-        for tribe in demographic['tribe']:
-            logger.debug(tribe)
-            t = Tribe.objects.get(name=tribe['name'])
-            demo.tribe.add(t)
+            for tribe in demographic['tribe']:
+                logger.debug(tribe)
+                t = Tribe.objects.get(name=tribe['name'])
+                demo.tribe.add(t)
 
-        validated_languages = validated_data['known_languages']
-        # logger.debug(validated_languages)
-        # logger.debug(validated_data)
-        for vl in validated_languages:
-            logger.debug(vl)
-            try:
-                kl = KnownLanguage.objects.get(
-                    person=instance,
-                    language=vl['language']
-                )
+        if 'known_languages' in validated_data.keys():
+            validated_languages = validated_data['known_languages']
+            for vl in validated_languages:
+                logger.debug(vl)
+                try:
+                    kl = KnownLanguage.objects.get(
+                        person=instance,
+                        language=vl['language']
+                    )
 
-                kl.level_of_proficiency = vl['level_of_proficiency']
-                # kl.accent = vl['accent']
-                kl.dialect = vl['dialect']
+                    kl.level_of_proficiency = vl['level_of_proficiency']
+                    # kl.accent = vl['accent']
+                    kl.dialect = vl['dialect']
 
-            except ObjectDoesNotExist:
-                kl = KnownLanguage.objects.create(
-                    person=instance,
-                    level_of_proficiency=vl['level_of_proficiency'],
-                    dialect=vl['dialect'],
-                    # accent=vl['accent'],
-                    language=vl['language']
-                )
-            kl.save()
-
-        instance.demographic = demo
+                except ObjectDoesNotExist:
+                    kl = KnownLanguage.objects.create(
+                        person=instance,
+                        level_of_proficiency=vl['level_of_proficiency'],
+                        dialect=vl['dialect'],
+                        # accent=vl['accent'],
+                        language=vl['language']
+                    )
+                kl.save()
 
         # TODO not sure if this is the correct approach?
-        instance.groups.set(validated_data['groups'])
+        if 'groups' in validated_data.keys():
+            instance.groups.set(validated_data['groups'])
 
+        if 'demographic' in validated_data.keys():
+            instance.demographic = demo
+            instance.demographic.save()
         instance.save()
-        instance.demographic.save()
-
+        
         return instance
+
+
+class MagicLoginSerializer(serializers.Serializer):
+    email = serializers.CharField(required=True)
+
+    def create(self, validated_data):
+        myObject = object()
+        myObject.email = validated_data['email']
+        return myObject

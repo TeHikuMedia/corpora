@@ -1,0 +1,64 @@
+---
+
+- name: remove old segments directory
+  file:
+    path: "{{tmp_dir}}/wahi_korero"
+    state: absent
+  when: purge_segments_repo
+
+- name: make repo directory for segments
+  become: true
+  file:
+    path: "{{tmp_dir}}"
+    recurse: yes
+    owner: "{{ ansible_user }}"
+    group: "{{ gunicorn_group }}"
+    state: directory
+  tags:
+   - segmenter  
+
+
+# - name: Create the SSH public key file
+#   copy: content="{{ git_ssh_pub_key }}"
+#         dest=/root/.ssh/id_rsa.pub
+#         mode=0644
+
+- name: Create the SSH private key file
+  copy: content="{{ github_wahi_korero }}"
+        dest=/home/{{ansible_user}}/.ssh/id_rsa_wahi_korero
+        mode=0600
+  tags: 
+    - segmenter
+
+- name: Create the SSH public key file
+  copy: content="{{ github_wahi_korero_pub }}"
+        dest=/home/{{ansible_user}}/.ssh/id_rsa_wahi_korero.pub
+        mode=0644   
+  tags: 
+    - segmenter
+
+
+- name: Setup the segmenter git repo
+  # the private key is stored in admin's .ssh
+  git:
+    repo: git@github.com:TeHikuMedia/wahi-korero.git
+    dest: "{{tmp_dir}}/wahi_korero" 
+    version: "{{wahi_korero_version}}"
+    accept_hostkey: yes
+    key_file: /home/{{ansible_user}}/.ssh/id_rsa_wahi_korero
+    force: yes
+  tags: segmenter
+  ignore_errors: yes
+
+- name: Install segmenter requirements in django virtualenv
+  pip: 
+    virtualenv: "{{virtualenv_path}}"
+    state: latest
+    requirements: "{{tmp_dir}}wahi_korero/requirements.txt"
+  tags: segmenter
+  ignore_errors: yes
+
+- name: copy wahi_korero files to app directory
+  command: "cp -r {{exe_dir}} {{application_path}}/"
+  tags: segmenter
+  ignore_errors: yes

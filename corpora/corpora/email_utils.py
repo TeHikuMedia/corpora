@@ -11,6 +11,7 @@ from django.test import RequestFactory
 import logging
 logger = logging.getLogger('company.models')
 
+
 ### taken from http://ozkatz.github.io/getting-e-mail-right-with-django-and-ses.html
 class EMail(object):
     """
@@ -24,18 +25,22 @@ class EMail(object):
     >>> email.send()
     >>>
     """
-    def __init__(self, to, subject):
+    def __init__(self, to, subject, request=None):
         self.to = to
         self.subject = subject
         self._html = None
         self._text = None
+        self.request = request
 
     def _render(self, template, context):
         return render_to_string(template, context)
 
     def html(self, template, context):
-        rf = RequestFactory()
-        request = rf.get('/')
+        if not self.request:
+            rf = RequestFactory()
+            request = rf.get('/')
+        else:
+            request = self.request
         result = render_to_string(template, context=context, request=request, using=None)
         logger.debug('BASE PATH: {0}'.format(settings.STATIC_ROOT))
         try:
@@ -56,6 +61,10 @@ class EMail(object):
         self._text = self._render(template, context)
 
     def send(self, from_addr=None, fail_silently=False):
+        try:
+            basestring
+        except NameError:
+            basestring = str
         if isinstance(self.to, basestring):
             self.to = [self.to]
         if not from_addr:
