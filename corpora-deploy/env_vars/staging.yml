@@ -7,15 +7,13 @@ setup_git_repo: yes
 
 # AWS Settings
 webserver_instance_type: t3.small # cant build ffmpeg on micro
+webserver_asg_instance_type: t3.small # migrate to t2.medium
 solrserver_instance_type: t3.small
 debian_distro: buster
 number_webserver_instances: 1
-domain_name: koreromaori.com
-cloudfront_subdomain: staticdev
-cloudfront_cname: "{{cloudfront_subdomain}}.{{domain_name}}"
 
 # AWS SSL ARN FOR LOAD BALANCING
-elb_ssl_arn: arn:aws:acm:ap-southeast-2:473856431958:certificate/6f42dda8-75d4-4420-a60f-023751bda8a0
+# elb_ssl_arn: arn:aws:acm:ap-southeast-2:473856431958:certificate/6f42dda8-75d4-4420-a60f-023751bda8a0
 
 #memcached_instance_type: t1.micro # right now we're using a localling installed memcache
 database_instance_type: db.t2.small

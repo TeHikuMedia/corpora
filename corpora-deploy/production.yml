@@ -194,54 +194,28 @@
     - deploy-django
 
 
-# # Use the secondary machine to create an AMI for autoscaling
-# - name: "Set up autoscaling for {{ application_name }}"
-#   hosts: localhost
-#   vars:
-#     - server_role: secondary
-#     - server_type: web
-#   vars_files:
-#     - env_vars/base.yml
-#     - env_vars/production.yml  
-#     - env_vars/vault.yml
-#     - group_vars/production.yml    
-#     - group_vars/remote.yml
-#   roles:
-#     - ensure-ec2-stopped
-#     - autoscale
-#   tags:
-#     - production    
-#     - deploy-asg
-#     - deploy-production
-#     - deploy-production-asg
-#     - scale
-#     - scale-asg
-#     - scale-production
-#     - scale-production-asg
-#     - remote
-#     # deploy
-
-
-# - name: Set securtity groups
-#   hosts: localhost
-#   serial: "100%"
-#   vars_files:
-#     - env_vars/base.yml
-#     - env_vars/production.yml
-#     - env_vars/vault.yml
-#     - group_vars/remote.yml
-#     - group_vars/production.yml
-#   vars:
-#     - server_type: web
-#   roles:
-#     - load-balance
-#   tags:
-#     - production
-#     - launch
-#     - launch-production
-#     - deploy
-#     - scale
-#     - deploy-web
-#     - remote
-#     - load-balance-security
-#   # - provision
+# Use the secondary machine to create an AMI for autoscaling
+- name: "Set up autoscaling for {{ application_name }}"
+  hosts: localhost
+  vars:
+    - server_type: web
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/production.yml  
+    - env_vars/vault.yml
+    - group_vars/production.yml    
+    - group_vars/remote.yml
+  roles:
+    - scale-web-server
+  tags:
+    - production    
+    - deploy-asg
+    - deploy-production
+    - deploy-production-asg
+    - scale
+    - scale-asg
+    - scale-production
+    - scale-production-asg
+    - remote
+    - deploy-django
+    - deploy

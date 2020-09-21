@@ -193,11 +193,11 @@
     - staging
     - deploy-django
 
+
 # Use the secondary machine to create an AMI for autoscaling
 - name: "Set up autoscaling for {{ application_name }}"
   hosts: localhost
   vars:
-    - server_role: secondary
     - server_type: web
   vars_files:
     - env_vars/base.yml
@@ -206,8 +206,7 @@
     - group_vars/staging.yml    
     - group_vars/remote.yml
   roles:
-    - ensure-ec2-stopped
-    - autoscale
+    - scale-web-server
   tags:
     - staging    
     - deploy-asg
@@ -218,29 +217,5 @@
     - scale-staging
     - scale-staging-asg
     - remote
-    # deploy
-
-
-- name: Set securtity groups
-  hosts: localhost
-  serial: "100%"
-  vars_files:
-    - env_vars/base.yml
-    - env_vars/staging.yml
-    - env_vars/vault.yml
-    - group_vars/remote.yml
-    - group_vars/staging.yml
-  vars:
-    - server_type: web
-  roles:
-    - load-balance
-  tags:
-    - staging
-    - launch
-    - launch-staging
+    - deploy-django
     - deploy
-    - scale
-    - deploy-web
-    - remote
-    - load-balance-security
-  # - provision
