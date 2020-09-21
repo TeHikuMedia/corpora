@@ -1,3 +1,5 @@
+![Deploy Staging](https://github.com/TeHikuMedia/corpora/workflows/Deploy%20Staging/badge.svg)
+
 # corpora
 corpora is a Django project for gathering corpora for different languages. It's been built to support any number of languages with Te Reo Māori as its first.
 
