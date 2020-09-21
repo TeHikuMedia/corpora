@@ -13,9 +13,9 @@
     - server_type: web
   roles:
     - ec2
-    # - load-balance
+    - load-balance
     - s3
-    # - cloudfront
+    - cloudfront
   tags:
     - production
     - launch

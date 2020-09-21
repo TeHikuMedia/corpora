@@ -94,15 +94,15 @@ upgrade_pip_app: yes
 django_settings_file: settings.py
 django_include_fixtures: yes
 django_isnot_production: false
-django_file_storage: storages.backends.s3boto.S3BotoStorage
+django_file_storage: storages.backends.s3boto3.S3BotoStorage
 create_django_superuser: no
-aws_bucket: "{{project_name}}-{{env_type}}-{{aws_region}}"
-aws_staticfiles_bucket: "{{project_name}}-{{env_type}}-static-{{aws_region}}"
+aws_bucket: "{{project_name}}-production-{{aws_region}}"
+aws_staticfiles_bucket: "{{project_name}}-production-static-{{aws_region}}"
 run_django_syncdb: yes
 # run_django_south_migration: yes
 run_django_migrations: yes
 run_django_collectstatic: yes
-run_django_clearstatic: yes
+run_django_clearstatic: no
 build_language_files: no
 
 # run_django_createinitialrevisions: yes

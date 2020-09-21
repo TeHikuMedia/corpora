@@ -101,8 +101,8 @@ django_include_fixtures: yes
 django_isnot_production: true
 django_file_storage: storages.backends.s3boto3.S3Boto3Storage
 create_django_superuser: no
-aws_bucket: "{{project_name}}-{{env_type}}-{{aws_region}}"
-aws_staticfiles_bucket: "{{project_name}}-{{env_type}}-static-{{aws_region}}"
+aws_bucket: "{{project_name}}-staging-{{aws_region}}"
+aws_staticfiles_bucket: "{{project_name}}-staging-static-{{aws_region}}"
 run_django_syncdb: yes
 # run_django_south_migration: yes
 run_django_migrations: yes
