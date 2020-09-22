@@ -3,8 +3,7 @@ name: Deploy Staging
 on:
   push:
     branches:
-      - develop
-      - combine-deploy
+      - staging
     paths:
       - "corpora/**"
       - "requirements.txt"
