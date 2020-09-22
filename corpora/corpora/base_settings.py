@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     'collectfast',
     'django.contrib.staticfiles',
+    # 'corpora.staticfiles.CorporaStaticFilesConfig',
     'django.contrib.sites',
     'django.contrib.sitemaps',
 
@@ -333,7 +334,7 @@ COMPRESS_PRECOMPILERS = (
     # ('text/foobar', 'path.to.MyPrecompilerFilter'),
 )
 COMPRESS_LOCAL_NPM_INSTALL = False
-# COMPRESS_ENABLED = True
+COMPRESS_ENABLED = not DEBUG
 # COMPRESS_NODE_MODULES = "/usr/local/lib/node_modules/"
 
 

@@ -200,5 +200,5 @@
     dest: /home/vagrant/.bash_aliases
   tags:
     - django
-  when: env_type == 'local'
+  when: env_type not in 'production'
 
