@@ -7,8 +7,8 @@ name: Build Deploy Machine
 on:
   push:
     branches:
-      - develop
-      - combine-deploy
+      - staging
+      - tumu
     paths:
       - "corpora-deploy/**"
   pull_request:
