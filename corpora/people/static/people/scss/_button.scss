@@ -63,7 +63,7 @@
 
 }
 
-button{
+button, button.btn{
   @include a-sign-in-with-button($brand_primary);
   background-color: $brand_primary;
   display: inline-block;
@@ -75,14 +75,14 @@ button{
   font-weight: 500;
   padding: 0px;
 }
-button:hover{
+button:hover, button.btn:hover{
   background-color: darken($brand_primary, 5%);
 }
-button:active{
+button:active, button.btn:active{
   @include a-sign-in-active( darken($brand_primary, 10%));
   outline: none;
 }  
-button:focus{
+button:focus, button.btn:focus{
   outline: none;
 }
 

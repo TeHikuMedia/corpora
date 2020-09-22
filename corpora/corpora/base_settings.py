@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.postgres',
 
-    # 'collectfast',
+    'collectfast',
     'django.contrib.staticfiles',
     # 'corpora.staticfiles.CorporaStaticFilesConfig',
     'django.contrib.sites',
