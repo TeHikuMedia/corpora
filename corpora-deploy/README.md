@@ -38,17 +38,27 @@ docker rm corpora-deploy
 # Show logs
 docker logs corpora-deploy -f
 # Sample deployment command
-docker run -dit --name corpora-deploy --entrypoint /deploy/scripts/deploy.sh -e ENV_TYPE=staging -e TAGS=deploy-now -e VAULT_PASS= corpora-deploy
+docker run -dit --name corpora-deploy --entrypoint /deploy/scripts/deploy.sh -e ENV_TYPE=staging -e TAGS=deploy-django -e ANSIBLE_VAULT_PASS=$ANSIBLE_VAULT_PASSWORD corpora-deploy
 ```
 
-#### Pushing corpora-deploy docker to AWS ECR
+#### Building & Pushing corpora-deploy docker to AWS ECR
 ```bash
+# Build the base docker
+docker build . -t corpora-deploy
 # Get & run login
 $(aws ecr get-login --no-include-email)
 # Tag our image
 docker tag corpora-deploy 473856431958.dkr.ecr.ap-southeast-2.amazonaws.com/corpora/deploy
 # Push image to repo
 docker push 473856431958.dkr.ecr.ap-southeast-2.amazonaws.com/corpora/deploy
+# Now re-build the ECR with the proper Dockerfile
+docker build . -t corpora-deploy --file gitactions.Dockerfile
+# Tag our image
+docker tag corpora-deploy 473856431958.dkr.ecr.ap-southeast-2.amazonaws.com/corpora/deploy
+# Push image to repo
+docker push 473856431958.dkr.ecr.ap-southeast-2.amazonaws.com/corpora/deploy
+# Run from ECR
+docker run --entrypoint /deploy/scripts/deploy.sh -e ENV_TYPE=staging -e TAGS=deploy-django -e ANSIBLE_VAULT_PASS=$ANSIBLE_VAULT_PASSWORD 473856431958.dkr.ecr.ap-southeast-2.amazonaws.com/corpora/deploy
 ```
 
 

@@ -8,6 +8,9 @@ KEY_PATH=$SSH_PATH/$KEY_FILE
 
 echo "$ANSIBLE_VAULT_PASS" > ~/.vault_pass.txt
 
+export ANSIBLE_STDOUT_CALLBACK=default
+export ANSIBLE_LOAD_CALLBACK_PLUGINS=False
+
 credentials=$(\
 	ansible localhost \
 	--inventory='localhost,' \
