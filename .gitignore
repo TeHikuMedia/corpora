@@ -84,8 +84,8 @@ wahi_korero*
 #*django.mo
 
 node_modules/
-package-lock.json
-
+# package-lock.json
+vue_bundles*
 
 # Ansible
 vault.yml

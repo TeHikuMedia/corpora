@@ -1,20 +1,13 @@
 ---
 
-# - include_tasks: get_rds_facts.yml
-
 - include: get_ec2_facts.yml
   when: env_type != 'local'
-
 
 - set_fact:
     server_role: "primary"
   when: env_type == 'local'
   tags:
     django-celery
-
-
-# - include_tasks: create_users_and_groups.yml
-
 
 - include_tasks: setup_git_repo.yml
   when: ansible_env.PWD != "/home/vagrant" # in vagrant we mirror our local repository, so it's not necessary to set up the bitbucket repo
@@ -25,10 +18,6 @@
   tags:
     - server
     - sites
-
-
-# - include: install_self_signed_certs.yml
-#   when: env_type=='local'
 
 - include_tasks: install_bower.yml
 
@@ -43,18 +32,7 @@
     - django
     - django-celery
 
-# - include_tasks: set_file_permissions.yml
-
 - include_tasks: setup_nginx.yml
   tags: 
     - server
     - sites
-
-# - include_tasks: nginx_secure_dev_site.yml
-#   tags: 
-#     - server
-#     - sites
-
-
-# still need to call nginx restart!
-

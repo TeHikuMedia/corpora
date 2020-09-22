@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'django_celery_beat',
+    'webpack_loader',
 ]
 
 MIDDLEWARE = [
@@ -555,3 +556,21 @@ FACEBOOK_PIXEL_ID = '158736294923584'
 
 # Transcode API Stuff
 TRANSCODE_API_TOKEN = os.environ['TRANSCODE_API_TOKEN']
+
+
+### Vue frontend Config ###
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'CACHE': not DEBUG,
+        'BUNDLE_DIR_NAME': 'vue_bundles/',  # must end with slash
+        'STATS_FILE': os.path.join(
+            PROJECT_NAME,
+            'static',
+            'vue_bundles',
+            'webpack-stats.json'
+        ),
+        'POLL_INTERVAL': 0.1,
+        'TIMEOUT': None,
+        'IGNORE': [r'.+\.hot-update.js', r'.+\.map']
+    }
+}
