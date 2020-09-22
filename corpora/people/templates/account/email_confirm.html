@@ -7,6 +7,12 @@
 
 
 {% block account_content %}
+{% addtoblock 'css' %}
+<style type="text/x-scss">
+@import 'people/scss/login';
+</style>
+{% endaddtoblock %}
+
 <h1>{% trans "Confirm E-mail Address" %}</h1>
 
 {% if confirmation %}
@@ -19,9 +25,9 @@
 		style="text-align: center;">
 {% csrf_token %}
 
-    <a  class="btn btn-default btn-lg" href="javascript:{}" onclick="document.getElementById('confirm_email_form').submit();">
-        {% trans 'Confirm' %}
-    </a>
+  
+        <button type='submit'>{% trans 'Confirm' %}</button>
+  
 
 
 </form>
