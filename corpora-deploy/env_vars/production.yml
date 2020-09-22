@@ -94,7 +94,6 @@ upgrade_pip_app: yes
 django_settings_file: settings.py
 django_include_fixtures: yes
 django_isnot_production: false
-django_file_storage: storages.backends.s3boto3.S3BotoStorage
 create_django_superuser: no
 aws_bucket: "{{project_name}}-production-{{aws_region}}"
 aws_staticfiles_bucket: "{{project_name}}-production-static-{{aws_region}}"

@@ -29,3 +29,7 @@ ebs_size: 64
 
 
 elasticache_endpoint: corpora-redis.9eqoln.ng.0001.apse2.cache.amazonaws.com
+
+
+# Django
+django_file_storage: storages.backends.s3boto3.S3Boto3Storage
