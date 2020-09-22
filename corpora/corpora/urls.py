@@ -22,7 +22,7 @@ from django.views.decorators.cache import cache_page
 
 from django.conf import settings
 from django.conf.urls import include, url
-from django.urls import path
+from django.urls import path, re_path
 
 urlpatterns = [
 
@@ -135,7 +135,8 @@ urlpatterns = [
         auth.ProcessExpoRedirect.as_view(),
         name='expo-login'),
 
-    path('v/', VueFrontend.as_view()),
+    re_path(r'^v/$.*', VueFrontend.as_view()),
+    re_path(r'^v/.*/$', VueFrontend.as_view()),
 
     # url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps},
     #     name='django.contrib.sitemaps.views.sitemap')

@@ -8,12 +8,12 @@ const pages = {
 };
 
 const publicPath = process.env.NODE_ENV === 'production'
-  ? ''
-  : 'http://172.28.128.8:8003/'
+  ? 'https://corporalocal.nz/static/vue_bundles/' // need to put this in ansible
+  : 'https://localhost:8003/'
 
 module.exports = {
   pages,
-  filenameHashing: false,
+  filenameHashing: true,
   productionSourceMap: false,
   publicPath: publicPath,
   outputDir: '../corpora/static/vue_bundles/',
@@ -45,10 +45,11 @@ module.exports = {
     config.devServer
       .host('0.0.0.0')
       .port(8003)
-      .public('http://172.28.128.8:8003')
+      .public('https://localhost:8003/')
       .hotOnly(true)
       .watchOptions({ poll: true })
-      .https(false)
+      .https(true)
+      .disableHostCheck(true)
       .headers({ 'Access-Control-Allow-Origin': ['*'] });
   },
 };
