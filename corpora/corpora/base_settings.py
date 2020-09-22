@@ -502,6 +502,11 @@ if 'local' in ENV_TYPE:
         },
     }
 else:
+    if 'stag' in ENV_TYPE:
+        timeout = 180
+    else:
+        timeout = 300
+
     CACHES = {
         'default': {
             'BACKEND': 'django_redis.cache.RedisCache',
@@ -519,7 +524,7 @@ else:
                 "CLIENT_CLASS": "django_redis.client.DefaultClient"
             },
             "KEY_PREFIX": f"{PROJECT_NAME}:cf:{ENV_TYPE}",
-            'TIMEOUT': 60*60*24,
+            'TIMEOUT': timeout,
         },
     }
 
