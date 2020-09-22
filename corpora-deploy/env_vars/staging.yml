@@ -2,7 +2,7 @@
 
 env_type: stag
 apt_upgrade: yes
-git_branch: combine-deploy
+git_branch: staging
 setup_git_repo: yes
 
 # AWS Settings
