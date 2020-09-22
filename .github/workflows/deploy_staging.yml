@@ -7,6 +7,11 @@ on:
     paths:
       - "corpora/**"
       - "requirements.txt"
+  pull_request:
+    branches:
+      - tumu
+    paths:
+      - "corpora-deploy/**"
 
 jobs:
 
