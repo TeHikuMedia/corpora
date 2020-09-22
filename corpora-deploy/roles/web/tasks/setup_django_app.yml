@@ -197,7 +197,7 @@
 - name: Setting up django vagrant aliases
   template:
     src: bash_aliases.sh.j2
-    dest: /home/vagrant/.bash_aliases
+    dest: "/home/{{ansible_user}}/.bash_aliases"
   tags:
     - django
   when: env_type not in 'production'
