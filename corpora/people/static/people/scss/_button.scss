@@ -11,40 +11,13 @@
     border: 1px solid $color;
     border-radius: 2px;
     box-shadow: 0px 2px 2px rgba(0,0,0,0.25);
-
-}
-
-@mixin div-sign-in-with-icon($icon_url, $color){
-
-  display: inline-block;
-  /*background-image: url($icon_url);*/
-  /*background-size: 18px 18px;*/
-  /*background-position: 50% 50%;*/
-  /*background-repeat: no-repeat;*/
-  width: 38px;
-  height: 38px;
-  line-height: 38px;
-  /*background-color: $color;*/
-  float: left;
-  color: white;
-  /*border-radius: 2px;*/
-
-}
-
-@mixin div-sign-in-text($color, $font){
-  color: $color;
-  line-height: 38px;
-  float: left;
-  font-size: 14px;
-  padding: 0px 15px 0px 0px;
-  font-weight: 400;
-  overflow: hidden;
-  font-family: $font;
+    color: white;
+    cursor: pointer;
+    outline: none;
 }
 
 @mixin a-sign-in-hover($color){
-  background-color: $color;
-  border-color: $color;
+  background-color: darken($brand_primary, 5%);
 }
 
 @mixin a-sign-in-active($color){
@@ -54,29 +27,13 @@
   border-color: $color;
 }
 
-@mixin div-sign-in-hover-icon($color){
-  background-color: $color;
-
-}
-@mixin div-sign-in-active-icon($color){
-  background-color: $color;
-
-}
 
 button, button.btn{
   @include a-sign-in-with-button($brand_primary);
-  background-color: $brand_primary;
-  display: inline-block;
-  border: 0px;
-  color: white;
-  border-radius: 2px;
-  cursor: pointer;
-  outline: none;
-  font-weight: 500;
-  padding: 0px;
+
 }
 button:hover, button.btn:hover{
-  background-color: darken($brand_primary, 5%);
+   @include a-sign-in-hover( darken($brand_primary, 5%));
 }
 button:active, button.btn:active{
   @include a-sign-in-active( darken($brand_primary, 10%));
@@ -87,21 +44,11 @@ button:focus, button.btn:focus{
 }
 
 
-
-
 a.btn{
   @include a-sign-in-with-button($brand_primary);
-  background-color: $brand_primary;
-  display: inline-block;
-  border: 0px;
-  color: white;
-  border-radius: 2px;
-  cursor: pointer;
-  outline: none;
-  font-weight: 500;
 }
 a.btn:hover{
-  background-color: darken($brand_primary, 5%);
+  @include a-sign-in-hover( darken($brand_primary, 5%));
 }
 a.btn:active{
   @include a-sign-in-active( darken($brand_primary, 10%));

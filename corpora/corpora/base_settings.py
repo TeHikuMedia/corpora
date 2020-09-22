@@ -44,8 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
 
     'collectfast',
-    'django.contrib.staticfiles',
-    # 'corpora.staticfiles.CorporaStaticFilesConfig',
+    # 'django.contrib.staticfiles',
+    'corpora.staticfiles.CorporaStaticFilesConfig',
     'django.contrib.sites',
     'django.contrib.sitemaps',
 
