@@ -11,3 +11,9 @@ zone_domain_name: koreromaori.com
 domain_name: dev.koreromaori.com
 cloudfront_subdomain: staticdev
 cloudfront_cname: "{{cloudfront_subdomain}}.{{zone_domain_name}}"
+
+
+# Shared Roles Config
+asg_desired: 0
+asg_min_size: 0
+asg_max_size: 3

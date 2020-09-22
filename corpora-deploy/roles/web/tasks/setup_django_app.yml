@@ -66,6 +66,8 @@
   tags:
     - django
     - rebuild-database
+  notify:
+    - restart all # This will always fire, which is what we want.
 
 - name: Prune Django Bower Packages
   shell: . {{ virtualenv_path }}/bin/activate
