@@ -8,12 +8,12 @@ on:
   push:
     branches:
       - staging
-      - tumu
     paths:
       - "corpora-deploy/**"
   pull_request:
     branches:
       - tumu
+      - staging
     paths:
       - "corpora-deploy/**"
 
