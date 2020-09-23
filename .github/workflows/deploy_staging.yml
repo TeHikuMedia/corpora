@@ -10,8 +10,10 @@ on:
   pull_request:
     branches:
       - tumu
+      - staging
     paths:
-      - "corpora-deploy/**"
+      - "corpora/**"
+      - "requirements.txt"
 
 jobs:
 
