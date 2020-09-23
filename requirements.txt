@@ -39,7 +39,8 @@ python-memcached # => move to this oen as it's thread safe?
 django-redis
 
 # Django wrapper for AWS SES (Simple Email Service)
-django-ses
+django-ses==1.0.3
+
 
 # Used to turn CSS to inline styles
 # Also used in email

@@ -3,8 +3,14 @@ name: Deploy Staging
 on:
   push:
     branches:
-      - develop
-      - combine-deploy
+      - staging
+    paths:
+      - "corpora/**"
+      - "requirements.txt"
+  pull_request:
+    branches:
+      - tumu
+      - staging
     paths:
       - "corpora/**"
       - "requirements.txt"
