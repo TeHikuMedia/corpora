@@ -7,6 +7,17 @@ upstream wsgi_server_{{item}} {
 }
 
 server {
+    listen 81;
+    server_name _;
+    access_log off;
+    location /health-check {
+        proxy_set_header Host {{ domain_name }};
+        proxy_pass http://wsgi_server_{{item}};
+        break;
+    }
+}
+
+server {
     listen 80;
     listen [::]:80;
     server_name {{ nginx_server_names[item] }};

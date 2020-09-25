@@ -9,6 +9,7 @@ from django.contrib.sitemaps.views import sitemap
 
 from corpora.views import views
 from corpora.views.vue import VueFrontend
+from corpora.views.management import UserCheckView
 from django.views.generic import RedirectView
 # from people.views import profile_redirect
 from rest_framework.documentation import include_docs_urls
@@ -138,8 +139,11 @@ urlpatterns = [
     re_path(r'^v/$.*', VueFrontend.as_view()),
     re_path(r'^v/.*/$', VueFrontend.as_view()),
 
+    path('management', UserCheckView.as_view()),
     # url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps},
     #     name='django.contrib.sitemaps.views.sitemap')
+
+    path('health-check', views.health_check)
 
 ]
 

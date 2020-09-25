@@ -20,6 +20,9 @@ if [[ -z "$ENV_TYPE" ]]; then
 	echo "Please set ENV_TYPE variable"
 
 elif [[ "$ENV_TYPE" == "staging" ]]; then
+	if [[ -z "$BRANCH" ]]; then
+		BRANCH=staging
+
 	echo "Running staging deployment with -t $tag and branch:$BRANCH"
 	ansible-playbook \
 		-i inventory/aws_ec2.yml \

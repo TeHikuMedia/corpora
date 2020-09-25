@@ -6,26 +6,16 @@ upstream wsgi_server_{{item}} {
   server unix:{{ virtualenv_path }}/run/gunicorn_{{item}}.sock fail_timeout=0;
 }
 
-#server {
-##    listen 80;
-#    listen [::]:80;
-#    server_name {{ nginx_server_names[item] }};
-#    return 301 https://$server_name$request_uri;
-#}
-
 server {
-    listen      81;
+    listen 81;
+    server_name _;
+    access_log off;
     location /health-check {
-        access_log off;
-        default_type text/plain;
-        return 200 'OK';
+        proxy_set_header Host {{ domain_name }};
+        proxy_pass http://wsgi_server_{{item}};
+        break;
     }
 }
-
-#server {
-#    server_name {{ nginx_server_names_aliases[item] }};
-#    return 301 https://$host$request_uri;
-#}
 
 server {
 

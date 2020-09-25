@@ -31,15 +31,13 @@
     - django
     - django-celery
 
-- include_tasks: setup_nginx.yml
-  tags: 
-    - server
-    - sites
-
 - include_tasks: nginx_secure_dev_site.yml
   tags: 
     - server
     - sites
   when: env_type == 'stag'
-  notify:
-    - restart nginx
+
+- include_tasks: setup_nginx.yml
+  tags: 
+    - server
+    - sites

@@ -18,8 +18,6 @@ pytz
 django-storages~=1.9.1
 django-bower
 
-
-django-recaptcha==2.0.6
 django-debug-toolbar
 
 certifi

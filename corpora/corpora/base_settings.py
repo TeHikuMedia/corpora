@@ -85,7 +85,6 @@ INSTALLED_APPS = [
 
     'django_celery_beat',
     'webpack_loader',
-    'captcha',
 ]
 
 MIDDLEWARE = [
@@ -581,7 +580,3 @@ WEBPACK_LOADER = {
         'IGNORE': [r'.+\.hot-update.js', r'.+\.map']
     }
 }
-
-RECAPTCHA_PUBLIC_KEY = os.environ['RECAPTCHA_SITE_KEY']
-RECAPTCHA_PRIVATE_KEY = os.environ['RECAPTCHA_SECRET_KEY']
-
