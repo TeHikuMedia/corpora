@@ -22,6 +22,7 @@ if [[ -z "$ENV_TYPE" ]]; then
 elif [[ "$ENV_TYPE" == "staging" ]]; then
 	if [[ -z "$BRANCH" ]]; then
 		BRANCH=staging
+	fi
 
 	echo "Running staging deployment with -t $tag and branch:$BRANCH"
 	ansible-playbook \
