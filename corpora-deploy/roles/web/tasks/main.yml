@@ -31,6 +31,8 @@
     - django
     - django-celery
 
+- include_tasks: set_file_ownership.yml
+
 - include_tasks: nginx_secure_dev_site.yml
   tags: 
     - server
