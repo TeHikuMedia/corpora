@@ -16,7 +16,7 @@ number_webserver_instances: 1
 # elb_ssl_arn: arn:aws:acm:ap-southeast-2:473856431958:certificate/6f42dda8-75d4-4420-a60f-023751bda8a0
 
 #memcached_instance_type: t1.micro # right now we're using a localling installed memcache
-database_instance_type: db.t2.small
+database_instance_type: db.t3.micro
 
 # Database settings.
 db_user: "{{ application_name }}"

@@ -84,6 +84,7 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'django_celery_beat',
+    'captcha',
 ]
 
 MIDDLEWARE = [
@@ -232,7 +233,7 @@ ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_EMAIL_VERIFICATION = 'optional'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 # ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/'
 
 
@@ -452,11 +453,16 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
         'rest_framework.throttling.ScopedRateThrottle',
+
     ],
     'DEFAULT_THROTTLE_RATES': {
         'listen': '200/day',
-        'sentence': '400/day'
+        'sentence': '500/day',
+        'anon': '50/day',
+        'user': '1000/day',
     }
 }
 
@@ -556,3 +562,7 @@ FACEBOOK_PIXEL_ID = '158736294923584'
 
 # Transcode API Stuff
 TRANSCODE_API_TOKEN = os.environ['TRANSCODE_API_TOKEN']
+
+
+RECAPTCHA_PUBLIC_KEY = os.environ['RECAPTCHA_SITE_KEY']
+RECAPTCHA_PRIVATE_KEY = os.environ['RECAPTCHA_SECRET_KEY']

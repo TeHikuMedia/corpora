@@ -28,6 +28,11 @@ webserver_ami: ami-038cef7ea3fc80d8a # sydney, debian 10.5
 ebs_size: 64
 
 
+# Elasticache
+elasticache_type: redis
+elasticache_name: "{{project_name}}-{{elasticache_type}}"
+elasticache_security_group: "{{elasticache_name}}"
+elasticache_node_type: cache.t3.small
 elasticache_endpoint: corpora-redis.9eqoln.ng.0001.apse2.cache.amazonaws.com
 
 
