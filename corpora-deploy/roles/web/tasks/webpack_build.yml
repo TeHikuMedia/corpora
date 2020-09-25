@@ -1,0 +1,17 @@
+---
+
+- name: Install NPM packages
+  npm:
+    path: "{{application_path}}/vue_frontend/"
+    ci: true
+  tags:
+    - local
+    - provision
+    - webpack-local
+
+- name: Build frontend bundles
+  shell: cd {{application_path}}/vue_frontend/ && npm run build
+  tags:
+    - local
+    - provision
+    - webpack-local
