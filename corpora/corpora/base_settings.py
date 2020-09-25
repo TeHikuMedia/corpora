@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
 
     'collectfast',
-    'django.contrib.staticfiles',
+    # 'django.contrib.staticfiles',
+    'corpora.staticfiles.CorporaStaticFilesConfig',
     'django.contrib.sites',
     'django.contrib.sitemaps',
 
@@ -235,17 +236,12 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 # ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/'
 
-# These email settings should change for a production environment. Right now we're using G Suite.
-# EMAIL_HOST=os.environ['EMAIL_HOST']
-# EMAIL_HOST_USER=os.environ['EMAIL_HOST_USER']
-# EMAIL_HOST_PASSWORD=os.environ['EMAIL_HOST_PASSWORD']
-# EMAIL_USE_SSL=True # move to deploy
-# EMAIL_PORT=465 # Move to deploy
 
 # Email
 EMAIL_BACKEND = 'django_ses.SESBackend' # Use AWS Simple Email Service
-AWS_SES_REGION_NAME = 'us-west-1'
-AWS_SES_REGION_ENDPOINT = 'email.us-west-2.amazonaws.com'
+AWS_REGION = os.environ['AWS_REGION']
+AWS_SES_REGION_NAME =  'ap-southeast-2'
+AWS_SES_REGION_ENDPOINT = "email.ap-southeast-2.amazonaws.com"
 DEFAULT_FROM_EMAIL = u'"Kōrero Māori" <koreromaori@tehiku.nz>'
 
 
@@ -339,7 +335,7 @@ COMPRESS_PRECOMPILERS = (
     # ('text/foobar', 'path.to.MyPrecompilerFilter'),
 )
 COMPRESS_LOCAL_NPM_INSTALL = False
-# COMPRESS_ENABLED = True
+COMPRESS_ENABLED = not DEBUG
 # COMPRESS_NODE_MODULES = "/usr/local/lib/node_modules/"
 
 
@@ -508,6 +504,11 @@ if 'local' in ENV_TYPE:
         },
     }
 else:
+    if 'stag' in ENV_TYPE:
+        timeout = 180
+    else:
+        timeout = 300
+
     CACHES = {
         'default': {
             'BACKEND': 'django_redis.cache.RedisCache',
@@ -525,7 +526,7 @@ else:
                 "CLIENT_CLASS": "django_redis.client.DefaultClient"
             },
             "KEY_PREFIX": f"{PROJECT_NAME}:cf:{ENV_TYPE}",
-            'TIMEOUT': 60*60*24,
+            'TIMEOUT': timeout,
         },
     }
 

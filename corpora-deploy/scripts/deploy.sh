@@ -2,6 +2,10 @@
 
 . /deploy/scripts/setup.sh
 
+export ANSIBLE_STDOUT_CALLBACK=debug
+export ANSIBLE_LOAD_CALLBACK_PLUGINS=True
+export ANSIBLE_FORCE_COLOR=True
+
 # Default deploytment tags
 tag='deploy'
 
