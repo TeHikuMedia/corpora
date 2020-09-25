@@ -682,6 +682,7 @@ class ListenPermissions(permissions.BasePermission):
                 uuid = person.uuid
             else:
                 uuid = 'None-Person-Object'
+
             key = '{0}:{1}:listen'.format(uuid, obj.id)
             cache.set(key, True, 15)
             logger.debug('   CAN VIEW: {0} {1}'.format(key, True))
@@ -706,7 +707,7 @@ class ListenViewSet(viewsets.ModelViewSet):
     pagination_class = TenResultPagination
     serializer_class = ListenSerializer
     permission_classes = (ListenPermissions,)
-    # throttle_scope = 'listen'
+    throttle_scope = 'listen'
 
     def get_queryset(self):
         person = get_person(self.request)

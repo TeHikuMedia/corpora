@@ -2,7 +2,7 @@ Django~=3.0.0
 boto
 boto3
 Pillow
-celery[redis]
+celery[redis]==4.4.7
 django-celery-beat
 flower
 django-compressor
@@ -19,7 +19,7 @@ django-storages~=1.9.1
 django-bower
 
 
-
+django-recaptcha==2.0.6
 django-debug-toolbar
 
 certifi

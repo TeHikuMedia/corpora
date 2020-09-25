@@ -376,7 +376,6 @@ class ListenSerializer(serializers.ModelSerializer):
         model = Recording
         fields = (
             'sentence', 'audio_file_url', 'id', 'sentence_text',
-            'quality_control_aggregate',
             )
 
     def get_audio_file_url(self, obj):

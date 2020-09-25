@@ -20,12 +20,12 @@ if [[ -z "$ENV_TYPE" ]]; then
 	echo "Please set ENV_TYPE variable"
 
 elif [[ "$ENV_TYPE" == "staging" ]]; then
-	echo "Running staging deployment with -t $tag"
+	echo "Running staging deployment with -t $tag and branch:$BRANCH"
 	ansible-playbook \
 		-i inventory/aws_ec2.yml \
 		--vault-password-file=~/.vault_pass.txt \
 		--private-key=$KEY_PATH \
-		--extra-vars "repo_branch=develop" \
+		--extra-vars "git_branch=$BRANCH" \
 		staging.yml \
 		-t $tag
 
