@@ -106,7 +106,7 @@ run_django_syncdb: yes
 # run_django_south_migration: yes
 run_django_migrations: yes
 run_django_collectstatic: yes
-run_django_clearstatic: yes
+run_django_clearstatic: no
 build_language_files: yes
 
 # run_django_createinitialrevisions: yes

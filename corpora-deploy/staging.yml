@@ -154,9 +154,10 @@
     - group_vars/staging.yml
   roles: 
     - get-rds-facts
-    - web-common
-    - web
     - nginx
+    - web-common
+    - webpack
+    - web
     - celery
   tags:
     - staging
@@ -191,6 +192,7 @@
     - web
   tags:
     - staging
+    - deploy
     - deploy-django
 
 
