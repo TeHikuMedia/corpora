@@ -461,7 +461,7 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'listen': '200/day',
         'sentence': '500/day',
-        'anon': '100/week',
+        'anon': '50/day',
         'user': '1000/day',
     }
 }
