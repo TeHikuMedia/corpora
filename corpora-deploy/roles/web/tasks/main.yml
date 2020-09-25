@@ -36,7 +36,7 @@
     - server
     - sites
 
-- include_tasks:  nginx_secure_dev_site.yml
+- include_tasks: nginx_secure_dev_site.yml
   tags: 
     - server
     - sites
