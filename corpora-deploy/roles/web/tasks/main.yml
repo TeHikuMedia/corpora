@@ -33,11 +33,11 @@
     - server
     - sites
 
-- include_tasks: setup_secure_dev_site.yml
+- include_tasks:  nginx_secure_dev_site.yml
   tags: 
     - server
     - sites
-  when: env_type in 'staging'
+  when: env_type == 'stag'
 
 # still need to call nginx restart!
 

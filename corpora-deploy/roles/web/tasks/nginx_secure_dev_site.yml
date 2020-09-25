@@ -7,7 +7,7 @@
     name:
       - apache2-utils
       - python-passlib
-  when: env_type == 'staging'
+  when: env_type == 'stag'
   tags:
     - sites
 
@@ -19,6 +19,6 @@
     owner: root
     group: www-data
     mode: 0640
-  when: env_type == 'staging'
+  when: env_type == 'stag'
   tags:
     - sites
