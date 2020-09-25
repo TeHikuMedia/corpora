@@ -3,6 +3,7 @@ ec2_key_pair : corpora_2020
 git_repo: https://github.com/TeHikuMedia/corpora.git
 project_name: corpora
 application_name: corpora
+django_settings_folder: "{{application_name}}"
 ssl_dest_dir: /etc/ssl
 vpc_id: vpc-9a9d97f8
 aws_region: ap-southeast-2
