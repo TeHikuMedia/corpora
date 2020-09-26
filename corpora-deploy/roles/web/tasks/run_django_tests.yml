@@ -1,0 +1,8 @@
+---
+
+- name: Run Django Tests
+  shell: . {{ virtualenv_path }}/bin/activate
+         && . {{ virtualenv_path }}/bin/postactivate
+         && cd {{ application_path }}
+         && python manage.py test --noinput --settings={{django_settings_folder}}.test_settings
+

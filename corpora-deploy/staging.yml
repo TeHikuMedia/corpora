@@ -158,6 +158,7 @@
     - web-common
     - webpack
     - web
+    - webpack-build
     - celery
   tags:
     - staging
@@ -194,6 +195,28 @@
     - staging
     - deploy
     - deploy-django
+
+
+- name: "Build webpack staging {{ application_name }}"
+  hosts: tag_project_env_server_type_{{ project_name }}_{{env_type}}_web
+  serial: "100%"
+  remote_user: admin
+  become: true
+  vars:
+    - server_type: web
+    - host_tag: tag_project_env_server_type_{{application_name}}_{{env_type}}_web
+    - ansible_user: admin
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/staging.yml  
+    - env_vars/vault.yml
+    - group_vars/remote.yml
+    - group_vars/staging.yml
+  roles: 
+    - webpack-build
+  tags:
+    - staging
+    - webpack
 
 
 # Use the secondary machine to create an AMI for autoscaling

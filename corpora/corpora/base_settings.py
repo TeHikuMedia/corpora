@@ -239,7 +239,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 # Email
 EMAIL_BACKEND = 'django_ses.SESBackend' # Use AWS Simple Email Service
-AWS_REGION = os.environ['AWS_REGION']
+AWS_REGION = None if 'local' in ENV_TYPE else os.environ['AWS_REGION']
 AWS_SES_REGION_NAME =  'ap-southeast-2'
 AWS_SES_REGION_ENDPOINT = "email.ap-southeast-2.amazonaws.com"
 DEFAULT_FROM_EMAIL = u'"Kōrero Māori" <koreromaori@tehiku.nz>'

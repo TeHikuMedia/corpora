@@ -31,12 +31,12 @@
     - django
     - django-celery
 
+- include_tasks: set_file_ownership.yml
+
 - include: run_django_tests.yml
   when: run_tests|bool
   tags:
     - run-tests
-
-- include_tasks: set_file_ownership.yml
 
 - include_tasks: nginx_secure_dev_site.yml
   tags: 

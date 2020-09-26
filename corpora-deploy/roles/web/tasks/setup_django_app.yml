@@ -202,3 +202,11 @@
     - django
   when: env_type not in 'production'
 
+- name: Setting up django vagrant aliases
+  become: yes
+  template:
+    src: bash_aliases.sh.j2
+    dest: "/root/.bash_aliases"
+  tags:
+    - django
+  when: env_type not in 'production'

@@ -82,12 +82,33 @@
   roles: 
     - web-common
     - web
+    - webpack-build
     - nginx
     - celery
   tags:
     - local
     - deploy
     - deploy-local
+
+
+- name: "Build webpack local {{ application_name }}"
+  hosts: tag_project_env_server_type_{{ project_name }}_{{env_type}}_web
+  serial: "100%"
+  remote_user: admin
+  become: true
+  vars:
+    - server_type: web
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/local.yml  
+    - env_vars/vault.yml
+    - group_vars/remote.yml
+    - group_vars/local.yml
+  roles: 
+    - webpack-build
+  tags:
+    - local
+    - webpack
 
 
 - name: "Deploy Django App to local {{ application_name }} server"
