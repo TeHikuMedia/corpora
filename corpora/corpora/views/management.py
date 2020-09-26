@@ -29,9 +29,9 @@ class UserCheckView(UserPassesTestMixin, TemplateView):
         for u in query:
             seconds = -1 if not u.diff else u.diff.total_seconds()
 
-            if seconds < 200000:
+            if seconds < 2:
                 u.diff = seconds
-                if hasattr(u,person):
+                if hasattr(u,'person'):
                     u.num_recordings = \
                         Recording.objects.filter(person=u.person).count()
                     u.num_reviewed = \

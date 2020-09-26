@@ -108,3 +108,5 @@ build_language_files: no
 install_bower_packages: yes
 prune_bower_packages: no
 install_people_fixture: no
+
+run_tests: no
