@@ -485,6 +485,7 @@ else:
         'fanout_patterns': True,
     }
 
+CELERY_TASK_DEFAULT_QUEUE = f"celery_{ENV_TYPE}"
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
