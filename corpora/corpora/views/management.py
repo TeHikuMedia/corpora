@@ -31,12 +31,13 @@ class UserCheckView(UserPassesTestMixin, TemplateView):
 
             if seconds < 200000:
                 u.diff = seconds
-                u.num_recordings = \
-                    Recording.objects.filter(person=u.person).count()
-                u.num_reviewed = \
-                    RecordingQualityControl.objects.filter(person=u.person).count()
-                u.known_language = \
-                    KnownLanguage.objects.filter(person=u.person).first()
+                if u.person:
+                    u.num_recordings = \
+                        Recording.objects.filter(person=u.person).count()
+                    u.num_reviewed = \
+                        RecordingQualityControl.objects.filter(person=u.person).count()
+                    u.known_language = \
+                        KnownLanguage.objects.filter(person=u.person).first()
                 suspect.append(u)
 
         context['suspect'] = suspect
