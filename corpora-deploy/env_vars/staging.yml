@@ -115,4 +115,4 @@ install_bower_packages: yes
 prune_bower_packages: no
 install_people_fixture: no
 
-run_tests: yes
+run_tests: no
