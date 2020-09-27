@@ -85,7 +85,7 @@ wahi_korero*
 
 node_modules/
 package-lock.json
-
+vue_bundles*
 
 # Ansible
 vault.yml

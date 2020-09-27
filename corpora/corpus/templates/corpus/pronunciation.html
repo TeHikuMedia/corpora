@@ -20,6 +20,11 @@
 {% include 'people/profile_header.html' %}
 
 <div class="container ">
+  <h1>Vue App?</h1>
+  <div id="app">
+    <p>{{ message }}</p>
+    <p>{{ test }}</p>
+  </div>
 </div>
 
 
@@ -28,7 +33,16 @@
 {% addtoblock "js" %}<script type="text/javascript" src="{% static 'corpora/js/django.ajax.form.js' %}"></script>{% endaddtoblock %}
 
 {% addtoblock "js-end" %}
-
+<script type="text/javascript">
+  console.log('test')
+  var app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello Vue!',
+      test: "foo"
+    }
+  })
+</script>
 {% endaddtoblock %}
 
 

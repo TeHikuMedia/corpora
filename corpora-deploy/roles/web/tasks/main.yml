@@ -10,7 +10,7 @@
     django-celery
 
 - include_tasks: setup_git_repo.yml
-  when: ansible_env.PWD != "/home/vagrant" # in vagrant we mirror our local repository, so it's not necessary to set up the bitbucket repo
+  when: ansible_env.PWD != "/home/vagrant"
 
 - include_tasks: setup_virtualenv.yml
 
@@ -28,16 +28,17 @@
     - django
     - django-celery
 
-- include_tasks: setup_nginx.yml
-  tags: 
-    - server
-    - sites
+- include_tasks: set_file_ownership.yml
 
-- include_tasks:  nginx_secure_dev_site.yml
+- include: run_django_tests.yml
+  when: run_tests|bool
+  tags:
+    - run-tests
+
+- include_tasks: nginx_secure_dev_site.yml
   tags: 
     - server
     - sites
   when: env_type == 'stag'
 
-# still need to call nginx restart!
-
+- include_tasks: setup_nginx.yml

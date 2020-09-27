@@ -21,8 +21,8 @@ export FILE_STORAGE="{{django_file_storage}}"
 export AWS_ID="{{aws_id}}"
 export AWS_SECRET="{{aws_secret}}"
 export AWS_BUCKET="{{aws_bucket}}"
-export AWS_REGION="{{aws_region}}"
 {% if env_type != 'local' %}
+export AWS_REGION="{{aws_region}}"
 export AWS_STATIC_BUCKET="{{aws_staticfiles_bucket}}"
 export AWS_CLOUDFRONT_DOMAIN="{{cloudfront_domain_name}}"
 export AWS_CLOUDFRONT_CNAME="{{cloudfront_cname}}"
@@ -58,6 +58,3 @@ export AUTO_SCALING_GROUP_NAME="ASG-{{ project_name }}-{{env_type}}-media"
 export TMP_STOR_DIR="{{application_tmp_dir}}"
 
 export TRANSCODE_API_TOKEN="{{koreromaori_transcode_api_token}}"
-
-export RECAPTCHA_SITE_KEY="{{recaptcha_site_key}}"
-export RECAPTCHA_SECRET_KEY="{{recaptcha_secret_key}}"

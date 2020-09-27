@@ -201,4 +201,3 @@
   tags:
     - django
   when: env_type not in 'production'
-

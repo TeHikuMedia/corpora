@@ -11,7 +11,7 @@ from django.views.generic import RedirectView
 from django.views.generic.base import TemplateView
 
 from django.contrib.auth import authenticate, login as auth_login
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from boto.s3.connection import S3Connection
 
@@ -163,3 +163,7 @@ class AudioileView(RedirectView):
                 return http.HttpResponseGone()
         else:
             raise http.Http404
+
+
+def health_check(request):
+    return HttpResponse('kia ora')

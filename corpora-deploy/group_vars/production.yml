@@ -6,7 +6,7 @@ private_key: ~/.ssh/corpora_2020.pem
 # Repository Details
 branch: "master"
 
-certificate_domain_name: 'corpora.io'
+certificate_domain_name:  koreromaori.com
 zone_domain_name: koreromaori.com
 domain_name: koreromaori.com
 cloudfront_subdomain: cdn

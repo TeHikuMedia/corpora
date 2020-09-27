@@ -8,6 +8,8 @@ from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 
 from corpora.views import views
+from corpora.views.vue import VueFrontend
+from corpora.views.management import UserCheckView
 from django.views.generic import RedirectView
 # from people.views import profile_redirect
 from rest_framework.documentation import include_docs_urls
@@ -21,6 +23,7 @@ from django.views.decorators.cache import cache_page
 
 from django.conf import settings
 from django.conf.urls import include, url
+from django.urls import path, re_path
 
 urlpatterns = [
 
@@ -133,8 +136,14 @@ urlpatterns = [
         auth.ProcessExpoRedirect.as_view(),
         name='expo-login'),
 
+    re_path(r'^v/$.*', VueFrontend.as_view()),
+    re_path(r'^v/.*/$', VueFrontend.as_view()),
+
+    path('management', UserCheckView.as_view()),
     # url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps},
     #     name='django.contrib.sitemaps.views.sitemap')
+
+    path('health-check', views.health_check)
 
 ]
 

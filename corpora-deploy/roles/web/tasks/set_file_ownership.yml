@@ -1,0 +1,16 @@
+---
+
+- name: Ensure that the application file permissions are set properly
+  file:
+    path: "{{item}}"
+    recurse: yes
+    owner: "{{ gunicorn_user }}"
+    group: "{{ gunicorn_group }}"
+  loop:
+    - "{{ virtualenv_path }}/scripts"
+    - "{{ virtualenv_path }}/run"
+    - "{{ virtualenv_path }}/bin"
+    - "{{application_log_dir}}"
+    - "{{application_tmp_dir}}"
+    - "{{nginx_static_dir}}"
+    - "{{nginx_media_dir}}"

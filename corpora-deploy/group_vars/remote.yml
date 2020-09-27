@@ -1,12 +1,16 @@
 ---
 
+ec2_key_pair : corpora_2020
+vpc_id: vpc-9a9d97f8
+aws_region: ap-southeast-2
+
+# SSH Credentials
+private_key: ~/.ssh/corpora_2020.pem
+
 # Setup -
 launch_solr_instance: no
 launch_memcache_instance: no
 launch_elasticache: yes
-
-# SSH Credentials
-private_key: ~/.ssh/corpora_2020.pem
 
 # Names for EC2 stuff.
 webserver_name: "{{ project_name }}-{{env_type}}-webserver"
@@ -38,3 +42,8 @@ elasticache_endpoint: corpora-redis.9eqoln.ng.0001.apse2.cache.amazonaws.com
 
 # Django
 django_file_storage: storages.backends.s3boto3.S3Boto3Storage
+
+availability_zones:
+  - ap-southeast-2a
+  - ap-southeast-2b
+  - ap-southeast-2c

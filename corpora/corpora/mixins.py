@@ -55,3 +55,15 @@ class EnsureCsrfCookieMixin(object):
     @method_decorator(ensure_csrf_cookie)
     def get(self, request, *args, **kwargs):
         return super(EnsureCsrfCookieMixin, self).get(request, *args, **kwargs)
+
+
+class CollectStaticOnGetMixin():
+    collect_static = False
+
+    def get(self, *args, **kwargs):
+        # RUN COLLECT STATIC WHEN WE RUN SERVER!
+        if self.collect_static:
+            from django.core.management import call_command
+            call_command('collectstatic', verbosity=0, interactive=False)
+
+        return super().get(*args, **kwargs)

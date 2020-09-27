@@ -19,7 +19,6 @@ django-storages~=1.9.1
 django-bower
 
 
-django-recaptcha==2.0.6
 django-debug-toolbar
 
 certifi
@@ -74,3 +73,5 @@ django-analytical
 Collectfast==2.2.0
 
 django-cors-headers
+
+django-webpack-loader==0.7.0
