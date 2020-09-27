@@ -9,7 +9,9 @@ const pages = {
 
 const publicPath = process.env.ENV_TYPE !== 'local'
   ? 'https://'+process.env.AWS_CLOUDFRONT_CNAME+'/vue_bundles/' // need to put this in ansible
-  : 'https://localhost:8003/'
+  : 'https://localhost:8004/'
+
+const devTools = process.env.ENV_TYPE !== 'prod' ? true : false
 
 module.exports = {
   pages,
@@ -45,7 +47,7 @@ module.exports = {
     config.devServer
       .host('0.0.0.0')
       .port(8003)
-      .public('https://localhost:8003/')
+      .public('https://localhost:8004/')
       .hotOnly(true)
       .watchOptions({ poll: true })
       .https(true)
