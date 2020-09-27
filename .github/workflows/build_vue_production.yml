@@ -31,4 +31,4 @@ jobs:
       run: |
         docker run --entrypoint /deploy/scripts/deploy.sh \
         -e ENV_TYPE=production -e TAGS=webpack \
-        -e ANSIBLE_VAULT_PASS=${{secrets.ANSIBLE_VAULT_PASS}} corpora-deploy
+        -e ANSIBLE_VAULT_PASS=${{secrets.ANSIBLE_VAULT_PASS}} corpora-deploy:latest

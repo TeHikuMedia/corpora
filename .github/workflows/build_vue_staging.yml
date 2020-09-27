@@ -31,7 +31,7 @@ jobs:
       if: ${{ github.head_ref != null }}
       env:
         BRANCH: ${{ github.head_ref }}
-        DOCKER_IMAGE: corpora-deploy
+        DOCKER_IMAGE: corpora-deploy:latest
       run: |
         docker run --entrypoint /deploy/scripts/deploy.sh \
         -e ENV_TYPE=staging -e TAGS=webpack -e BRANCH=$BRANCH \
@@ -41,7 +41,7 @@ jobs:
       if: ${{ github.head_ref == null }}
       env:
         BRANCH: staging
-        DOCKER_IMAGE: corpora-deploy
+        DOCKER_IMAGE: corpora-deploy:latest
       run: |
         docker run --entrypoint /deploy/scripts/deploy.sh \
         -e ENV_TYPE=staging -e TAGS=webpack -e BRANCH=$BRANCH \
