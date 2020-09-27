@@ -64,21 +64,32 @@ docker run --entrypoint /deploy/scripts/deploy.sh -e ENV_TYPE=staging -e TAGS=de
 
 # NPM Workflow
 
-The following roles are requied for running our npm workflow,
-- **webpack**
+The following ansible roles are requied for running our npm workflow,
+- **webpack** [link](https://github.com/TeHikuMedia/ansible-django-stack/tree/master/roles/webpack/tasks)
   - this installs the latest node
-- **webpack-build**
+- **webpack-build** [link](https://github.com/TeHikuMedia/ansible-django-stack/tree/master/roles/webpack-build)
   - this builds the actual bundle by running e.g. `npm run build`
-  - you have to ensure the ansible variable `npm_dir` is defined
+  - you have to define the ansible variable `npm_dir: {{ application_path }}/vue_frontend`
   - you have to define the build command: `npm_build_cmd: "npm run build"`
   - our webpack is configured to use environment variables provided by `/webapp/bin/postactivate`.
     this is used to set things like the static files url e.g. if they are behind a cdn.
 
 Checkout the following code to see how this works,
-- npm installation - https://github.com/TeHikuMedia/ansible-django-stack/blob/master/roles/webpack/tasks/main.yml
-- npm build - https://github.com/TeHikuMedia/ansible-django-stack/blob/master/roles/webpack-build/tasks/main.yml
-- vue configuration - https://github.com/TeHikuMedia/corpora/blob/vue_frontend/corpora/vue_frontend/vue.config.js
-- variables defined in `env_vars/base.yml`
+- [npm installation](https://github.com/TeHikuMedia/ansible-django-stack/blob/master/roles/webpack/tasks/main.yml)
+- [npm build](https://github.com/TeHikuMedia/ansible-django-stack/blob/master/roles/webpack-build/tasks/main.yml)
+- [vue configuration](https://github.com/TeHikuMedia/corpora/blob/vue_frontend/corpora/vue_frontend/vue.config.js)
+- variables defined in [`env_vars/base.yml`](https://github.com/TeHikuMedia/corpora/blob/bc4bd334dfb7aaa170eeee34eef0e3d8f92d53ac/corpora-deploy/env_vars/base.yml#L27)
+- [vue.config.js](https://github.com/TeHikuMedia/corpora/blob/tumu/corpora/vue_frontend/vue.config.js)
+
+## Automated npm build with gitactions
+We have two workflows for building our npm stuff. Here is our staging workflow: 
+https://github.com/TeHikuMedia/corpora/blob/tumu/.github/workflows/build_vue_staging.yml. 
+These are set up to only run when vue related code is changed. 
+If you add more vue code to other directories, you'll need to ensure those directories are included in this workflow's `paths`. 
+These are only run on pull requests to `staging` or `tumu` branches or on a push to `tumu`. 
+
+## TODO
+- Add npm tests to the [npm tasks](https://github.com/TeHikuMedia/ansible-django-stack/blob/master/roles/webpack-build/tasks/main.yml)
 
 
 # Setup
