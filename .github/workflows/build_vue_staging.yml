@@ -6,11 +6,11 @@ on:
       - staging
     paths:
       - "corpora/vue_frontend/**"
-  pull_request:
-    branches:
-      - tumu
-    paths:
-      - "corpora/vue_frontend/**"
+  # pull_request:
+  #   branches:
+  #     - tumu
+  #   paths:
+  #     - "corpora/vue_frontend/**"
 
 jobs:
 

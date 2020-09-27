@@ -9,14 +9,14 @@ on:
       - "corpora-deploy/**"
       - "README.md"
       - "*.md"
-  pull_request:
-    branches:
-      - tumu
-    paths-ignore:
-      - "corpora/vue_frontend/**"
-      - "corpora-deploy/**"
-      - "README.md"
-      - "*.md"
+  # pull_request:
+  #   branches:
+  #     - tumu
+  #   paths-ignore:
+  #     - "corpora/vue_frontend/**"
+  #     - "corpora-deploy/**"
+  #     - "README.md"
+  #     - "*.md"
 
 jobs:
 
