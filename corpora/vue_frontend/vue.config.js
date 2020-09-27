@@ -8,7 +8,7 @@ const pages = {
 };
 
 const publicPath = process.env.ENV_TYPE !== 'local'
-  ? 'https://'+process.env.AWS_CLOUDFRONT_CNAME+'/static/' // need to put this in ansible
+  ? 'https://'+process.env.AWS_CLOUDFRONT_CNAME+'/vue_bundles/' // need to put this in ansible
   : 'https://localhost:8003/'
 
 module.exports = {
