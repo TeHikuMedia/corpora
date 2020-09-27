@@ -65,9 +65,9 @@ docker run --entrypoint /deploy/scripts/deploy.sh -e ENV_TYPE=staging -e TAGS=de
 # NPM Workflow
 
 The following ansible roles are requied for running our npm workflow,
-- **webpack**
+- **webpack** [link](https://github.com/TeHikuMedia/ansible-django-stack/tree/master/roles/webpack/tasks)
   - this installs the latest node
-- **webpack-build**
+- **webpack-build** [link](https://github.com/TeHikuMedia/ansible-django-stack/tree/master/roles/webpack-build)
   - this builds the actual bundle by running e.g. `npm run build`
   - you have to define the ansible variable `npm_dir: {{ application_path }}/vue_frontend`
   - you have to define the build command: `npm_build_cmd: "npm run build"`
