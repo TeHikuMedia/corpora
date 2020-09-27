@@ -1,16 +1,32 @@
 <template>
   <div class="pronun">
-    <h1>Testing</h1>
+    <h1>{{foo}}</h1>
+    <p>{{recording}}</p>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-
+import { getRandomRecording } from '../api'
 export default defineComponent({
   name: 'Pronunciation',
-  props: {
-    msg: String
+  data: function () {
+    return {
+      foo: 'bar',
+      recording: {},
+      error: null
+    }
+  },
+  mounted: function () {
+    console.log('mounted')
+    getRandomRecording()
+      .then((response) => {
+        console.log(response)
+        this.recording = 'test'
+      })
+      .catch((error) => {
+        this.error = error
+      })
   }
 })
 </script>

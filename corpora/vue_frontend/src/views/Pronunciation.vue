@@ -1,6 +1,6 @@
 <template>
   <div class="pronunciation">
-    <h1>Pronunciation</h1>
+    <h1>Pronunciation View</h1>
     <Pronunciation />
   </div>
 </template>
