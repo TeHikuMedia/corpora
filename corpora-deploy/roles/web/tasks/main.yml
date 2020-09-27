@@ -21,8 +21,7 @@
 
 - include_tasks: install_bower.yml
 
-- include_tasks: webpack_build.yml
-  when: env_type != 'local'
+
 
 - include_tasks: setup_django_app.yml
   tags:

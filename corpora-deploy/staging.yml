@@ -104,6 +104,7 @@
     - ensure-web-running
     - run-tests
     - deploy-django
+    - webpack
 
 # we need to wait somewhere until the instance is finally booted, then we need to re-process the inventory!!!
 # could wrape provision and deplay in includes so that error on hosts isn't displayed when doing local deployment
@@ -208,11 +209,12 @@
     - ansible_user: admin
   vars_files:
     - env_vars/base.yml
-    - env_vars/staging.yml  
+    - env_vars/staging.yml
     - env_vars/vault.yml
     - group_vars/remote.yml
     - group_vars/staging.yml
-  roles: 
+  roles:
+    - get-rds-facts
     - webpack-build
   tags:
     - staging
