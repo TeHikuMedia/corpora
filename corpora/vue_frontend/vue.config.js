@@ -7,8 +7,8 @@ const pages = {
   },
 };
 
-const publicPath = process.env.NODE_ENV === 'production'
-  ? 'https://corporalocal.nz/static/vue_bundles/' // need to put this in ansible
+const publicPath = process.env.ENV_TYPE !== 'local'
+  ? 'https://'+process.env.AWS_CLOUDFRONT_CNAME+'/' // need to put this in ansible
   : 'https://localhost:8003/'
 
 module.exports = {
