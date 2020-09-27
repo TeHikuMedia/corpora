@@ -81,7 +81,6 @@ Checkout the following code to see how this works,
 - variables defined in `env_vars/base.yml`
 
 
-
 # Setup
 
 To deploy the kuaka platform, you will need the following packages: 
