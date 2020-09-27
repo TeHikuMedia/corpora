@@ -1,4 +1,4 @@
-### Build & Run a Deploy Machine
+# Build & Run a Deploy Machine
 This step is only necessary if you want to build a "deployment machine" locally.
 A deployment machine is a Linux machine with the packages required to deploy this project using ansible.
 We created this docker container so that we can use Git Actions for continuous deployment. Currently this docker container only supports deployment to staging and production environments. Perhaps we should look at including a local deployment.
@@ -23,7 +23,7 @@ docker run \
   corpora-deploy
 ```
 
-#### Help with Docker
+## Help with Docker
 Below are useful commands when having issues with docker
 
 ```bash
@@ -41,7 +41,7 @@ docker logs corpora-deploy -f
 docker run -dit --name corpora-deploy --entrypoint /deploy/scripts/deploy.sh -e ENV_TYPE=staging -e TAGS=deploy-django -e ANSIBLE_VAULT_PASS=$ANSIBLE_VAULT_PASSWORD corpora-deploy
 ```
 
-#### Building & Pushing corpora-deploy docker to AWS ECR
+## Building & Pushing corpora-deploy docker to AWS ECR
 ```bash
 # Build the base docker
 docker build . -t corpora-deploy
@@ -61,6 +61,26 @@ docker push 473856431958.dkr.ecr.ap-southeast-2.amazonaws.com/corpora/deploy
 docker run --entrypoint /deploy/scripts/deploy.sh -e ENV_TYPE=staging -e TAGS=deploy-django -e ANSIBLE_VAULT_PASS=$ANSIBLE_VAULT_PASSWORD 473856431958.dkr.ecr.ap-southeast-2.amazonaws.com/corpora/deploy
 ```
 
+
+# NPM Workflow
+
+The following roles are requied for running our npm workflow,
+- **webpack**
+  - this installs the latest node
+- **webpack-build**
+  - this builds the actual bundle by running e.g. `npm run build`
+  - you have to ensure the ansible variable `npm_dir` is defined
+  - our webpack is configured to use environment variables provided by `/webapp/bin/postactivate`.
+    this is used to set things like the static files url e.g. if they are behind a cdn.
+
+Checkout the following code to see how this works,
+- npm installation - https://github.com/TeHikuMedia/ansible-django-stack/blob/master/roles/webpack/tasks/main.yml
+- npm build - https://github.com/TeHikuMedia/ansible-django-stack/blob/master/roles/webpack-build/tasks/main.yml
+- vue configuration - https://github.com/TeHikuMedia/corpora/blob/vue_frontend/corpora/vue_frontend/vue.config.js
+
+
+
+# Setup
 
 To deploy the kuaka platform, you will need the following packages: 
 

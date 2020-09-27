@@ -1,0 +1,58 @@
+{% extends 'universal/base.html' %}
+{% load static sekizai_tags compress analytical i18n %}
+
+
+{% block content %}
+
+  {% addtoblock "css" %}
+    <style type="text/x-scss">      
+      div{
+        div{
+
+        }
+      }
+    </style>
+  {% endaddtoblock %}  
+
+
+<h1>Suspect Users</h1>
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Seconds to login</th>
+      <th scope="col"># Rec</th>
+      <th scope="col"># Rev</th>
+      <th scope="col">uname</th>
+      <th scope="col">Person</th>
+      <th scope="col">Dialect</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for user in suspect %}
+    <tr>
+    
+      <td >
+        {{user.diff}}
+      </td>
+      <td >
+        {{user.num_recordings}}
+      </td>
+      <td >
+        {{user.num_reviewed}}
+      </td>
+      <td >
+        {{user.username}}
+      </td>
+      <td >
+        {{user.person.uuid}}
+      </td>
+      <td >
+        {{user.known_language.dialect}}
+      </td>
+  
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

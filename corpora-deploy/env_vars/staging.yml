@@ -16,7 +16,7 @@ number_webserver_instances: 1
 # elb_ssl_arn: arn:aws:acm:ap-southeast-2:473856431958:certificate/6f42dda8-75d4-4420-a60f-023751bda8a0
 
 #memcached_instance_type: t1.micro # right now we're using a localling installed memcache
-database_instance_type: db.t2.small
+database_instance_type: db.t3.micro
 
 # Database settings.
 db_user: "{{ application_name }}"
@@ -106,7 +106,7 @@ run_django_syncdb: yes
 # run_django_south_migration: yes
 run_django_migrations: yes
 run_django_collectstatic: yes
-run_django_clearstatic: yes
+run_django_clearstatic: no
 build_language_files: yes
 
 # run_django_createinitialrevisions: yes
@@ -114,3 +114,5 @@ purge_celery_tasks: no
 install_bower_packages: yes
 prune_bower_packages: no
 install_people_fixture: no
+
+run_tests: no

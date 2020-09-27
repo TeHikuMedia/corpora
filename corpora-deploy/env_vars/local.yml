@@ -92,3 +92,5 @@ run_django_collectstatic: yes
 run_django_clearstatic: no
 build_language_files: no
 install_people_fixture: no
+
+run_tests: no

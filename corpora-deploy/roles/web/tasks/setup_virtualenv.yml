@@ -1,100 +1,5 @@
 ---
 
-# - name: Check to see if we need to build python
-#   stat:
-#     path: /home/{{ansible_user}}/.localpython/bin/pip3.7
-#   register: stat_result
-
-
-# - name: Create the python download folder
-#   become: false
-#   file:
-#     path: /home/{{ansible_user}}/src
-#     state: directory
-#   when: stat_result.stat.exists == False
-
-# - name: create the python local folder
-#   become: false
-#   file: 
-#     path: /home/{{ansible_user}}/.localpython
-#     state: directory
-#   when: stat_result.stat.exists == False
-
-# - name: download latest python 3.7.1 version
-#   become: false
-#   get_url:
-#     url: https://www.python.org/ftp/python/3.7.1/Python-3.7.1.tgz
-#     dest: /home/{{ansible_user}}/src/Python-3.7.1.tgz
-#     mode: 0444
-#   when: stat_result.stat.exists == False
-
-# - name: unarchive python
-#   become: false
-#   shell: "tar -zxvf Python-3.7.1.tgz"
-#   args:
-#     chdir: "/home/{{ansible_user}}/src/"
-#   when: stat_result.stat.exists == False
-
-# - name: Install required packages to build python
-#   apt:
-#     name:
-#       - build-essential
-#       - libssl-dev
-#       - zlib1g-dev
-#       - libncurses5-dev
-#       - libncursesw5-dev
-#       - libreadline-dev
-#       - libsqlite3-dev
-#       - libgdbm-dev
-#       - libdb5.3-dev
-#       - libbz2-dev
-#       - libexpat1-dev
-#       - liblzma-dev
-#       - libffi-dev
-#     state: present
-#   when: stat_result.stat.exists == False
-
-# - name: Build python
-#   shell: "{{ item }}"
-#   args:
-#     chdir: "/home/{{ansible_user}}/src/Python-3.7.1"
-#   with_items:
-#     - ./configure --prefix=/home/{{ansible_user}}/.localpython --enable-optimizations
-#     - make -j 8
-#     - make install
-#   when: stat_result.stat.exists == False
-
-
-#cd ~/src
-#wget http://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.5.2.tar.gz#md5=fbcefbd8520bb64bc24a560c6019a73c
-#tar -zxvf virtualenv-1.5.2.tar.gz
-#cd virtualenv-1.5.2/
-#~/.localpython/bin/python setup.py install
-
-
-# - name: Upgrade pip
-#   pip:
-#     name: pip
-#     extra_args: --upgrade
-#     executable: /home/{{ansible_user}}/.localpython/bin/pip3.7
-#   when: upgrade_pip
-# # executable: /usr/bin/pip3
-
-# # note this doesn't always work!
-# - name: Create the virtualenv
-#   command: /home/{{ansible_user}}/.localpython/bin/python3.7 -m venv --upgrade {{ virtualenv_path }}
-#   # command: /usr/bin/pyvenv-3.5 {{ virtualenv_path }}
-#   # pyvenv-3.5 {{ virtualenv_path }} 
-
-# - name: Upgrade pip
-#   pip:
-#     name: pip
-#     extra_args: --upgrade
-#     virtualenv: "{{ virtualenv_path }}"
-#   when: upgrade_pip_app
-
-
-
 # - name: Set log file mode
 #   set_fact:
 #     log_permissions: 0664    
@@ -112,7 +17,7 @@
 
 # - name: Set log folder mode
 #   set_fact:
-#     log_folder_permissions: 0775
+#     log_folder_permissions: 0777
 #   when: env_type == 'local'
 
 # # Are there security implications here? Afterall - if you have access to the server you can just do sudo and read this

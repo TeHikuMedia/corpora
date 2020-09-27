@@ -33,6 +33,8 @@
          && cd {{ application_path }}
          && python manage.py rebuild_index --noinput
 
-# THESE TASKS ARE PERFORMED FOR THE WEBSERVER AS WELL! WE NEED TO IGNORE THEM
-# WE NEED TO USE THE ANSBILE_HOST_EC2 DICT HERE
-
+- name: reload supervisor
+  command: supervisorctl {{item}}
+  loop:
+    - reread
+    - update

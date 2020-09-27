@@ -2,17 +2,6 @@
 
 # ansible_user: "{{ lookup('env','USER') }}"
 
-# Application settings.
-virtualenv_path: "/webapp"
-project_path: "{{ virtualenv_path }}/{{ project_name }}"
-application_path: "{{ project_path }}/{{ application_name }}"
-application_log_dir: "{{ virtualenv_path }}/logs"
-application_log_file: "{{ application_log_dir }}/gunicorn_supervisor.log"
-django_log_file: "{{ application_log_dir }}/django.log"
-celery_log_file: "{{ application_log_dir }}/celery.log"
-requirements_file: "{{ project_path }}/requirements.txt"
-application_tmp_dir: "/tmp/{{ project_name }}_files"
-
 django_num_sites: 2
 django_settings: ['corpora', 'reo_api']
 

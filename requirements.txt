@@ -2,7 +2,7 @@ Django~=3.0.0
 boto
 boto3
 Pillow
-celery[redis]
+celery[redis]==4.4.7
 django-celery-beat
 flower
 django-compressor
@@ -17,8 +17,6 @@ pycrypto
 pytz
 django-storages~=1.9.1
 django-bower
-
-
 
 django-debug-toolbar
 
@@ -74,3 +72,5 @@ django-analytical
 Collectfast==2.2.0
 
 django-cors-headers
+
+django-webpack-loader==0.7.0
