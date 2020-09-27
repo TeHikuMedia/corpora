@@ -70,6 +70,7 @@ The following roles are requied for running our npm workflow,
 - **webpack-build**
   - this builds the actual bundle by running e.g. `npm run build`
   - you have to ensure the ansible variable `npm_dir` is defined
+  - you have to define the build command: `npm_build_cmd: "npm run build"`
   - our webpack is configured to use environment variables provided by `/webapp/bin/postactivate`.
     this is used to set things like the static files url e.g. if they are behind a cdn.
 
@@ -77,6 +78,7 @@ Checkout the following code to see how this works,
 - npm installation - https://github.com/TeHikuMedia/ansible-django-stack/blob/master/roles/webpack/tasks/main.yml
 - npm build - https://github.com/TeHikuMedia/ansible-django-stack/blob/master/roles/webpack-build/tasks/main.yml
 - vue configuration - https://github.com/TeHikuMedia/corpora/blob/vue_frontend/corpora/vue_frontend/vue.config.js
+- variables defined in `env_vars/base.yml`
 
 
 
