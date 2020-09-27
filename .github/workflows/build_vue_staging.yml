@@ -1,15 +1,10 @@
 name: Build staging vue client
 
 on:
-  push:
-    branches:
-      - staging
-    paths:
-      - "corpora/vue_frontend/**"
-
   pull_request:
     branches:
       - tumu
+      - staging
     paths:
       - "corpora/vue_frontend/**"
 
