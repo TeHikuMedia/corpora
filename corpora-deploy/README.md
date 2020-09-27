@@ -91,6 +91,7 @@ These are only run on pull requests to `staging` or `tumu` branches or on a push
 ## TODO
 - Add npm tests to the [npm tasks](https://github.com/TeHikuMedia/ansible-django-stack/blob/master/roles/webpack-build/tasks/main.yml)
 
+
 # Setup
 
 To deploy the kuaka platform, you will need the following packages: 
