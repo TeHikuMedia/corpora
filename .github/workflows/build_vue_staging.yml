@@ -1,15 +1,10 @@
 name: Build staging vue client
 
 on:
-  push:
-    branches:
-      - staging
-    paths:
-      - "corpora/vue_frontend/**"
   pull_request:
     branches:
       - tumu
-      - master
+      - staging
     paths:
       - "corpora/vue_frontend/**"
 
@@ -36,7 +31,8 @@ jobs:
       if: ${{ github.head_ref != null }}
       env:
         BRANCH: ${{ github.head_ref }}
-        DOCKER_IMAGE: corpora-deploy
+        DOCKER_IMAGE: corpora-deploy:latest
+
       run: |
         docker run --entrypoint /deploy/scripts/deploy.sh \
         -e ENV_TYPE=staging -e TAGS=webpack -e BRANCH=$BRANCH \
@@ -46,7 +42,8 @@ jobs:
       if: ${{ github.head_ref == null }}
       env:
         BRANCH: staging
-        DOCKER_IMAGE: corpora-deploy
+        DOCKER_IMAGE: corpora-deploy:latest
+
       run: |
         docker run --entrypoint /deploy/scripts/deploy.sh \
         -e ENV_TYPE=staging -e TAGS=webpack -e BRANCH=$BRANCH \

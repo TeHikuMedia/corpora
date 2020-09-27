@@ -1,19 +1,15 @@
 name: Deploy Staging
 
 on:
-  push:
-    branches:
-      - staging
-    paths:
-      - "corpora/**"
-      - "requirements.txt"
   pull_request:
     branches:
       - tumu
       - staging
-    paths:
-      - "corpora/**"
-      - "requirements.txt"
+    paths-ignore:
+      - "corpora/vue_frontend/**"
+      - "corpora-deploy/**"
+      - "README.md"
+      - "*.md"
 
 jobs:
 
@@ -37,7 +33,7 @@ jobs:
       if: ${{ github.head_ref != null }}
       env:
         BRANCH: ${{ github.head_ref }}
-        DOCKER_IMAGE: corpora-deploy
+        DOCKER_IMAGE: corpora-deploy:latest
       run: |
         docker run --entrypoint /deploy/scripts/deploy.sh \
         -e ENV_TYPE=staging -e TAGS=deploy-django -e BRANCH=$BRANCH \
@@ -47,7 +43,7 @@ jobs:
       if: ${{ github.head_ref == null }}
       env:
         BRANCH: staging
-        DOCKER_IMAGE: corpora-deploy
+        DOCKER_IMAGE: corpora-deploy:latest
       run: |
         docker run --entrypoint /deploy/scripts/deploy.sh \
         -e ENV_TYPE=staging -e TAGS=deploy-django -e BRANCH=$BRANCH \
