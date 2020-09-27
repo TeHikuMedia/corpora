@@ -21,8 +21,6 @@
 
 - include_tasks: install_bower.yml
 
-
-
 - include_tasks: setup_django_app.yml
   tags:
     - server
@@ -44,6 +42,3 @@
   when: env_type == 'stag'
 
 - include_tasks: setup_nginx.yml
-  tags: 
-    - server
-    - sites
