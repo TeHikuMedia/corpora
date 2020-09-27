@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - tumu
-    paths:
-      - "corpora/**"
-      - "requirements.txt"
+    paths-ignore:
+      - "corpora/vue_frontend/**"
+      - "corpora-deploy/**"
+      - "README.md"
+      - "*.md"
 
 jobs:
 
