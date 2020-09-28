@@ -1,13 +1,17 @@
 <template>
   <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/pronunciation">Pronunciation</router-link>
+    <router-link to="/">Pronunciation</router-link>
   </div>
   <router-view/>
 </template>
 
 <style lang="scss">
+body{
+  background-color: #F0EFE9;
+  height: 100vh;
+}
 #app {
+  height: 100vh;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -16,7 +20,11 @@
 }
 
 #nav {
-  padding: 30px;
+  width: 100%;
+  position: absolute;
+  display: sticky;
+  top: 0px;
+  padding: 15px;
 
   a {
     font-weight: bold;
