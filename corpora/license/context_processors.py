@@ -6,8 +6,8 @@ from people.models import KnownLanguage
 
 
 def license(request):
-    person = get_or_create_person(request)
     try:
+        person = get_or_create_person(request)
         active = KnownLanguage.objects.get(active=True, person=person)
         license = License.objects.get(language=active.language)
     except ObjectDoesNotExist:

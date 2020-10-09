@@ -117,7 +117,7 @@ class TranscriptionQualityControl(models.Model):
         self.approved = False
         self.approved_by = None
 
-    def __unicode__(self):
+    def __str__(self):
         return u'Transcription QC: {1}'.format(self.transcription.pk)
 
 
@@ -190,7 +190,7 @@ class Transcription(models.Model):
         if Transcription.objects.exclude(pk=self.pk).filter(text=self.text):
             raise ValidationError('Duplicate sentence')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.text
 
     # Language and dialect should come from the recording object.
@@ -346,7 +346,7 @@ class AudioFileTranscription(models.Model):
         verbose_name = 'Audio File Transcription'
         verbose_name_plural = 'Audio File Transcriptions'
 
-    def __unicode__(self):
+    def __str__(self):
         if self.name:
             return self.name
         return 'None'

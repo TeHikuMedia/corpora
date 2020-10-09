@@ -14,9 +14,9 @@
         body{width:100% !important; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; margin:0; padding:0; } 
         /* Prevent Webkit and Windows Mobile platforms from changing default font sizes.*/ 
         .ExternalClass {width:100%;} /* Force Hotmail to display emails at full width */  
-        .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {line-height: 100%;}
+        .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div { }
         /* Forces Hotmail to display normal line spacing.  More on that: http://www.emailonacid.com/forum/viewthread/43/ */ 
-        #backgroundTable {margin:0; padding:0; width:100% !important; line-height: 100% !important;}
+        #backgroundTable {margin:0; padding:0; width:100% !important; }
         /* End reset */
 
         /* Some sensible defaults for images
@@ -163,6 +163,14 @@
 
     p, ul, li, td{
         font-family: 'Raleway', sans-serif;
+        font-size: 12pt;
+    }
+    a {
+      color: $brand_primary !important;
+    }
+
+    a:hover {
+      color: $brand_light !important;
     }
 
     ul{
@@ -182,8 +190,14 @@
     }
     small{
         font-size: 8pt;
-        line-height: 10pt;
     }
+
+    div.footer{
+      text-align: center;
+      border-top: 0px solid $brand_light!important;
+      margin-top: 15px;
+    }
+
     </style>
     {% endcompress %}
     <link href='https://fonts.googleapis.com/css?family=Raleway:100,300,500,700,900' rel='stylesheet' type='text/css'>
@@ -209,7 +223,7 @@
 </head>
 <body>
 <!-- Wrapper/Container Table: Use a wrapper table to control the width and the background color consistently of your email. Use this approach instead of setting attributes on the body tag. -->
-<table cellpadding="0" cellspacing="0" border="0" style="width: 100%; max-width: 600px;">
+<table cellpadding="0" cellspacing="0" border="0" style="width: 100%; max-width: 800px;">
     <tr>
         <td valign="top"> 
         <!-- Tables are the most common way to format your email consistently. Set your table widths inside cells and in most cases reset cellpadding, cellspacing, and border to zero. Use nested tables as a way to space effectively in your message. -->
@@ -220,26 +234,38 @@
 
         <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin:10px;">
 
-            <tr>
-                <td width="100%" valign="top">{% block heading %}{% endblock %}</td>
-            </tr>
-            <tr>
-                <td width="100%" valign="top">{% block main %}{% endblock %}</td>
-            </tr>
-            <tr>
-                <td width="100%" valign="top" class="footer">{% block footer %}
-                    <div style="width: 100%; text-align: center;">
-                        <small>You are receiving this email because you signed up to {{site.name}}.</small>
-                        <br>
-                        <small>
-                        Te Reo Irirangi o Te Hiku o Te Ika<br>
-                        1 Melba Street<br>
-                        Level 2<br>
-                        Kaitaia 0410<br>
-                        New Zealand</small>
-                    </div>
-                {% endblock %}</td>
-            </tr>
+          <tr>
+              <td width="100%" valign="top">
+                  {% block heading %}
+                  <h1><a href="https://koreromaori.com">Kōrero Māori</a></h1>
+                  {% endblock %}
+              </td>
+          </tr>
+          <tr>
+              <td width="100%" valign="top">{% block main %}{% endblock %}</td>
+          </tr>
+          <tr>
+            <td width="100%" valign="top" class="footer">{% block footer %}
+              <div style="width: 100%;" class="footer">
+                <p style="font-size: 1rem; text-align: center; margin-top: 30px;">
+                  You are receiving this email because you 
+                  signed up to {{site.name}}. If you don't want to receive these emails,
+                  you can
+                  <a href="https://{{site.domain}}{% url 'people:unsubscribe' %}">
+                    unsubscribe
+                  </a>
+                  or 
+                  <a href="https://{{site.domain}}{% url 'people:profile' %}">
+                    update your email preferences
+                  </a>.
+                </p>
+                <p style="font-size: 0.8rem;">
+                  Te Reo Irirangi o Te Hiku o Te Ika<br>
+                  1 Melba Street, Level 2, Kaitaia 0410, Aotearoa
+                </p>
+              </div>
+            {% endblock %}</td>
+          </tr>
         </table>
         <!-- End example table -->
 
@@ -253,4 +279,4 @@
 </table>  
 <!-- End of wrapper table -->
 </body>
-</html>
+</html>  

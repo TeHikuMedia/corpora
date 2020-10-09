@@ -33,8 +33,9 @@ from django.forms import inlineformset_factory
 from people.forms import \
     KnownLanguageFormWithPerson,\
     DemographicForm,\
-    PersonForm, GroupsForm
-
+    PersonForm, GroupsForm,\
+    UnsubscribeForm
+from django.views.generic.edit import FormView
 from corpora.mixins import SiteInfoMixin, EnsureCsrfCookieMixin
 
 from rest_framework.renderers import TemplateHTMLRenderer
@@ -484,3 +485,34 @@ class MagicLogin(TemplateView):
         context['user'] = self.request.user
 
         return context
+
+class Unsubscribe(FormView):
+    template_name = "people/unsubscribe.html"
+    form_class = UnsubscribeForm
+    
+    def get_success_url(self):
+        return reverse("people:unsubscribe")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        email = self.request.GET.get('email',None)
+        if email:
+            form = self.form_class(self.request.POST or None, initial={'email': email})
+            context['form'] = form
+        return context
+
+    def success(self):
+        context = super().get_context_data()
+        context['success'] = True
+        return context
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form))
+
+    def form_valid(self, form):
+        message = form.unsubscribe()
+        
+        result = super().form_valid(form)
+        logger.debug(result)
+
+        return self.render_to_response(self.success())

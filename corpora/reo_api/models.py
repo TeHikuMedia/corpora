@@ -36,7 +36,7 @@ class UserAPI(models.Model):
     def __str__(self):
         return str(self.user)
     
-    def __unicode__(self):
+    def __str__(self):
         return str(self.user)
 
 class ApplicationAPI(models.Model):
