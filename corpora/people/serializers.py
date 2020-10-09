@@ -67,7 +67,8 @@ class PersonSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('full_name', 'username', 'uuid', 'user',
                   'demographic', 'known_languages', 'id',
                   'profile_email', 'groups', 'receive_weekly_updates',
-                  'leaderboard', 'receive_daily_updates', 'receive_feedback')
+                  'leaderboard', 'receive_daily_updates', 'receive_feedback',
+                  'receive_emails')
         extra_kwargs = {"username": {"error_messages": {"required": "Give yourself a username"}}}
         validators = []
 
@@ -157,6 +158,7 @@ class PersonSerializer(serializers.HyperlinkedModelSerializer):
         attrs = [
             'full_name', 'receive_weekly_updates', 
             'receive_daily_updates', 'receive_feedback', 'leaderboard',
+            'receive_emails'
         ]
         for attr in attrs:
             if attr in validated_data.keys():

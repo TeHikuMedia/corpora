@@ -33,6 +33,7 @@ from corpus.models import Recording
 
 import datetime
 import time
+import pytz
 import logging
 logger = logging.getLogger('corpora')
 
@@ -300,9 +301,11 @@ def send_status_email(person_pk, frequency='weekly'):
         previous_period_of_time = _('yesterday')
 
         this_period_dt = \
-            datetime.datetime.combine(
+            timezone.localize(
+                datetime.datetime.combine(
                 timezone.now(),
                 datetime.time())
+                )
 
         last_period_dt = \
             this_period_dt-time_delta

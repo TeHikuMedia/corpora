@@ -35,7 +35,7 @@ class License(models.Model):
     # initially just have one license in the database and that's the only one
     # they can use
 
-    def __unicode__(self):
+    def __str__(self):
         return self.license_name
 
     def __str__(self):

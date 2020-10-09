@@ -1,0 +1,23 @@
+{% extends 'message/email/base_email.html' %}
+{% load static sekizai_tags i18n compress %}
+{% block heading %}{% endblock %}
+{% block main %}
+<p>Kia ora,</p>
+<p>Please confirm your email address for {{site.name}}
+  by clicking the link below,<br><br>
+  <b>{{ activate_url }}</b>
+  <br>
+</p>
+<p>
+  If you did not sign up to {{site.name}}, you may disregard this message.
+</p>
+{% endblock %}
+{% block footer %}
+<div class="footer"
+  style="width: 100%; text-align: center; margin-top: 30px;">
+  <p style="font-size: 0.8rem;">
+    Te Reo Irirangi o Te Hiku o Te Ika<br>
+    1 Melba Street, Level 2, Kaitaia 0410, Aotearoa
+  </p>
+</div>
+{% endblock %}
