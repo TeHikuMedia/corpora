@@ -160,7 +160,7 @@ If you restart or shutdown your computer, you'll need to run,
 
 in order to get the virtual box running again. You'll also need to re-deploy the code with,
 
-    ansible-playbook -i inventory/vagrant.py --vault-password-file=~/tehikudev/.vault_pass.txt --private-key=.vagrant/machines/default/virtualbox/private_key local.yml -t deploy
+    ansible-playbook -i inventory/vagrant.py --private-key=.vagrant/machines/default/virtualbox/private_key local.yml -t deploy
 
 to get Django working correctly. Not sure why we have to do this. It would be good if "vagrant up" did everything - add this to the TO DO.
 
@@ -168,7 +168,7 @@ to get Django working correctly. Not sure why we have to do this. It would be go
 
 On a local environment all changes to your code in kuaka will happen immediately as your kuaka repository folder should be linked with a folder in the local virtual box (e.g. ../corpora => virtualbox://webapp/corpora/corpora). You'll need to run django's collectstatic command if you make changes to files in the templates/static folder, for example .css or .js files. This can be done with the command,
 
-    ansible-playbook -i inventory/vagrant.py --vault-password-file=~/tehikudev/.vault_pass.txt --private-key=.vagrant/machines/default/virtualbox/private_key local.yml -t deploy
+    ansible-playbook -i inventory/vagrant.py --private-key=.vagrant/machines/default/virtualbox/private_key local.yml -t deploy
 
 where we re-deploy the code (this play calls Django's colllecstatic command). Alternatively, one could log into the virtual box and run collectstatic. For example,
 
@@ -183,11 +183,11 @@ Remote Instances
 
 To deploy a staging instance,
 
-    ansible-playbook -i inventory/ec2.py --vault-password-file=~/tehikudev/.vault_pass.txt --private-key=~/.ssh/tehiku.pem staging.yml
+    ansible-playbook -i inventory/ec2.py --private-key ~/.ssh/corpora_2020.pem staging.yml
 
 To deploy a production instance, 
 
-    ansible-playbook -i inventory/ec2.py --vault-password-file=~/tehikudev/.vault_pass.txt --private-key=~/.ssh/tehiku.pem production.yml
+    ansible-playbook -i inventory/ec2.py --private-key ~/.ssh/corpora_2020.pem production.yml
 
 We're now using dedicated servers for media transcoding. This requires building two machines running the kuaka app. The plays above run these extra steps, however there are handlers that will determine when the media machine should be re-deployed and built as an AMI.
 
@@ -196,11 +196,11 @@ Once the instances have been launched and provisioned, it's only necessary to ru
 
 **Staging:**
 
-    ansible-playbook -i inventory/ec2.py --vault-password-file=~/tehikudev/.vault_pass.txt --private-key=~/.ssh/tehiku.pem staging.yml -t deploy,scale
+    ansible-playbook -i inventory/ec2.py --private-key ~/.ssh/corpora_2020.pem staging.yml -t deploy,scale
 
 **Production:**
 
-    ansible-playbook -i inventory/ec2.py --vault-password-file=~/tehikudev/.vault_pass.txt --private-key=~/.ssh/tehiku.pem production.yml -t deploy,scale
+    ansible-playbook -i inventory/ec2.py --private-key ~/.ssh/corpora_2020.pem production.yml -t deploy,scale
 
 
 The scale tag provisions Auto Scaling for the Media server.
@@ -210,11 +210,11 @@ Once the instances have been launched and provisioned, it's only necessary to ru
 
 **Staging:**
 
-    ansible-playbook -i inventory/ec2.py --vault-password-file=~/tehikudev/.vault_pass.txt --private-key=~/.ssh/tehiku.pem staging.yml -t deploy
+    ansible-playbook -i inventory/ec2.py --private-key ~/.ssh/corpora_2020.pem staging.yml -t deploy
 
 **Production:**
 
-    ansible-playbook -i inventory/ec2.py --vault-password-file=~/tehikudev/.vault_pass.txt --private-key=~/.ssh/tehiku.pem production.yml -t deploy
+    ansible-playbook -i inventory/ec2.py --private-key ~/.ssh/corpora_2020.pem production.yml -t deploy
 
 
 Note that we need to pass the branch to the staging play as this allows us to test different branches on the same staging servers.
