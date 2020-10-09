@@ -5,3 +5,4 @@ keyed_groups:
   - prefix: tag
     key: tags
 replace_dash_in_groups: False
+strict_permissions: false

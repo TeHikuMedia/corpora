@@ -1,9 +1,22 @@
 {% load static %}
 {% block subject %}{% endblock %}
 
-{% block heading %}{% endblock %}
+{% block heading %}{{site.name}}{% endblock %}
 =================================
 
 {% block main %}{% endblock %}
 
-{% block footer %}{% endblock %}
+{% block footer %}
+You are receiving this email because you signed up to {{site.name}}.
+If you don't want to receive these emails, you can unsubscribe at,
+https://{{site.domain}}{% url 'people:unsubscribe' %}?email={{email}}
+
+or update your email preferences at,
+https://{{site.domain}}{% url 'people:profile' %}
+
+Te Reo Irirangi o Te Hiku o Te Ika
+1 Melba Street
+Level 2
+Kaitaia 0410
+Aotearoa
+{% endblock %}
