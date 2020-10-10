@@ -19,6 +19,10 @@
     owner: root
     group: www-data
     mode: 0640
+    state: "{{item}}"
   when: env_type == 'stag'
   tags:
     - sites
+  loop:
+    - absent
+    - present

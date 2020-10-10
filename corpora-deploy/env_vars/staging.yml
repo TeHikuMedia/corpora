@@ -6,8 +6,8 @@ git_branch: staging
 setup_git_repo: yes
 
 # AWS Settings
-webserver_instance_type: t3.small # cant build ffmpeg on micro
-webserver_asg_instance_type: t3.small # migrate to t2.medium
+webserver_instance_type: t3.large
+webserver_asg_instance_type: t3.small
 solrserver_instance_type: t3.small
 debian_distro: buster
 number_webserver_instances: 1
