@@ -57,6 +57,8 @@ def send_message(pk):
     if ma.action in 'E':
         counter = 0
         if 'person' in ma.target_type.model:
+            targets = targets\
+                .filter(receive_emails=True)
             for p in targets:
                 send_email_to_person.apply_async(
                     args=[p.pk, m.pk, ma.pk],
@@ -64,7 +66,7 @@ def send_message(pk):
                         p.pk, m.pk),
                     countdown=2*counter)
                 counter = counter+1
-        if 'group' in ma.target_type.model:
+        elif 'group' in ma.target_type.model:
             for g in targets:
                 send_email_to_group.apply_async(
                     args=[g.pk, m.pk, ma.pk],
@@ -84,9 +86,9 @@ def send_email_to_person(person_pk, message_pk, ma_pk):
     from corpora.email_utils import EMail
 
     try:
-        person = Person.objects.get(pk=person_pk)
+        person = Person.objects.get(pk=person_pk, receive_emails=True)
     except ObjectDoesNotExist:
-        return "No person with id {0} found.".format(person_pk)
+        return "No person with id {0} AND recieve_email=True found.".format(person_pk)
 
     try:
         message = Message.objects.get(pk=message_pk)
@@ -120,7 +122,9 @@ def send_email_to_person(person_pk, message_pk, ma_pk):
         context = {
             'subject': subject,
             'person': person,
+            'email': email,
             'content': message.content,
+            'messageID': message.pk,
             'url_append': url_append,
             'site': Site.objects.get_current()
         }
@@ -167,7 +171,7 @@ def send_email_to_group(group_pk, message_pk, ma_pk):
     except ObjectDoesNotExist:
         return "No message action with id {0} found.".format(message_pk)
 
-    people = Person.objects.filter(groups=group)
+    people = Person.objects.filter(groups=group, receive_emails=True)
 
     task_message = []
     for person in people:
@@ -196,6 +200,8 @@ def send_email_to_group(group_pk, message_pk, ma_pk):
             context = {
                 'subject': subject,
                 'person': person,
+                'email': email,
+                'messageID': message.pk,
                 'people': people,
                 'group': group,
                 'valid': valid,

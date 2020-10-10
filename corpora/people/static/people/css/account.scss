@@ -1,81 +1,98 @@
 @import 'corpora/static/corpora/css/_colors';
 
+body{
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+html {
+  height: -webkit-fill-available;
+}
+
+div.container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
 ul, ul.a {
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
 }
 
 li {
-	list-style: none;
+    list-style: none;
 }
 
 .p-text-block {
-	padding-top: 15px;
+    padding-top: 15px;
 }
 
 form {
-	text-align: left;
+    text-align: left;
 }
 
 .errorlist {
-	font-size: smaller;
-	// color: $brand_light !important;
+    font-size: smaller;
+    // color: $brand_light !important;
 }
 
 button, input[type="submit"] {
-	// background-color: $brand_primary;
-	// color: $lightest;
-	// text-align: center;
-	// text-decoration: none;
-	// border: none;
-	// padding: 8px 15px;
-	// border-radius: 4px;
-	// margin-top: 20px;
-	// outline: none;
+    // background-color: $brand_primary;
+    // color: $lightest;
+    // text-align: center;
+    // text-decoration: none;
+    // border: none;
+    // padding: 8px 15px;
+    // border-radius: 4px;
+    // margin-top: 20px;
+    // outline: none;
 }
 
 button[type="submit"]:hover, input[type="submit"]:hover {
-	// text-decoration: none;
-	// transform: scale(1.05, 1.05);
-	// box-shadow: 0 0 10px rgba(0,0,0,0.5);
-	// outline: none;
+    // text-decoration: none;
+    // transform: scale(1.05, 1.05);
+    // box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    // outline: none;
 }
 
 input[type="checkbox"] {
-	// -webkit-appearance: none;
-	// background-color: $dark;
-	// border: 1px solid $darker;
-	// padding: 8px;
-	// border-radius: 3px;
-	// display: inline-block;
-	// position: relative;
-	// margin-left: 3px;
+    // -webkit-appearance: none;
+    // background-color: $dark;
+    // border: 1px solid $darker;
+    // padding: 8px;
+    // border-radius: 3px;
+    // display: inline-block;
+    // position: relative;
+    // margin-left: 3px;
 }
 
 input[type="checkbox"]:focus {
-	// outline: 0;
+    // outline: 0;
 }
 
 input[type="checkbox"]:checked {
-	// background-color: $dark;
-	// border: 1px solid $darker;
-	// color: $darker;
+    // background-color: $dark;
+    // border: 1px solid $darker;
+    // color: $darker;
 }
 
 input[type="checkbox"]:checked:after {
-	// content: '\2714';
-	// font-size: 14px;
-	// position: absolute;
-	// top: 0px;
-	// left: 3px;
-	// color: $lighter;
+    // content: '\2714';
+    // font-size: 14px;
+    // position: absolute;
+    // top: 0px;
+    // left: 3px;
+    // color: $lighter;
 }
 
 label[for=id_remember] {
-	font-size: smaller;
+    font-size: smaller;
 }
 
 label[for=id_login], label[for=id_password] {
-	display: none;
+    display: none;
 }

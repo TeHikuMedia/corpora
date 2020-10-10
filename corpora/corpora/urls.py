@@ -18,7 +18,7 @@ from corpus.views.stats_views import RecordingStatsView
 from corpus.views.views import StatsView
 from people.views import stats_views, auth
 from people.views import views as people_views
-
+from message.views import RenderEmailView
 from django.views.decorators.cache import cache_page
 
 from django.conf import settings
@@ -143,8 +143,9 @@ urlpatterns = [
     # url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps},
     #     name='django.contrib.sitemaps.views.sitemap')
 
-    path('health-check', views.health_check)
-
+    path('health-check', views.health_check),
+    path('render-email', RenderEmailView.as_view()),
+    path('message/', include(('message.urls', 'message'), namespace='message')),
 ]
 
 

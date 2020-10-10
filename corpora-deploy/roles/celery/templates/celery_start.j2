@@ -29,20 +29,20 @@ exec celery \
 	-A {{ application_name }} \
 	-Q media worker \
 	-l info \
-	-n worker.{{item}}.%h
+	-n worker.{{item}}.{{env_type}}.%h
 	# --concurrency={{ celery_num_workers }} #<= not using as celery will default to num CPUs
 {% elif env_type != 'local' and 'ec2_server.tags.server_role' in 'secondary' %}
 exec celery \
 	-A {{ application_name }} \
 	-Q {{item}}_{{env_type}} worker \
 	-l info \
-	-n worker.{{item}}.%h \
+	-n worker.{{item}}.{{env_type}}.%h \
 	--concurrency={{ celery_num_workers_secondary }}
 {% else %}
 exec celery \
 	-A {{ application_name }} \
 	-Q {{item}}_{{env_type}} worker \
 	-l info \
-	-n worker.{{item}}.%h \
+	-n worker.{{item}}.{{env_type}}.%h \
 	--concurrency={{ celery_num_workers }}
 {% endif %}

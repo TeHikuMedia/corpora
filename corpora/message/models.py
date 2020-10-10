@@ -32,9 +32,8 @@ class Message(models.Model):
     class Meta:
         pass
 
-    def __unicode__(self):
+    def __str__(self):
         return self.subject
-
 
 class MessageAction(models.Model):
     publish = models.BooleanField(default=False)
@@ -60,5 +59,5 @@ class MessageAction(models.Model):
     class Meta:
         pass
 
-    def __unicode__(self):
+    def __str__(self):
         return self.message.subject

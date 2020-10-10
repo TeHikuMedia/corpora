@@ -14,9 +14,9 @@
         body{width:100% !important; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; margin:0; padding:0; } 
         /* Prevent Webkit and Windows Mobile platforms from changing default font sizes.*/ 
         .ExternalClass {width:100%;} /* Force Hotmail to display emails at full width */  
-        .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {line-height: 100%;}
+        .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div { }
         /* Forces Hotmail to display normal line spacing.  More on that: http://www.emailonacid.com/forum/viewthread/43/ */ 
-        #backgroundTable {margin:0; padding:0; width:100% !important; line-height: 100% !important;}
+        #backgroundTable {margin:0; padding:0; width:100% !important; }
         /* End reset */
 
         /* Some sensible defaults for images
@@ -125,15 +125,16 @@
     @import 'bower_components/bootstrap/scss/type';
     @import 'corpora/static/corpora/css/main.scss';
     @import 'corpora/static/corpora/css/_colors.scss';
-
+    html{
+      background-color: lighten(#f0efe9, 3);
+    }
     body{
-        background-color: white;
+        background-color: lighten(#f0efe9, 3);
         font-family: 'Raleway', sans-serif;
         font-size: 14pt;
     }
     table{
-        margin-left:auto; 
-        margin-right:auto;
+        background-color: lighten(#f0efe9, 3);
     }
     td{
         padding-left: 2px;
@@ -142,19 +143,27 @@
     h1{
         color: $brand_primary;
         font-weight: 900;
-        font-size: 1.8em;
+        font-size: 2em;
     }
     h2{
-        font-weight: 800;
+        font-weight: 700;
+        font-size: 1.6em;
+        color: $brand_darkest;
     }
     h3{
         font-weight: 700;
+        font-size: 1.2em;
+        color: $brand_darkest;
     }
     h4{
-        font-weight: 600;
+        font-weight: 700;
+        font-size: 1.0em;
+        color: $brand_darkest;
     }
     h5{
-        font-weight: 500;
+        font-weight: 700;
+        font-size: 1.0em;
+        color: $brand_darkest;
         text-decoration: underline;
     }
     h6{
@@ -163,6 +172,14 @@
 
     p, ul, li, td{
         font-family: 'Raleway', sans-serif;
+        font-size: 12pt;
+    }
+    a {
+      color: $brand_primary !important;
+    }
+
+    a:hover {
+      color: $brand_light !important;
     }
 
     ul{
@@ -182,10 +199,95 @@
     }
     small{
         font-size: 8pt;
-        line-height: 10pt;
     }
+
+    td.footer{
+      padding: 0px;
+      margin: 0px;
+      div.footer{
+        text-align: center;
+        border-top: 0px solid $brand_light!important;
+        background-color: lighten(#f0efe9, 3);
+        padding: 15px;
+      }
+    }
+
+    td.heading {
+      padding: 0px;
+      margin: 0px;
+      text-align: center;
+      margin: 0px 0px 15px 0px;
+      font-weight: 400;
+      div.heading{
+        background-color: $brand_primary;
+        padding: 30px 15px;
+        h1 {
+          font-weight: 400;
+          margin: 0px;
+          padding: 0px;
+          color: #fff;
+          a { 
+            color: #fff !important;
+          }
+        }
+        p {
+          font-weight: 400;
+          margin: 0;
+          padding: 0;
+          color: $brand_darker;
+        }
+      }
+    }
+
+    td.main {
+      padding: 0px;
+      margin: 0px;
+      div.main{
+        padding: 15px 15px 15px 15px;
+      }  
+    }
+
+    td.viewInBrowser{
+      margin:0px;
+      padding:0px;
+      text-align: right;
+      div{
+        padding: 0px 5px 5px 0px;
+        a{
+
+          font-size: 0.8em;
+          color: $brand_darker !important;
+        }
+        background-color: lighten(#f0efe9, 3);
+      }
+    }
+
+
+    table.mainTable{
+      background-color: lighten(#f0efe9, 3);
+      width: 100%;
+    }
+
+    table.wrapperTable{
+      margin-left:auto; 
+      margin-right:auto;
+      max-width: 800px;
+    }
+
+    table.emailContent{
+      margin:0px;
+      padding:0px;
+      margin-top: 5px;
+      background-color: lighten(#f0efe9, 6);
+      width: 100%;
+    }
+
     </style>
     {% endcompress %}
+
+    {% block inlinecss %}{% endblock %}
+    {% render_block "css" postprocessor "compressor.contrib.sekizai.compress" %}
+
     <link href='https://fonts.googleapis.com/css?family=Raleway:100,300,500,700,900' rel='stylesheet' type='text/css'>
 
     <!-- Targeting Windows Mobile -->
@@ -209,48 +311,80 @@
 </head>
 <body>
 <!-- Wrapper/Container Table: Use a wrapper table to control the width and the background color consistently of your email. Use this approach instead of setting attributes on the body tag. -->
-<table cellpadding="0" cellspacing="0" border="0" style="width: 100%; max-width: 600px;">
-    <tr>
-        <td valign="top"> 
-        <!-- Tables are the most common way to format your email consistently. Set your table widths inside cells and in most cases reset cellpadding, cellspacing, and border to zero. Use nested tables as a way to space effectively in your message. -->
 
-        {% block inlinecss %}{% endblock %}
-        {% render_block "css" postprocessor "compressor.contrib.sekizai.compress" %}
+<table cellpadding="0" cellspacing="0" border="0" class="mainTable" >
+  <tr><td valign="top" style="padding: 0px;">
+      <table cellpadding="0" cellspacing="0" border="0" class="wrapperTable">
+        <tr><td valign="top" style="padding: 0px;">
+  
+        <table cellpadding="0" cellspacing="0" border="0" align="center" class="emailContent">
+          <tr>
+              <td width="100%" valign="top" class="viewInBrowser">
+                  <div class="viewInBrowser">
+                    {% if messageID %}
+                      <a href="https://{{site.domain}}{% url 'message:messageDetail' messageID %}"><em>View in browser</em>
+                      </a>
+                    {% else %}&nbsp;
+                    {% endif %}
+                  </div>
+              </td>
+          </tr>
+          <tr>
+              <td width="100%" valign="top" class="heading">
+                  <div class="heading">{% block heading %}
+                  <h1><a target="_blank" href="https://{{site.domain}}">Kōrero Māori</a></h1>
+                  <p>hei whakaako i te rorohiko ki ngā reo taketake</p>
+                  {% endblock %}</div>
+              </td>
+          </tr>
+          <tr>
+              <td width="100%" valign="top" class="main">
+                <div class="main">
+                {% block main %}
+              
+                  <h1>How are you?</h1>
 
+                  <p>It&#39;s been a long time, we know. But we&#39;re <em>back</em>! Yay!</p>
 
-        <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin:10px;">
+                  <h2>What&#39;s happening</h2>
 
-            <tr>
-                <td width="100%" valign="top">{% block heading %}{% endblock %}</td>
-            </tr>
-            <tr>
-                <td width="100%" valign="top">{% block main %}{% endblock %}</td>
-            </tr>
-            <tr>
-                <td width="100%" valign="top" class="footer">{% block footer %}
-                    <div style="width: 100%; text-align: center;">
-                        <small>You are receiving this email because you signed up to {{site.name}}.</small>
-                        <br>
-                        <small>
-                        Te Reo Irirangi o Te Hiku o Te Ika<br>
-                        1 Melba Street<br>
-                        Level 2<br>
-                        Kaitaia 0410<br>
-                        New Zealand</small>
-                    </div>
-                {% endblock %}</td>
-            </tr>
+                  <p>We&#39;ve been <s>working</s> on heaps and we&#39;re so <u>excited</u> to show you about it all. But first we have some house clearning. Keeping sorry lol.</p>
+
+                  <h3>Heading 3</h3>
+
+                  <p>This is really <strong>important</strong>!</p>
+
+                {% endblock %}
+                </div>
+              </td>
+          </tr>
+          <tr>
+            <td width="100%" valign="top" class="footer">
+              <div class="footer">{% block footer %}
+                <p style="font-size: 0.85rem; text-align: center; ">
+                  You are receiving this email because you 
+                  signed up to {{site.name}}.  If you don't want to receive these emails,
+                  you can
+                  <a href="https://{{site.domain}}{% url 'people:unsubscribe' %}{% if email %}?email={{email|urlencode}}{% endif %}">
+                    unsubscribe
+                  </a>
+                  or 
+                  <a href="https://{{site.domain}}{% url 'people:profile' %}">update your email preferences</a>.
+                </p>
+                <p style="font-size: 0.75rem;">
+                  Te Reo Irirangi o Te Hiku o Te Ika<br>
+                  1 Melba Street, Level 2, Kaitaia 0410, Aotearoa
+                </p>
+              {% endblock %}</div>
+            </td>
+          </tr>
         </table>
-        <!-- End example table -->
 
-        <!-- Working with telephone numbers (including sms prompts).  Use the "mobile" class to style appropriately in desktop clients
-        versus mobile clients.
-        <span class="mobile_link"> </span>
-         -->
 
-        </td>
-    </tr>
+      </td></tr></table>
+    </td>
+  </tr>
 </table>  
 <!-- End of wrapper table -->
 </body>
-</html>
+</html>  

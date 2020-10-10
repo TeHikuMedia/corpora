@@ -162,7 +162,7 @@ class RecordingQualityControl(models.Model):
 
         return 1 - decimal.Decimal(abs(vote - avg)) / 2
 
-    def __unicode__(self):
+    def __str__(self):
         try:
             return u'Recording QC: {0}'.format(self.recording.pk)
         except:
@@ -236,7 +236,7 @@ class SentenceQualityControl(models.Model):
     def random_foo(self):
         print("Random, as")
 
-    def __unicode__(self):
+    def __str__(self):
         try:
             return u'Sentence QC: {0}'.format(self.sentence.pk)
         except:
@@ -300,7 +300,7 @@ class Source(models.Model):
         unique_together = (
             ("source_name", "source_type", "author", 'source_url'),)
 
-    def __unicode__(self):
+    def __str__(self):
         return "{0} by {1}".format(self.source_name, self.author)
 
     def __str__(self):
@@ -349,7 +349,7 @@ class Sentence(models.Model):
         if Sentence.objects.exclude(pk=self.pk).filter(text=self.text):
             raise ValidationError('Duplicate sentence')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.text
 
     def __str__(self):
@@ -436,7 +436,7 @@ class Recording(models.Model):
             # models.Index(fields=['quality_control'])
         ]
 
-    def __unicode__(self):
+    def __str__(self):
         try:
             return self.get_sentence_text() + u" by " + self.get_person_name()
         except:
@@ -592,7 +592,7 @@ class Text(models.Model):
         verbose_name_plural = _('texts')
         # unique_together = (("original_file_md5", "content_type", "person"),)
 
-    def __unicode__(self):
+    def __str__(self):
         return str(self.original_file)
 
     def __str__(self):

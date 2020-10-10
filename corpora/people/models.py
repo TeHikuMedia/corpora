@@ -27,7 +27,7 @@ class Tribe(models.Model):
         verbose_name = _('Tribe')
         verbose_name_plural = _('Tribes')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def __str__(self):
@@ -53,7 +53,7 @@ class Group(models.Model):
     duration = models.FloatField(
         default=0, blank=True, editable=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def __str__(self):
@@ -111,6 +111,10 @@ class Person(models.Model):
     receive_feedback = models.BooleanField(
         default=False,
         help_text="Check to receive feedback on your recordings in your progress reports.")
+
+    receive_emails = models.BooleanField(
+        default=True,
+        help_text="Check to receive occasional emails from us.")
 
     leaderboard = models.BooleanField(
         default=True,
@@ -186,7 +190,7 @@ class Person(models.Model):
             models.Index(fields=['score_comp'])
         ]
 
-    def __unicode__(self):
+    def __str__(self):
         return self.full_name
 
     def __str__(self):

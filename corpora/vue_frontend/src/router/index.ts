@@ -4,11 +4,6 @@ import Home from '../views/Home.vue'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
-  },
-  {
-    path: '/pronunciation',
     name: 'Pronunciation',
     component: () => import(/* webpackChunkName: "pronunciation" */ '../views/Pronunciation.vue')
   }

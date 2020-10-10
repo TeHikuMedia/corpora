@@ -49,6 +49,8 @@
     - ensure-ec2-running
     - ensure-web-running
     - run-tests
+    - deploy-django
+    - webpack
 
 # https://stackoverflow.com/questions/30226113/ansible-ssh-prompt-known-hosts-issue/39083724#39083724
 # We do this to register these new hosts as known hosts.
@@ -243,3 +245,35 @@
     - remote
     - deploy-django
     - deploy
+
+
+- name: "Ensure production {{ application_name }} server is stopped"
+  hosts: localhost
+  vars:
+    server_type: web
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/production.yml
+    - env_vars/vault.yml
+    - group_vars/production.yml
+    - group_vars/remote.yml
+  roles:
+    - ensure-ec2-stopped
+  tags:
+    - production
+    - provision
+    - deploy
+    - web
+    - provision-web
+    - provision-production
+    - provision-production-web
+    - deploy-web
+    - deploy-production
+    - deploy-production-webb
+    - remote
+    - ensure-ec2-stopped
+    - ensure-web-stopped
+    - run-tests
+    - scale
+    - deploy-django
+    - webpack

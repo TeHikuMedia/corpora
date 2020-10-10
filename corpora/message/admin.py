@@ -25,3 +25,4 @@ class MessageActionAdmin(admin.ModelAdmin):
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
     inlines = [MessageActionInline]
+    list_display = ('subject', 'id')

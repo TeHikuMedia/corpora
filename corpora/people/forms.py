@@ -6,7 +6,7 @@ from corpus.base_settings import LANGUAGES, LANGUAGE_CODE, DIALECTS, ACCENTS
 from dal import autocomplete
 from django.db.models.fields import BLANK_CHOICE_DASH
 from django.utils.translation import ugettext as _
-
+from django.db.models import Q
 
 # from django.conf.settings import LANGUAGES
 
@@ -75,6 +75,7 @@ class PersonForm(forms.ModelForm):
             'receive_weekly_updates',
             'receive_daily_updates',
             'receive_feedback',
+            'receive_emails',
             'leaderboard')
 
 
@@ -131,3 +132,21 @@ class SendEmailForm(forms.Form):
 class ResendEmailVerificationForm(forms.Form):
     resend = forms.BooleanField(required=True)
     # redirect = forms.CharField(max_length=128)
+
+class UnsubscribeForm(forms.Form):
+    email = forms.EmailField(required=True)
+
+    def unsubscribe(self):
+        email = self.cleaned_data['email']
+        person = Person.objects.filter(
+            Q(profile_email=email) | Q(user__email=email) )
+        if person.exists():
+            for p in person:
+                p.receive_emails = False
+                p.receive_feedback = False
+                p.receive_daily_updates = False
+                p.receive_weekly_updates = False
+                p.save()
+            return True
+        else:
+            return False

@@ -1,0 +1,70 @@
+{% extends "account/base.html" %}
+{% load i18n account socialaccount static sekizai_tags compress %}
+{% block title %}{% trans "Unsubscribe" %}{% endblock %}
+
+{% block account_content %}
+
+{% addtoblock "css" %}
+<style type="text/x-scss">
+form{
+  text-align: center;
+}
+</style>
+{% endaddtoblock %}
+  
+
+<div class="row justify-content-center">
+  <div class="col" style="text-align: center">
+    <h1>
+      {% if success %}Haere rā{% else %}
+      {% trans 'Unsubscribe' %}{% endif %}
+    </h1>
+  </div>
+</div>
+
+{% if success %}
+  <div class="row justify-content-center">
+    <div class="col" style="text-align: center">
+      {% if unsubscribed %}
+        <p>We won't send you anymore emails.<br>If you change your mind, you can update your preferences
+        at <a href="https://{{site.domain}}{% url 'people:profile' %}">{{site.domain}}</a></p>
+      {% else %}
+        <p>If that email is registered with us, it will not longer receive emails.</p>
+      {% endif %}
+    </div>
+  </div>
+{% else %}
+  <div class="row justify-content-center">
+    <div class="col" style="text-align: center">
+      <div class="form">
+
+        <form method="post" >
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="form-group">
+              <label for="id_email">Please enter your email address to unsubscribe</label>
+              <input
+                type="email"
+                class="form-control"
+                id="id_email" name="email" aria-describedby="emailHelp"
+                {% if field.value %}value="{{field.value}}"
+                {% else %}placeholder="Enter email"{% endif %}
+              >
+            </div>    
+          {% endfor %}
+          <input class="btn btn-light" type="submit" value="Submit">
+        </form>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{% addtoblock 'js-end' %}
+<script type="text/javascript">
+
+</script>
+{% endaddtoblock %}
+
+
+
+{% endblock %}

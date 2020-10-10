@@ -1,23 +1,6 @@
 {% extends 'message/email/base_email.txt' %}
 {% load static i18n %}
-
-{% block heading %}
-{% endblock %}
-
+{% block subject %}{{subject}}{% endblock %}
 {% block main %}
 {{content|safe}}
-{% endblock %}
-
-{% block footer  %}
-
-
---------------
-You are receiving this email because you've opted in to {{frequency}} updates. Visit
-your profile page ({{url_append}}{% url 'people:profile' %}) to update your preferences.
-
-Te Reo Irirangi o Te Hiku o Te Ika
-1 Melba Street<br>
-Level 2
-Kaitaia 0410
-New Zealand
 {% endblock %}

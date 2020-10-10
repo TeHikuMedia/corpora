@@ -1,0 +1,32 @@
+{% extends 'message/email/base_email.html' %}
+{% load static sekizai_tags i18n compress %}
+
+{% block subject %}
+Confirm Email
+{% endblock %}
+
+
+{% block heading %}
+<h1>Kōrero Māori</h1>
+{% endblock %}
+
+
+{% block main %}
+<h2>Kia ora,</h2>
+<p>Please confirm your email address for {{site.name}}
+  by clicking the link below,<br><br>
+  <b>{{ activate_url }}</b>
+  <br>
+</p>
+<p>
+  If you did not sign up to {{site.name}}, you may disregard this message.
+</p>
+{% endblock %}
+
+
+{% block footer %}
+<p style="font-size: 0.8rem;">
+Te Reo Irirangi o Te Hiku o Te Ika<br>
+1 Melba Street, Level 2, Kaitaia 0410, Aotearoa
+</p>
+{% endblock %}

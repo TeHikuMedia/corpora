@@ -1,23 +1,23 @@
 {% extends 'message/email/base_email.txt' %}
 {% load static i18n %}
-
+{% block subject %}{{subject}}{% endblock %}
 {% block heading %}
+Important message to members of {{group}}
 {% endblock %}
+
 
 {% block main %}
 {{content|safe}}
-{% endblock %}
 
-{% block footer  %}
+-------------------
+Check out your group's page here {{ url_append }}{% url 'competition_group' group.pk %}
 
+{% if valid.count > 6 %}
+***Your group qualifies for the competition***
+{% endif %}
 
---------------
-You are receiving this email because you've opted in to {{frequency}} updates. Visit
-your profile page ({{url_append}}{% url 'people:profile' %}) to update your preferences.
-
-Te Reo Irirangi o Te Hiku o Te Ika
-1 Melba Street<br>
-Level 2
-Kaitaia 0410
-New Zealand
+There are {{people.count}} members in {{group.name}}.
+The following users have joined your group:
+{% for p in people %}  - {{p.username}}
+{% endfor %}
 {% endblock %}

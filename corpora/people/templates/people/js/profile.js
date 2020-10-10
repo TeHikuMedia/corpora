@@ -165,7 +165,7 @@ class Profile{
     
     this.data.profile_email = $(this.target_element).find('#id_email').val()
 
-    var check_items = ['receive_weekly_updates', 'leaderboard', 'receive_daily_updates', 'receive_feedback']
+    var check_items = ['receive_weekly_updates', 'leaderboard', 'receive_daily_updates', 'receive_feedback', 'receive_emails']
     for (var i=0; i<check_items.length; i++){
       this.logger(check_items[i])
       this.data[check_items[i]] = 
@@ -236,7 +236,7 @@ class Profile{
     }).done(function(e){
       $(".form-text-error").hide()
       $(".form-text").show()
-      $('#person_form .invalid').removeClass('invalid')
+      $('.invalid').removeClass('invalid')
 
       self.logger(e)
       self.saving = false
@@ -247,7 +247,7 @@ class Profile{
       self.saving = false
       $(".form-text-error").hide()
       $(".form-text").show()
-      $('#person_form .invalid').removeClass('invalid')
+      $('.invalid').removeClass('invalid')
 
       var errorData = e.responseJSON
       self.logger(errorData)
@@ -263,7 +263,20 @@ class Profile{
               $(".form-text."+k).hide()
             // }
           })
-        } else{
+        } else if (key == 'known_languages'){
+          $.each(value, function(k, v){
+            $.each(v, function(kk,vv){
+              let kl_id = `id_${key}-${k}-${kk}`
+              console.log(kl_id)
+              $('#'+kl_id).addClass('invalid')
+              console.log(v)
+              console.log(vv)
+              $(".error-"+kl_id).text(vv.join(' '))
+              $(".error-"+kl_id).show()
+              // $(".form-text."+kl_id).hide()
+            })
+          })
+        } else {
           if (key=='profile_email'){key='email'}
           $('#id_'+key).addClass('invalid')
           self.logger(value)

@@ -82,7 +82,10 @@
             {% else %}
 
                 {{ field.label_tag }}
-                <div class="col-sm-12 col-md-12">{{ field }}</div>
+                <div class="col-sm-12 col-md-12">
+                    {{ field }}
+                    <small class="form-text-error error-{{field.auto_id}}"></small>
+                </div>
 
             {% endif %}
 
