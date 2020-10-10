@@ -32,4 +32,4 @@ class TestMediaFunctions(TestCase):
         aft = AudioFileTranscription.objects.first()
         duration = media_functions.get_media_duration(aft)
 
-        self.assertEqual(round(duration*100)/100, 5.19)
+        self.assertEqual(round(duration*100)/100, 5.61)

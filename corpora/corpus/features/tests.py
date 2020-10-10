@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-# these tests don't use Django's test framework and can be run in its absence.
-from __future__ import print_function, unicode_literals
 import unittest
 import os
 import sys
@@ -84,6 +81,7 @@ class TestFeaturesImport(unittest.TestCase):
                   'ko Iha tōku ing', # bad word ending ("ing").
         ]:
             c = f(s)
+            print(c)
             if c:
                 cc = format_features(c)
                 self.fail("incorrectly parsed %s: %s" % (s, cc))

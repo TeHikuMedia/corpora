@@ -4,9 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from celery import shared_task
 
-from corpora.utils.tmp_files import \
-    prepare_temporary_environment, \
-    get_tmp_stor_directory
+from corpora.utils.tmp_files import prepare_temporary_environment
 
 from transcription.models import \
     TranscriptionSegment, AudioFileTranscription
@@ -247,9 +245,6 @@ def captioning_segmenter(file_path, aft=None, offset=0):
         min_caption_len_ms=3400
     )
 
-    # tmp_dir = get_tmp_stor_directory(aft)
-
-    # segmenter.segment_audio(file_path, 'tmp_dir', output_audio=False)
     stream = segmenter.segment_stream(file_path, output_audio=False)
     captioned_for_real = []
     for seg, audio in stream:
@@ -386,7 +381,9 @@ def create_and_return_transcription_segments(aft):
             end=end,
             parent=aft,
             transcriber_log=json.dumps(
-                {'status': unicode(_('Waiting'))}))
+                {'status': 'Waiting'}
+            )
+        )
 
         ts_segments.append(ts)
     return ts_segments

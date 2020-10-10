@@ -4,8 +4,9 @@ import os
 import pwd
 import grp
 import stat
+import glob
 from subprocess import Popen, PIPE
-
+import tempfile
 from boto.s3.connection import S3Connection
 
 import logging
@@ -23,52 +24,13 @@ def get_file_url(f, expires=60):
 
 
 def get_tmp_stor_directory(model=None):
-    uid = pwd.getpwnam(settings.APPLICATION_USER).pw_uid
-    gid = grp.getgrnam(settings.APPLICATION_GROUP).gr_gid
-
-    BASE = os.path.join(
-        '/tmp',
-        "{0}_files".format(settings.PROJECT_NAME))
-
-    if not os.path.isdir(BASE):
-        os.mkdir(BASE)
-        os.chown(BASE, uid, gid)
-
-    if model:
-        BASE = os.path.join(
-            BASE,
-            str(model.__class__.__name__)+str(model.pk))
-
-    # CREATE DIRECTORY IF NO EXIST
-    if not os.path.isdir(BASE):
-        os.mkdir(BASE)
-        try:
-            os.chown(BASE, uid, gid)
-        except OSError:
-            logger.error('COULD NOT CHOWN: {0}'.format(BASE))
-
-    # Check permissions and change?
-
-    return BASE
+    return tempfile.mkdtemp(prefix=settings.PROJECT_NAME)
 
 
 def erase_all_temp_files(model, test=False, force=False):
-    '''
-    This medthod requires a model so that you don't accidentally erase
-    everything. Include model=None to erase the entire base directory.
-    '''
-
-    try:
-        import shutil
-        shutil.rmtree(get_tmp_stor_directory(model))
-    except:
-        if force:
-
-            p = Popen(
-                ['rm', '-Rf', os.path.join(get_tmp_stor_directory(model), '*')
-                 ], stdin=PIPE, stdout=PIPE)
-
-            output, errors = p.communicate()
+    for path in glob.glob(f'/tmp/{settings.PROJECT_NAME}'):
+        p = Popen(['rm', '-Rf', path], stdin=PIPE, stdout=PIPE)
+        output, errors = p.communicate()
 
 
 def prepare_temporary_environment(model, test=False, file_field='audio_file'):
@@ -84,28 +46,14 @@ def prepare_temporary_environment(model, test=False, file_field='audio_file'):
     else:
         file_path = settings.MEDIA_ROOT + file.name
 
-    tmp_stor_dir = get_tmp_stor_directory(model)
-
-    paths = [
-        get_tmp_stor_directory(),
-        tmp_stor_dir]
-
-    for path in paths:
-        try:
-            os.makedirs(path)
-        except OSError as e:
-            es = "{0}".format(str(e))
-            if 'file exists' in es.lower():
-                continue
-            else:
-                raise e
-        os.chmod(path, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR |
-                 stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP |
-                 stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
+    tempDir = get_tmp_stor_directory()
+    tmp_stor_dir = tempDir
 
     tmp_file = os.path.join(
         tmp_stor_dir,
         file.name.split('/')[-1].replace(' ', ''))
+
+    print(tmp_file)
 
     if os.path.exists(tmp_file):
         # Ensure permissions are correct.
@@ -127,21 +75,6 @@ lets hope this is okay".format(tmp_file))
 
     p = Popen(code)
     result, error = p.communicate()
-
-    # Turn this off as it's too much output
-    try:
-        # logger.debug(result[1])
-        error = ' '.join([str(i) for i in error])
-    except:
-        pass
-        # logger.debug(result)
-
-    if not os.path.exists(tmp_file) or 'ERROR 404' in error:
-        logger.error('ERROR GETTING: ' + tmp_file)
-        logger.error(error)
-        raise ValueError
-    else:
-        logger.debug('Downloaded: ' + os.path.abspath(tmp_file))
 
     # if test:
     logger.debug(

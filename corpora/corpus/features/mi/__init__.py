@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Library functions for manipulating Māori text corpora.
 """Typically you will only use the def get_features() function, which
 you do like this:
@@ -27,7 +26,6 @@ Finally there are all the trigrams, which would be 'ŋaa', 'aa ',
 'a h', ' ha', 'hau' for "ngā hau".
 
 """
-from __future__ import print_function, unicode_literals
 import re
 import unicodedata
 import sys

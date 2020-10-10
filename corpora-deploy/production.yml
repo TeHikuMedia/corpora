@@ -128,6 +128,7 @@
     - group_vars/production.yml
   roles:
     - base-common
+    - base
     - ec2-db
   tags:
     - production
@@ -161,7 +162,6 @@
     - webpack
     - web
     - webpack-build
-    - nginx
     - celery
   tags:
     - production
@@ -245,6 +245,7 @@
     - remote
     - deploy-django
     - deploy
+    - webpack
 
 
 - name: "Ensure production {{ application_name }} server is stopped"

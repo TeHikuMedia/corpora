@@ -5,7 +5,7 @@ from django.test import TestCase
 
 from . import parser
 
-from corpus.models import Recording, Sentence, Source, QualityControl
+from corpus.models import Recording, Sentence, Source, RecordingQualityControl
 from django.contrib.contenttypes.models import ContentType
 import corpus.aggregate as aggregate
 
@@ -27,44 +27,37 @@ class CorpusRecordingTestCase(TestCase):
             language='mi',
             source=source)
         file = File(
-            open('corpora/tests/test.aac'))
+            open('corpora/tests/test.aac', 'rb'))
 
         recording = Recording.objects.create(
             audio_file=file,
             sentence=sentence)
-
+        self.recording = recording
         recording2 = Recording.objects.create(
             audio_file=file,
             sentence=sentence)
-
+        self.recording2 = recording2
         recording_ct = ContentType.objects.get_for_model(recording)
-        QualityControl.objects.create(
-            object_id=recording.pk,
-            content_type=recording_ct,
+        RecordingQualityControl.objects.create(
+            recording=recording,
             good=1)
-        QualityControl.objects.create(
-            object_id=recording.pk,
-            content_type=recording_ct,
+        RecordingQualityControl.objects.create(
+            recording=recording,
             good=1)
-        QualityControl.objects.create(
-            object_id=recording.pk,
-            content_type=recording_ct,
+        RecordingQualityControl.objects.create(
+            recording=recording,
             approved=True)
-        QualityControl.objects.create(
-            object_id=recording.pk,
-            content_type=recording_ct,
+        RecordingQualityControl.objects.create(
+            recording=recording,
             bad=1)
-        QualityControl.objects.create(
-            object_id=recording.pk,
-            content_type=recording_ct,
-            delete=1)
-        QualityControl.objects.create(
-            object_id=recording.pk,
-            content_type=recording_ct,
+        RecordingQualityControl.objects.create(
+            recording=recording,
+            trash=1)
+        RecordingQualityControl.objects.create(
+            recording=recording,
             star=3)
-        QualityControl.objects.create(
-            object_id=recording.pk,
-            content_type=recording_ct,
+        RecordingQualityControl.objects.create(
+            recording=recording,
             star=1)
 
     def test_create_md5_hex(self):
@@ -75,10 +68,13 @@ class CorpusRecordingTestCase(TestCase):
             recording.audio_file_md5)
 
     def test_build_qualitycontrol_stat_dict(self):
-        recording = Recording.objects.first()
-        recording2 = Recording.objects.last()
+        recording = self.recording
+        recording2 = self.recording2
         stats = aggregate.build_qualitycontrol_stat_dict(
-            recording.quality_control.all())
+            RecordingQualityControl.objects.filter(
+                recording=Recording.objects.first())
+        )
+
         self.assertEqual(stats['approved'], 1)
         self.assertEqual(stats['good'], 2)
         self.assertEqual(stats['bad'], 1)
@@ -87,7 +83,10 @@ class CorpusRecordingTestCase(TestCase):
         self.assertEqual(stats['count'], 7)
 
         stats = aggregate.build_qualitycontrol_stat_dict(
-            recording2.quality_control.all())
+            RecordingQualityControl.objects.filter(
+                recording=Recording.objects.last())
+        )
+
         self.assertEqual(stats['approved'], 0)
         self.assertEqual(stats['good'], 0)
         self.assertEqual(stats['bad'], 0)
@@ -108,13 +107,13 @@ class CorpusTextTestCase(TestCase):
         # self.assertEqual(sentences[-1]['sentence'], 'Ka mutu, pēnā he kōrero ā koutou me pēhea te pānui nei e pai ake ai, pēnā he aha rānei ngā mea e hiahia ana koutou kia whakaurua ki ngā pānui o muri atu, tēnā, kōrerotia mai')
 
         # We're only allowing sentences of certain lengths so this is thr correct eval
-        self.assertEqual(sentences[-1]['sentence'], 'TE RŪNANGA NUI O TE AUPŌURI')
+        self.assertEqual(sentences[-3]['sentence'], 'TE RŪNANGA NUI O TE AUPŌURI')
 
     def test_get_sentences_2(self):
         sentences = list(parser.get_sentences(SAMPLE_2))
         self.assertEqual(sentences[0]['sentence'],
                          'Ngā waiata o roto i Ngā Mōteatea')
-        self.assertEqual(sentences[2]['sentence'], 'He whakamihi')
+        self.assertEqual(sentences[2]['sentence'], 'Ētahi waiata tekau')
 
     def test_has_english(self):
         self.assertTrue(parser.has_english('Hello my name is Greg'))

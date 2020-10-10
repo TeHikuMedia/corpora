@@ -28,12 +28,13 @@ from django.utils.safestring import mark_safe
 def get_md5_hexdigest_of_file(file_object):
     hash_md5 = hashlib.md5()
     close_file = False
+    change_mode = False
     try:
         if file_object.closed:
             file_object.open('rb')
             close_file = True
 
-        for chunk in iter(file_object.chunks()):
+        for chunk in file_object.chunks():
             hash_md5.update(chunk)
 
         if close_file:

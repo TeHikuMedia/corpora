@@ -1,4 +1,3 @@
-from __future__ import absolute_import, unicode_literals
 from django.utils.translation import ugettext_lazy as _
 
 from celery import shared_task
@@ -106,7 +105,9 @@ def transcribe_audio_sphinx(
             logger.debug(u'{0}'.format(response.text))
 
             result = json.loads(response.text)
-            this_timeout = timeout + 1
+            result['API_URL'] = API_URL
+            return result
+
         except requests.exceptions.ConnectTimeout:
             result = {
                 'success': False,
@@ -125,19 +126,18 @@ def transcribe_audio_sphinx(
 
         tries = tries + 1
 
-        result['API_URL'] = API_URL
-
     if tries >= timeout:
         logger.debug(result)
 
+    result['API_URL'] = API_URL
     return result
 
 
 def transcribe_audio_quick(file_object):
     logger.debug('DOING QUICK TRANSCRIPTION')
 
-    BASE = get_tmp_stor_directory()
-
+    tempDir = get_tmp_stor_directory()
+    BASE = tempDir
     tmp_file = os.path.join(
         BASE,
         "tmp_file_{0}.{1}".format(
@@ -296,7 +296,7 @@ def transcribe_segment(ts):
 
         # ts.text = parse_sphinx_transcription(result['transcription'])
         ts.text = result['transcription'].strip()
-        result['status'] = unicode(_('Done'))
+        result['status'] = 'Done'
         ts.transcriber_log = result
         # Get or create a source for the API
         source, created = Source.objects.get_or_create(
@@ -312,7 +312,7 @@ def transcribe_segment(ts):
 
         ts.save()
     else:
-        result['status'] = unicode(_('Error'))
+        result['status'] = (_('Error'))
         if ts.transcriber_log:
             if 'retry' in ts.transcriber_log.keys():
                 ts.transcriber_log.update(result)
@@ -375,7 +375,8 @@ def transcribe_aft_async(pk):
             continue
         try:
             transcribe_segment(segment)
-        except:
+        except Exception as e:
+            logger.error(e)
             errors = errors + 1
             logger.error(
                 "Failed to transcribe segment {0}.".format(segment.pk))

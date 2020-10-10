@@ -1,4 +1,3 @@
-from __future__ import print_function, absolute_import
 from importlib import import_module
 import sys
 
@@ -10,7 +9,7 @@ default_feature_finder = Counter
 def import_finder(lang):
     if lang.isalpha():
         try:
-            m = import_module(lang, 'features')
+            m = import_module('corpus.features.'+lang)
             return m.get_features
         except ImportError as e:
             print("unknown language %s" % lang, file=sys.stderr)

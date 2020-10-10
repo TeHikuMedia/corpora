@@ -24,11 +24,7 @@ DEEPSPEECH_URL_BETA_PUBLIC = \
     "http://3.106.164.59:5000/transcribe_with_metadata"
 
 
-if 'local' in os.environ['ENVIRONMENT_TYPE']:
-    DEEPSPEECH_URL = DEEPSPEECH_URL_BETA_PUBLIC
-elif 'staging' in os.environ['ENVIRONMENT_TYPE']:
-    DEEPSPEECH_URL = DEEPSPEECH_URL_BETA
-else:
-    DEEPSPEECH_URL = DEEPSPEECH_URL_PRIVATE
+DEEPSPEECH_URL = os.environ['ASR_URL']
+
 
 OLD_URL = "http://waha-tuhi-api-17.dragonfly.nz/transcribe"
