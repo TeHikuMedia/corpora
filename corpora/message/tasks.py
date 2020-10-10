@@ -124,6 +124,7 @@ def send_email_to_person(person_pk, message_pk, ma_pk):
             'person': person,
             'email': email,
             'content': message.content,
+            'messageID': message.pk,
             'url_append': url_append,
             'site': Site.objects.get_current()
         }
@@ -200,6 +201,7 @@ def send_email_to_group(group_pk, message_pk, ma_pk):
                 'subject': subject,
                 'person': person,
                 'email': email,
+                'messageID': message.pk,
                 'people': people,
                 'group': group,
                 'valid': valid,
