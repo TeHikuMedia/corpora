@@ -247,11 +247,11 @@
           <tr>
             <td width="100%" valign="top" class="footer">{% block footer %}
               <div style="width: 100%;" class="footer">
-                <p style="font-size: 1rem; text-align: center; margin-top: 30px;">
+                <p style="font-size: 0.9rem; text-align: center; margin-top: 30px;">
                   You are receiving this email because you 
                   signed up to {{site.name}}. If you don't want to receive these emails,
                   you can
-                  <a href="https://{{site.domain}}{% url 'people:unsubscribe' %}">
+                  <a href="https://{{site.domain}}{% url 'people:unsubscribe' %}?email={{email|urlencode}}">
                     unsubscribe
                   </a>
                   or 
