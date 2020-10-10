@@ -513,9 +513,6 @@ class Unsubscribe(FormView):
         context['success'] = True
         return context
 
-    def form_invalid(self, form):
-        return self.render_to_response(self.get_context_data(form))
-
     def form_valid(self, form):
         unsubed = form.unsubscribe()
         if unsubed:
