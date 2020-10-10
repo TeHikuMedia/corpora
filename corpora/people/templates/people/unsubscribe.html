@@ -13,29 +13,28 @@ form{
 </style>
 {% endaddtoblock %}
   
-<!-- <div class="container"> -->
 
+<div class="row justify-content-center">
+  <div class="col" style="text-align: center">
+    <h1>
+      {% if success %}Haere rā{% else %}
+      {% trans 'Unsubscribe' %}{% endif %}
+    </h1>
+  </div>
+</div>
+
+{% if success %}
   <div class="row justify-content-center">
     <div class="col" style="text-align: center">
-      <h1>
-        {% if success %}Haere rā{% else %}
-        {% trans 'Unsubscribe' %}{% endif %}
-      </h1>
+      {% if unsubscribed %}
+        <p>We won't send you anymore emails.<br>If you change your mind, you can update your preferences
+        at <a href="https://{{site.domain}}{% url 'people:profile' %}">{{site.domain}}</a></p>
+      {% else %}
+        <p>If that email is registered with us, it will not longer receive emails.</p>
+      {% endif %}
     </div>
   </div>
-
-  {% if success %}
-    <div class="row justify-content-center">
-      <div class="col" style="text-align: center">
-        {% if unsubscribed %}
-          <p>We won't send you anymore emails.<br>If you change your mind, you can update your preferences
-          at <a href="https://{{site.domain}}{% url 'people:profile' %}">{{site.domain}}</a></p>
-        {% else %}
-          <p>If that email is registered with us, it will not longer receive emails.</p>
-        {% endif %}
-      </div>
-    </div>
-  {% else %}
+{% else %}
   <div class="row justify-content-center">
     <div class="col" style="text-align: center">
       <div class="form">
@@ -59,8 +58,7 @@ form{
       </div>
     </div>
   </div>
-  {% endif %}
-<!-- </div> -->
+{% endif %}
 
 {% addtoblock 'js-end' %}
 <script type="text/javascript">

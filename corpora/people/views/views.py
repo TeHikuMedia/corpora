@@ -496,7 +496,6 @@ class Unsubscribe(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         email = self.request.GET.get('email',None)
-        logger.debug(email)
         if email:
             form = self.form_class(self.request.POST or None, initial={'email': email})
             context['form'] = form
