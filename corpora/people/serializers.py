@@ -87,9 +87,11 @@ class PersonSerializer(serializers.HyperlinkedModelSerializer):
         try:
             logger.debug(user)
             logger.debug(validated_data)
-            if isinstance(validated_data['known_languages'], list):
-                if len(validated_data['known_languages']) == 0:
-                    del validated_data['known_languages']
+
+            if 'known_languages' in validated_data:
+                if isinstance(validated_data['known_languages'], list):
+                    if len(validated_data['known_languages']) == 0:
+                        del validated_data['known_languages']
             logger.debug(validated_data)
             person, created = Person.objects.get_or_create(
                 user=user, **validated_data)
