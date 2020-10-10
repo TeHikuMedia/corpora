@@ -10,17 +10,13 @@
 
 {% addtoblock "css" %}
 <style type="text/x-scss">
-@import 'people/css/account.scss';
-
-div.content{
-  padding: 30px 0px 30px 0px;
-}
+@import 'people/static/people/css/account.scss';
 </style>
 {% endaddtoblock %}
 
 <div class="container" style="text-align: center;">
   <div class="row align-items-center justify-content-center">
-    <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+    <div class="col">
         {% block account_content %}
         {% endblock account_content %}
     </div>

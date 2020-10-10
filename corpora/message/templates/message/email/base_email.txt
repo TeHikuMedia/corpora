@@ -9,7 +9,7 @@
 {% block footer %}
 You are receiving this email because you signed up to {{site.name}}.
 If you don't want to receive these emails, you can unsubscribe at,
-https://{{site.domain}}{% url 'people:unsubscribe' %}?email={{email}}
+https://{{site.domain}}{% url 'people:unsubscribe' %}?email={{email|urlencode}}
 
 or update your email preferences at,
 https://{{site.domain}}{% url 'people:profile' %}

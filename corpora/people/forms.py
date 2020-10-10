@@ -147,6 +147,6 @@ class UnsubscribeForm(forms.Form):
                 p.receive_daily_updates = False
                 p.receive_weekly_updates = False
                 p.save()
-            return "Success"
+            return True
         else:
-            return "An account with that email does not exist."
+            return False

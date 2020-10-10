@@ -496,6 +496,7 @@ class Unsubscribe(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         email = self.request.GET.get('email',None)
+        logger.debug(email)
         if email:
             form = self.form_class(self.request.POST or None, initial={'email': email})
             context['form'] = form
@@ -503,6 +504,13 @@ class Unsubscribe(FormView):
 
     def success(self):
         context = super().get_context_data()
+        context['unsubscribed'] = True
+        context['success'] = True
+        return context
+
+    def fail(self):
+        context = super().get_context_data()
+        context['unsubscribed'] = False
         context['success'] = True
         return context
 
@@ -510,9 +518,8 @@ class Unsubscribe(FormView):
         return self.render_to_response(self.get_context_data(form))
 
     def form_valid(self, form):
-        message = form.unsubscribe()
-        
-        result = super().form_valid(form)
-        logger.debug(result)
-
-        return self.render_to_response(self.success())
+        unsubed = form.unsubscribe()
+        if unsubed:
+            return self.render_to_response(self.success())
+        else:
+            return self.render_to_response(self.fail())
