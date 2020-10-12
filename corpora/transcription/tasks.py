@@ -287,6 +287,9 @@ def transcribe_recording(pk):
                 f.close()
                 del M
 
+            if not result['success']:
+                transcription.delete()
+                return f"Could not transcribe {recording.pk}."
 
             transcription.text = result['transcription'].strip()
             transcription.transcriber_log = result
