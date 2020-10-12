@@ -66,10 +66,10 @@ LANGUAGE_COOKIE_NAME = 'corpora-language'
 # https://en.wikipedia.org/wiki/List_of_ISO_639-2_codes
 LANGUAGES = (
 
-    ('mi',    _('Maori')),
+    ('mi',    _('Māori')),
     ('haw',    _('Hawaiian')),
     # ('smo',    _('Samoan')),
-    # ('rar',    _('Cook Island Maori')),
+    ('rar',    _('Cook Island Māori')),
     # ('en',    _('English')),
     ('en-NZ', _('New Zealand English')),
     # ('en_US', _('American English')),
