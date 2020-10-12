@@ -445,6 +445,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
         'reo_api.authentication.ApplicationAPITokenAuthentication',
+        'reo_api.authentication.UserAPITokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_RENDERER_CLASSES': (
@@ -459,7 +460,6 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle',
         'rest_framework.throttling.ScopedRateThrottle',
-
     ],
     'DEFAULT_THROTTLE_RATES': {
         'listen': '200/day',
