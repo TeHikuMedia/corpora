@@ -47,7 +47,7 @@ lxml
 premailer
 
 # API
-djangorestframework==3.11.1
+djangorestframework~=3.12
 
 # API Docs
 django-coreapi
@@ -77,3 +77,5 @@ django-cors-headers
 django-webpack-loader==0.7.0
 
 sentry-sdk
+
+pyjwt
