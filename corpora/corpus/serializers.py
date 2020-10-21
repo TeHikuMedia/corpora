@@ -75,9 +75,19 @@ class RecordingQualityControlSerializer(
     class Meta:
         model = RecordingQualityControl
         fields = ('id', 'good', 'bad', 'approved', 'approved_by', 'updated',
-                  'person', 'recording',
+                  'person', 'recording', 'content_type', 'object_id',
                   'trash', 'follow_up', 'noise', 'star',
                   'machine', 'source', 'notes')
+
+    def validate(self, data):
+        if 'content_type' in data and 'object_id' in data:
+            if data['content_type'] and data['object_id']:
+                if 'recording' in data['content_type'].name.lower():
+                    try:
+                        data['recording'] = Recording.objects.get(pk=data['object_id'])
+                    except ObjectDoesNotExist:
+                        pass
+        return super().validate(data)
 
 
 class SentenceQualityControlSerializer(
