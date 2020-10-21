@@ -3,6 +3,9 @@ from django.views.generic import TemplateView
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic.detail import DetailView
 from message.models import Message
+from people.models import Person
+from django.conf import settings
+import jwt
 
 
 class RenderEmailView(UserPassesTestMixin, TemplateView):
@@ -22,9 +25,34 @@ class RenderEmailView(UserPassesTestMixin, TemplateView):
         return self.request.user.is_superuser
 
 
-class MessageView(DetailView):
+class MessageView(UserPassesTestMixin, DetailView):
     model = Message
     template_name = "message/email/email_message.html"
+
+    def test_func(self, **kwargs):
+        '''
+        Method to verify that someone can view this message
+        '''
+
+        if self.request.user.is_authenticated:
+            if self.request.user.is_staff or self.request.user.is_superuser:
+                return True
+
+        token = self.request.GET.get('tokena', None)
+        if token:
+            try:
+                payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
+            except:
+                return False
+            email = payload['email']
+            if Person.objects.filter(profile_email=email).exists():
+                return True
+            elif User.objects.filter(email=email).exists():
+                return True
+            else:
+                return False
+
+        return False
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

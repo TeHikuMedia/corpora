@@ -20,6 +20,7 @@ from django.contrib.sites.models import Site
 
 import datetime
 import ast
+import jwt
 
 from people.competition import \
     get_competition_group_score,\
@@ -119,6 +120,7 @@ def send_email_to_person(person_pk, message_pk, ma_pk):
         subject = message.subject
 
         e = EMail(to=email, subject=subject)
+        tokena = jwt.encode({'email': email}, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
         context = {
             'subject': subject,
             'person': person,
@@ -126,7 +128,8 @@ def send_email_to_person(person_pk, message_pk, ma_pk):
             'content': message.content,
             'messageID': message.pk,
             'url_append': url_append,
-            'site': Site.objects.get_current()
+            'site': Site.objects.get_current(),
+            'tokena': tokena.decode(),
         }
 
         e.text('message/email/email_message.txt', context)
@@ -197,6 +200,7 @@ def send_email_to_group(group_pk, message_pk, ma_pk):
             invalid = get_invalid_group_members(group)
 
             e = EMail(to=email, subject=subject)
+            tokena = jwt.encode({'email': email}, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
             context = {
                 'subject': subject,
                 'person': person,
@@ -208,7 +212,8 @@ def send_email_to_group(group_pk, message_pk, ma_pk):
                 'invalid': invalid,
                 'content': message.content,
                 'url_append': url_append,
-                'site': Site.objects.get_current()
+                'site': Site.objects.get_current(),
+                'tokena': tokena.decode(),
             }
 
             e.text('message/email/email_message_group.txt', context)

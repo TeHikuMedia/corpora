@@ -596,3 +596,8 @@ WEBPACK_LOADER = {
     #     # django.contrib.auth) you may enable sending PII data.
     #     send_default_pii=True
     # )
+
+
+# JWT Messages
+JWT_SECRET = os.environ['JWT_SECRET']
+JWT_ALGORITHM = "HS256"
