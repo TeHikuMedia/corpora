@@ -1,11 +1,12 @@
 import axios from 'axios'
 import { headerBuilder } from './helpers'
+import { PostRecordingQualityControl } from '@/api/interfaces'
 
 export const getRandomRecording = () => {
   return axios.get('/api/recordings/?sort_by=random')
 }
 
-export const postRecordingQC = (payload: any) => {
+export const postRecordingQC = (payload: PostRecordingQualityControl) => {
   const config = { headers: headerBuilder({ contentType: 'application/json', includeCSRFToken: true }) }
   return axios.post('/api/recordingqualitycontrol/', payload, config)
 }

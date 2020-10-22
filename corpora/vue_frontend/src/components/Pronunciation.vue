@@ -92,43 +92,13 @@ import { defineComponent } from 'vue'
 import { getRandomRecording, postRecordingQC, getMyself } from '../api'
 import Toggle from '@/components/Toggle.vue' // @ is an alias to /src
 
-interface RecordingObject {
-  sentence_text: string;
-  audio_file_url: string;
-  id: number;
-}
-
-interface CharVote {
-  character: string;
-  vote: boolean;
-  index: number;
-  wordIndex: number;
-}
-
-interface CharStructure {
-  word: string;
-  chars: Array<CharVote>;
-}
-
-interface PronunciationJSON {
-  ratingSlider: number;
-  ratingComputed: number;
-  characterVotes: Array<CharStructure>;
-}
-
-interface PostRecordingQualityControl {
-  good: number;
-  bad: number;
-  approved: boolean;
-  recording: number;
-  trash: boolean;
-  follow_up: boolean;
-  noise: boolean;
-  star: number;
-  notes: string;
-  pronunciation: PronunciationJSON;
-  person: number;
-}
+import {
+  RecordingObject,
+  CharVote,
+  CharStructure,
+  PronunciationJSON,
+  PostRecordingQualityControl
+} from '@/api/interfaces'
 
 export default defineComponent({
   name: 'Pronunciation',
@@ -161,6 +131,15 @@ export default defineComponent({
       this.qc.person = result
     })
     this.nextRecording()
+
+    const setVh = () => {
+      const vh = window.innerHeight * 0.01
+      console.log('resize')
+      document.documentElement.style.setProperty('--vh', `${vh}px`)
+    }
+
+    window.addEventListener('load', setVh)
+    window.addEventListener('resize', setVh)
   },
   computed: {
     pronunciationJSON (): PronunciationJSON {
@@ -245,16 +224,8 @@ export default defineComponent({
       this.buttonsDisabled = false
     },
     nextRecording () {
-      if (this.playing) {
-        this.audioElm.pause()
-        this.playing = false
-      }
-      this.buttonsDisabled = true
-      this.qc = {} as PostRecordingQualityControl
-      if (this.person !== 0) {
-        this.qc.person = this.person
-      }
-      const result = getRandomRecording()
+      this.reset()
+      getRandomRecording()
         .then((response) => {
           this.recording = response.data.results[0]
           this.qc.recording = this.recording.id
@@ -272,6 +243,18 @@ export default defineComponent({
           console.log('completed')
           console.log(this.autoPlay)
         })
+    },
+    reset () {
+      if (this.playing) {
+        this.audioElm.pause()
+        this.playing = false
+      }
+      this.buttonsDisabled = true
+      this.qc = {} as PostRecordingQualityControl
+      if (this.person !== 0) {
+        this.qc.person = this.person
+      }
+      this.sliderValue = 50
     },
     qc_toggle (field: string) {
       if (!this.buttonsDisabled) {
@@ -327,6 +310,7 @@ div.viewContainer {
   align-items: center;
   overflow-y: hidden;
   height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
 }
 div.pronunciation{
   flex-grow: 2;
