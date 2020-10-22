@@ -20,6 +20,7 @@ router.register(r'listen', corpus_api.ListenViewSet, 'listen')
 router.register(r'recordings', corpus_api.RecordingViewSet, 'recording')
 router.register(r'sources', corpus_api.SourceViewSet)
 router.register(r'text', corpus_api.TextViewSet)
+router.register(r'recordingmetadata', corpus_api.RecordingMetadataViewSet)
 
 
 router.register(r'tribes', people_api.TribeViewSet)
