@@ -12,6 +12,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey,\
 from django.contrib.contenttypes.models import ContentType
 
 from django.contrib.postgres.indexes import BrinIndex
+from django.contrib.postgres.fields import JSONField
 
 from django.contrib.auth.models import User
 from corpus.base_settings import LANGUAGES, LANGUAGE_CODE, DIALECTS
@@ -126,6 +127,12 @@ class RecordingQualityControl(models.Model):
         blank=True,
         on_delete=models.SET_NULL,
         help_text='Used to identify machines.')
+
+    pronunciation = models.JSONField(
+        blank=True,
+        default=None,
+        null=True
+    )
 
     class Meta:
         unique_together = (("object_id", "content_type", "person"),)
@@ -615,3 +622,20 @@ class Text(models.Model):
                 pass
 
         super(Text, self).save(*args, **kwargs)
+
+
+class RecordingMetadata(models.Model):
+    recording = models.OneToOneField(
+        'corpus.Recording',
+        related_name='metadata',
+        on_delete=models.CASCADE,
+        unique=True
+    )
+
+    metadata = models.JSONField(
+        null=True,
+        blank=True
+    )
+
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)

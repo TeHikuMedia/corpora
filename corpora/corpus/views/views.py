@@ -32,7 +32,7 @@ from django.core.cache import cache
 
 from corpus.aggregate import get_num_approved, get_net_votes
 
-from corpora.mixins import SiteInfoMixin
+from corpora.mixins import SiteInfoMixin, EnsureCsrfCookieMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
 
@@ -391,7 +391,8 @@ the quality of recordings we use.')
         return context
 
 
-class PronunciationView(SiteInfoMixin, UserPassesTestMixin, TemplateView):
+class PronunciationView(
+        EnsureCsrfCookieMixin, SiteInfoMixin, UserPassesTestMixin, TemplateView):
     template_name = "corpus/pronunciation.html"
     x_title = _('Pronunciation')
     x_description = _('Developing pronunciation...')

@@ -1,4 +1,4 @@
-Django~=3.0.0
+Django~=3.1.0
 boto
 boto3
 Pillow
