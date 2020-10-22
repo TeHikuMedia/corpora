@@ -77,7 +77,7 @@ class RecordingQualityControlSerializer(
         fields = ('id', 'good', 'bad', 'approved', 'approved_by', 'updated',
                   'person', 'recording', 'content_type', 'object_id',
                   'trash', 'follow_up', 'noise', 'star',
-                  'machine', 'source', 'notes')
+                  'machine', 'source', 'notes', 'pronunciation')
 
     def validate(self, data):
         if 'content_type' in data and 'object_id' in data:

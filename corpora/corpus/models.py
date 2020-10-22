@@ -128,6 +128,12 @@ class RecordingQualityControl(models.Model):
         on_delete=models.SET_NULL,
         help_text='Used to identify machines.')
 
+    pronunciation = models.JSONField(
+        blank=True,
+        default=None,
+        null=True
+    )
+
     class Meta:
         unique_together = (("object_id", "content_type", "person"),)
         indexes = [
@@ -626,7 +632,7 @@ class RecordingMetadata(models.Model):
         unique=True
     )
 
-    metadata = JSONField(
+    metadata = models.JSONField(
         null=True,
         blank=True
     )

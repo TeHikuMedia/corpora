@@ -1,23 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 <template>
   <div class="viewContainer">
-    <div class="pronunciation">
-      <div class="sentence">
-        <div class="word" v-for="(charObject,i) in charatersObject" :key="i"
-         :style="{width: 40*charObject.word.length+'px'}">
-          <div class="character" v-for="(c, j) in charObject.chars" :key="i+' '+j"
-           :style="{backgroundColor: c.vote ? '#ef476f' : '#64dfdf'}"
-           v-on:click="c.vote = c.vote ? false : true">
-            <div class="char">{{c.character}}</div>
-            <div class="index">{{c.index}}</div>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class='sidepanel'>
-      <div class="slider">
-        <input type="range" min="1" max="100" value="0" class="slider" id="myRange">
-      </div>
       <div class="audio actions">
         <div class="autoPlay">
           <div><Toggle ref="toggleAutoPlay"  onColor="#dc2250"
@@ -36,31 +20,68 @@
         <audio :src="recording.audio_file_url" ref="audio"></audio>
       </div>
       <div class="actions">
-        <a class="follow-up disabled toggle-after-playback" data-key="follow_up">
+        <a class="follow-up"
+           v-on:click="qc_toggle('follow_up')"
+           v-bind:class="{ checked: qc.follow_up , disabled: buttonsDisabled}">
           <i class="fas fa-reply fa-fw"></i>
-          <span>Follow Up</span>
+          <span >Follow Up</span>
         </a>
-        <a class="noise disabled toggle-after-playback" data-key="noise">
+        <a class="noise"
+           v-on:click="qc_toggle('noise')"
+           v-bind:class="{ checked: qc.noise , disabled: buttonsDisabled}">
           <i class="fas fa-bullhorn fa-fw"></i>
           <span>Noise</span>
         </a>
-        <a class="delete disabled toggle-after-playback" data-key="trash">
-          <font-awesome-icon icon="trash" fixed-width />
-          <span>Delete</span>
-        </a>
-        <a class="approve disabled toggle-after-playback">
+        <a class="approve"
+           v-on:click="qc_toggle('approve')"
+           v-bind:class="{ disabled: buttonsDisabled }">
           <font-awesome-icon icon="check-circle" fixed-width />
           <span>Approve</span>
         </a>
-        <a class="good disabled toggle-after-playback">
+        <a class="good"
+           v-on:click="qc_toggle('good')"
+           v-bind:class="{ disabled: buttonsDisabled }">
           <font-awesome-icon icon="check" fixed-width />
           <span>Ka Tika</span>
         </a>
-        <a class="bad disabled toggle-after-playback">
+        <a class="bad"
+           v-on:click="qc_toggle('bad')"
+           v-bind:class="{ disabled: buttonsDisabled }">
           <font-awesome-icon icon="times" fixed-width />
           <span>Kia Kaha</span>
         </a>
-
+        <a class="delete"
+           v-on:click="qc_toggle('delete')"
+           v-bind:class="{ disabled: buttonsDisabled}">
+          <font-awesome-icon icon="trash" fixed-width />
+          <span>Delete</span>
+        </a>
+      </div>
+      <div class="slider">
+        <div class="sliderGroup">
+          <div class="rangeLabel">Incorrect</div>
+          <input type="range" min="0" max="100" class="slider" id="myRange" v-model="sliderValue">
+          <div class="rangeLabel">Correct</div>
+        </div>
+        <div class="sliderLabel">
+          Move the slider based on how good you think the speaker's pronunciation is.
+        </div>
+        <div class="notes">
+          <textarea placeholder="Notes" v-model="qc.notes"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="pronunciation">
+      <div class="sentence">
+        <div class="word" v-for="(charObject,i) in charatersObject" :key="i"
+         :style="{width: 40*charObject.word.length+'px'}">
+          <div class="character" v-for="(c, j) in charObject.chars" :key="i+' '+j"
+           :style="{backgroundColor: c.vote ? '#ef476f' : '#64dfdf'}"
+           v-on:click="c.vote = c.vote ? false : true; updateSlider()">
+            <div class="char">{{c.character}}</div>
+            <div class="index">{{c.index}}</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -68,12 +89,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { getRandomRecording } from '../api'
+import { getRandomRecording, postRecordingQC, getMyself } from '../api'
 import Toggle from '@/components/Toggle.vue' // @ is an alias to /src
 
 interface RecordingObject {
   sentence_text: string;
   audio_file_url: string;
+  id: number;
 }
 
 interface CharVote {
@@ -86,6 +108,26 @@ interface CharVote {
 interface CharStructure {
   word: string;
   chars: Array<CharVote>;
+}
+
+interface PronunciationJSON {
+  ratingSlider: number;
+  ratingComputed: number;
+  characterVotes: Array<CharStructure>;
+}
+
+interface PostRecordingQualityControl {
+  good: number;
+  bad: number;
+  approved: boolean;
+  recording: number;
+  trash: boolean;
+  follow_up: boolean;
+  noise: boolean;
+  star: number;
+  notes: string;
+  pronunciation: PronunciationJSON;
+  person: number;
 }
 
 export default defineComponent({
@@ -101,18 +143,33 @@ export default defineComponent({
         audio_file_url: 'bar'
       } as RecordingObject,
       words: ['test', 'ing'],
-      charatersObject: {} as Array<CharStructure>,
+      charatersObject: [] as Array<CharStructure>,
       audioElm: {} as HTMLAudioElement,
       playing: false,
-      autoPlay: false
+      autoPlay: false,
+      sliderValue: 50,
+      buttonsDisabled: true,
+      person: 0,
+      qc: {} as PostRecordingQualityControl
     }
   },
   mounted: function () {
     this.audioElm = this.$refs.audio as HTMLAudioElement
     this.audioElm.onended = this.audioEnded
+    getMyself().then((result) => {
+      this.person = result
+      this.qc.person = result
+    })
     this.nextRecording()
   },
   computed: {
+    pronunciationJSON (): PronunciationJSON {
+      return {
+        ratingSlider: this.sliderValue / 100,
+        ratingComputed: this.getComputedVote(),
+        characterVotes: this.charatersObject
+      }
+    },
     getCharacters (): Array<CharStructure> {
       const words = this.recording.sentence_text.split(' ')
       const data: Array<CharStructure> = []
@@ -142,6 +199,27 @@ export default defineComponent({
     }
   },
   methods: {
+    updateSlider () {
+      this.sliderValue = Math.round(100 * this.getComputedVote())
+    },
+    getComputedVote (): number {
+      let numChars = 0
+      let numBad = 0
+      this.charatersObject.forEach((charObj) => {
+        // console.log('test')
+        charObj.chars.forEach((char) => {
+          numChars += 1
+          if (char.vote) {
+            numBad += 1
+          }
+        })
+      })
+      if (numChars === 0) {
+        return 0
+      } else {
+        return 1 - numBad / numChars
+      }
+    },
     toggleAutoPlay (event: boolean) {
       this.autoPlay = event
       if (this.autoPlay) {
@@ -162,32 +240,24 @@ export default defineComponent({
         this.playing = false
       }
     },
-    toggleButtons (state: string) {
-      const buttons = document.getElementsByClassName('toggle-after-playback') as HTMLCollectionOf<Element>
-      console.log(buttons)
-      for (let i = 0; i < buttons.length; i++) {
-        if (state === 'enabled') {
-          buttons[i].classList.remove('disabled')
-        } else if (state === 'disabled') {
-          buttons[i].classList.add('disabled')
-        } else {
-          // code...
-        }
-      }
-    },
     audioEnded () {
       this.playing = false
-      this.toggleButtons('enabled')
+      this.buttonsDisabled = false
     },
     nextRecording () {
       if (this.playing) {
         this.audioElm.pause()
         this.playing = false
       }
-      this.toggleButtons('disabled')
+      this.buttonsDisabled = true
+      this.qc = {} as PostRecordingQualityControl
+      if (this.person !== 0) {
+        this.qc.person = this.person
+      }
       const result = getRandomRecording()
         .then((response) => {
           this.recording = response.data.results[0]
+          this.qc.recording = this.recording.id
           this.charatersObject = this.getCharacters
           if (this.autoPlay) {
             this.audioElm.oncanplay = () => {
@@ -202,6 +272,41 @@ export default defineComponent({
           console.log('completed')
           console.log(this.autoPlay)
         })
+    },
+    qc_toggle (field: string) {
+      if (!this.buttonsDisabled) {
+        switch (field) {
+          case 'follow_up':
+            this.qc.follow_up = !this.qc.follow_up
+            break
+          case 'noise':
+            this.qc.noise = !this.qc.noise
+            break
+          case 'delete':
+            this.qc.trash = true
+            this.post()
+            break
+          case 'good':
+            this.qc.good = 1
+            this.post()
+            break
+          case 'bad':
+            this.qc.bad = 1
+            this.post()
+            break
+          case 'approve':
+            this.qc.approved = true
+            this.post()
+            break
+          default:
+            break
+        }
+      }
+    },
+    post () {
+      this.qc.pronunciation = this.pronunciationJSON
+      postRecordingQC(this.qc)
+      this.nextRecording()
     }
   }
 })
@@ -279,9 +384,9 @@ div.sidepanel{
   flex-grow: 1;
   background-color: rgba($brandLigthBackground, 0.8);
   position: sticky;
-  bottom: 0;
+  top: 50px;
   width: 100%;
-  max-height: 200px;
+  max-height: 250px;
   div.audio{
     margin-top: 0px;
     width: 100%;
@@ -290,7 +395,64 @@ div.sidepanel{
     align-items: center;
   }
   div.slider{
-    padding-top: 15px;
+    font-size: 1.1em;
+    div{
+      display: flex;
+      justify-content: center;
+      align-content: center;
+      align-items: center;
+      div{
+        padding: 0px 15px;
+        font-weight: 700;
+        font-size: 0.9em;
+      }
+      input, textarea{
+        width: 100%;
+        max-width: 500px;
+        -webkit-appearance: none;
+        appearance: none;
+        height: 10px;
+        border-radius: 4px;
+        background: #d3d3d3;
+        outline: none;
+      }
+      input::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border: 0px;
+        border-radius: 20px;
+        background: $brandColor;
+        cursor: pointer;
+      }
+
+      input::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border: 0px;
+        border-radius: 20px;
+        background: $brandColor;
+        cursor: pointer;
+      }
+      textarea{
+        height: 34px;
+        border: 0px;
+        margin-top: 10px;
+        max-width: 600px;
+        padding: 4px 8px;
+      }
+    }
+    div.sliderLabel{
+      font-style: italic;
+      font-size: 0.8em;
+    }
+    div.notes{
+      font-size: 0.9em;
+      padding: 0px 20px;
+    }
+    width: 100%;
+    padding: 0px 0px;
   }
 }
 .play{
@@ -304,7 +466,7 @@ div.sidepanel{
 
 div.actions{
   margin: 0px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   a{
     background-color: lighten($brandLigthBackground, 6);
     font-size: 1.0em;
@@ -383,7 +545,7 @@ div.autoPlay{
       margin-top: 5px;
     }
     div.sidepanel{
-      max-height: 240px;
+      max-height: 250px;
     }
   }
 }
@@ -419,12 +581,21 @@ div.autoPlay{
   div.actions{
     margin-bottom: 10px;
     a{
-      width: 100px;
+      width: 96px;
+      border-width: 1px;
       font-size: .8em !important;
     }
   }
   .play{
     font-size: 3em;
+  }
+  div.sliderLabel{
+    font-size: 0.5em !important;
+  }
+  div.slider{
+    div{
+      font-size: 0.7em;
+    }
   }
 }
 </style>
