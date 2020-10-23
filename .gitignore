@@ -93,3 +93,5 @@ id_rsa*
 
 # Vagrant
 .vagrant
+
+notebook_scripts
