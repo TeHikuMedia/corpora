@@ -13,10 +13,10 @@
     - restart nginx
   when: env_type != 'local'
   tags:
-    - sites  
+    - sites
   loop: "{{django_settings}}"
   loop_control:
-    index_var: item_index    
+    index_var: item_index
 
 - name: Create the Nginx configuration file LOCAL
   template: src=nginx_site_config_local.j2
@@ -27,10 +27,10 @@
     - restart nginx
   when: env_type == 'local'
   tags:
-    - sites  
+    - sites
   loop: "{{django_settings}}"
   loop_control:
-    index_var: item_index    
+    index_var: item_index
 
 - name: Ensure that the default site is disabled
   command: rm /etc/nginx/sites-enabled/default
@@ -48,7 +48,7 @@
     - reload nginx
     - restart nginx
   tags:
-    - sites    
+    - sites
 
 - name: Ensure that the application site is enabled
   command: ln -s /etc/nginx/sites-available/{{ application_name }}_{{item}}
@@ -58,12 +58,12 @@
     - reload nginx
     - restart nginx
   tags:
-    - sites  
+    - sites
   loop: "{{django_settings}}"
   loop_control:
-    index_var: item_index    
+    index_var: item_index
 
 - name: Ensure Nginx service is started
   service: name=nginx state=started enabled=yes
   tags:
-    - sites  
+    - sites

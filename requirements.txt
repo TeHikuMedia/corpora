@@ -1,79 +1,48 @@
+# Django + plugins
 Django~=3.0.0
+django-extensions==3.0.9
+django-compressor
+django-celery-beat
+django-libsass
+django-sekizai
+django-storages~=1.9.1
+django-bower
+django-debug-toolbar
+django-ckeditor
+django-allauth
+django-redis
+django-ses==1.0.3
+djangorestframework==3.11.1
+django-coreapi
+django-autocomplete-light>=3.2.10
+django-analytical
+django-cors-headers
+django-webpack-loader==0.7.0
+
+
+# Miscelanious
 boto
 boto3
 Pillow
 celery[redis]==4.4.7
-django-celery-beat
 flower
-django-compressor
-django-libsass
 libsass
-# django-compressor-toolkit
-django-sekizai
 gunicorn
-#psycopg2
 psycopg2-binary
 pycrypto
 pytz
-django-storages~=1.9.1
-django-bower
-
-
-django-debug-toolbar
-
 certifi
 requests
-django-allauth
-
-django-ckeditor
-
 simplejson
-
-
-# Bindings for Memchaced
 pylibmc
-python-memcached # => move to this oen as it's thread safe?
-
-# Redis
-django-redis
-
-# Django wrapper for AWS SES (Simple Email Service)
-django-ses==1.0.3
-
-
-# Used to turn CSS to inline styles
-# Also used in email
+python-memcached
 lxml
 premailer
-
-# API
-djangorestframework==3.11.1
-
-# API Docs
-django-coreapi
 pygments
 markdown
-
-# Autocomplete
-django-autocomplete-light>=3.2.10
-
-#Support
 pyyaml
-
-# Transcription
-# To calculate wer from speech api
-# jiwer - requires python 3
 jellyfish==0.6
-
-
-# Analytics
-django-analytical
-
-
 Collectfast==2.2.0
-
-django-cors-headers
-
-django-webpack-loader==0.7.0
-
 sentry-sdk
+jupyter==1.0.0
+ipython==7.18.1

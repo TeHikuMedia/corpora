@@ -1,0 +1,5 @@
+[program:readonly_shell_notebook]
+command=/bin/bash -c ". /webapp/bin/activate && . /webapp/bin/postactivate && cd /webapp/corpora/corpora && python manage.py shell_plus --notebook --settings=corpora.notebook_settings"
+user = {{ gunicorn_user }}
+stdout_logfile = {{ notebook_log_file }}
+redirect_stderr = true

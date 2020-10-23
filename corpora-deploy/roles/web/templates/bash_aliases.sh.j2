@@ -8,3 +8,4 @@ alias {{project_name}}-runserver="echo '. {{virtualenv_path}}/bin/activate && . 
 alias {{project_name}}-compilemessages=". {{ virtualenv_path }}/bin/activate && . {{ virtualenv_path }}/bin/postactivate && cd {{ application_path }} && python manage.py compilemessages"
 alias {{project_name}}-mi=". {{ virtualenv_path }}/bin/activate && . {{ virtualenv_path }}/bin/postactivate && cd {{ application_path }} && python manage.py makemessages -l mi"
 alias {{project_name}}-en-nz=". {{ virtualenv_path }}/bin/activate && . {{ virtualenv_path }}/bin/postactivate && cd {{ application_path }} && python manage.py makemessages -l en-NZ"
+alias {{project_name}}-ipython=". {{ virtualenv_path }}/bin/activate && . {{ virtualenv_path }}/bin/postactivate && cd {{ application_path }} && python manage.py shell_plus --notebook --settings=corpora.notebook_settings"
