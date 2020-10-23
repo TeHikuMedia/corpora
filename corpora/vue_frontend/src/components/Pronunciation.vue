@@ -17,7 +17,7 @@
           <i class="fas fa-step-forward fw"></i>
           <span>Skip</span>
         </a>
-        <audio :src="recording.audio_file_url" ref="audio"></audio>
+        <audio :src="recording.audio_file_url" :autoplay="autoPlay" ref="audio" preload="auto"></audio>
       </div>
       <div class="actions">
         <a class="follow-up"
@@ -148,6 +148,7 @@ export default defineComponent({
   mounted: function () {
     this.audioElm = this.$refs.audio as HTMLAudioElement
     this.audioElm.onended = this.audioEnded
+    this.audioElm.onplay = () => { this.playing = true }
     getMyself().then((result) => {
       this.person = result
       this.qc.person = result
@@ -239,13 +240,6 @@ export default defineComponent({
         throw new Error('Our audio is gone wtf!')
       }
       this.autoPlay = event
-      if (this.autoPlay) {
-        this.audioElm.oncanplay = () => {
-          this.toggleAudio()
-        }
-      } else {
-        this.audioElm.oncanplay = null
-      }
     },
     toggleAudio () {
       const a = this.$refs.audio as HTMLAudioElement
@@ -271,9 +265,6 @@ export default defineComponent({
           if (this.autoPlay) {
             if (this.audioElm === null) {
               throw new Error('Cannot autoplay')
-            }
-            this.audioElm.oncanplay = () => {
-              this.toggleAudio()
             }
           }
         })
