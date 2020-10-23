@@ -56,6 +56,13 @@
   
     {% if request.user.is_authenticated and request.user.is_staff %}
      
+    {% url 'vue' as vue_path %}
+    <li class="nav-item {% if vue_path in request.get_full_path %}active{% endif %}">
+      <a class="nav-link" href="{{vue_path}}" >
+        <i class="far fa-lg fa-fw fa-waveform-path"></i>
+        <div >{% trans 'Pronunciation' %}</div>
+      </a>
+    </li>
 
     {% url 'stats' as path %}
     <li class="nav-item {% if path in request.get_full_path %}active{% endif %}">

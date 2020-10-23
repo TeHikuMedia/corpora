@@ -136,7 +136,7 @@ urlpatterns = [
         auth.ProcessExpoRedirect.as_view(),
         name='expo-login'),
 
-    re_path(r'^v/$.*', VueFrontend.as_view()),
+    re_path(r'^v/$.*', VueFrontend.as_view(), name="vue"),
     re_path(r'^v/.*/$', VueFrontend.as_view()),
 
     path('management', UserCheckView.as_view()),

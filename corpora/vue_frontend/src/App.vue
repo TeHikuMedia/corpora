@@ -1,5 +1,6 @@
 <template>
   <div id="nav">
+    <a href="../">Home</a>
     <router-link to="/">Pronunciation</router-link>
   </div>
   <router-view/>
@@ -29,7 +30,7 @@ body{
   a {
     font-weight: bold;
     // color: #2c3e50;
-
+    margin-right: 15px;
     &.router-link-exact-active {
       border-bottom: 1px solid;
       // color: #42b983;
