@@ -19,9 +19,9 @@ interface CharStructure {
 }
 
 interface PronunciationJSON {
-  ratingSlider: number;
+  ratingSlider: number | null;
   ratingComputed: number;
-  characterVotes: Array<CharStructure>;
+  characters: Array< Record< string, boolean>>;
 }
 
 interface PostRecordingQualityControl {

@@ -60,7 +60,7 @@
       <div class="slider">
         <div class="sliderGroup">
           <div class="rangeLabel">Incorrect</div>
-          <input type="range" min="0" max="100" class="slider" id="myRange" v-model="sliderValue">
+          <input type="range" min="0" max="100" class="slider" id="myRange" v-model="sliderValue" step="1">
           <div class="rangeLabel">Correct</div>
         </div>
         <div class="sliderLabel">
@@ -84,6 +84,11 @@
         </div>
       </div>
     </div>
+    <div class="editSentence" :class="{ disabled: !edit }">
+      <div>
+        <textarea v-model="recording.sentence_text"></textarea>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -100,27 +105,44 @@ import {
   PostRecordingQualityControl
 } from '@/api/interfaces'
 
+interface PronunciationData {
+  foo: string;
+  recording: RecordingObject;
+  words: string[];
+  charatersObject: CharStructure[];
+  audioElm: HTMLAudioElement | null;
+  playing: boolean;
+  autoPlay: boolean;
+  sliderValue: null | number;
+  buttonsDisabled: boolean;
+  person: number;
+  qc: Partial<PostRecordingQualityControl>;
+  edit: boolean;
+}
+
 export default defineComponent({
   name: 'Pronunciation',
   components: {
     Toggle
   },
-  data: function () {
+  data: function (): PronunciationData {
     return {
       foo: 'bar',
       recording: {
         sentence_text: 'foo',
-        audio_file_url: 'bar'
-      } as RecordingObject,
+        audio_file_url: 'bar',
+        id: 0
+      },
       words: ['test', 'ing'],
-      charatersObject: [] as Array<CharStructure>,
-      audioElm: {} as HTMLAudioElement,
+      charatersObject: [],
+      audioElm: null,
       playing: false,
       autoPlay: false,
-      sliderValue: 50,
+      sliderValue: null,
       buttonsDisabled: true,
       person: 0,
-      qc: {} as PostRecordingQualityControl
+      edit: false,
+      qc: {}
     }
   },
   mounted: function () {
@@ -143,10 +165,11 @@ export default defineComponent({
   },
   computed: {
     pronunciationJSON (): PronunciationJSON {
+      const charList = this.getCharacterList()
       return {
-        ratingSlider: this.sliderValue / 100,
+        ratingSlider: this.sliderValue === null ? null : this.sliderValue / 100,
         ratingComputed: this.getComputedVote(),
-        characterVotes: this.charatersObject
+        characters: charList
       }
     },
     getCharacters (): Array<CharStructure> {
@@ -179,7 +202,19 @@ export default defineComponent({
   },
   methods: {
     updateSlider () {
-      this.sliderValue = Math.round(100 * this.getComputedVote())
+      // this.sliderValue = Math.round(100 * this.getComputedVote())
+    },
+    getCharacterList (): Array< Record<string, boolean> > {
+      const characters: Array< Record<string, boolean> > = []
+      this.charatersObject.forEach((charObj) => {
+        // console.log('test')
+        charObj.chars.forEach((char) => {
+          const d: Record<string, boolean> = {}
+          d[char.character] = char.vote
+          characters.push(d)
+        })
+      })
+      return characters
     },
     getComputedVote (): number {
       let numChars = 0
@@ -196,10 +231,13 @@ export default defineComponent({
       if (numChars === 0) {
         return 0
       } else {
-        return 1 - numBad / numChars
+        return (1 - numBad / numChars)
       }
     },
     toggleAutoPlay (event: boolean) {
+      if (this.audioElm === null) {
+        throw new Error('Our audio is gone wtf!')
+      }
       this.autoPlay = event
       if (this.autoPlay) {
         this.audioElm.oncanplay = () => {
@@ -227,10 +265,13 @@ export default defineComponent({
       this.reset()
       getRandomRecording()
         .then((response) => {
-          this.recording = response.data.results[0]
+          this.recording = response.data.results[0] as RecordingObject
           this.qc.recording = this.recording.id
           this.charatersObject = this.getCharacters
           if (this.autoPlay) {
+            if (this.audioElm === null) {
+              throw new Error('Cannot autoplay')
+            }
             this.audioElm.oncanplay = () => {
               this.toggleAudio()
             }
@@ -245,6 +286,9 @@ export default defineComponent({
         })
     },
     reset () {
+      if (this.audioElm === null) {
+        throw new Error('Cannot pause')
+      }
       if (this.playing) {
         this.audioElm.pause()
         this.playing = false
@@ -254,7 +298,7 @@ export default defineComponent({
       if (this.person !== 0) {
         this.qc.person = this.person
       }
-      this.sliderValue = 50
+      this.sliderValue = null
     },
     qc_toggle (field: string) {
       if (!this.buttonsDisabled) {
@@ -281,6 +325,9 @@ export default defineComponent({
             this.qc.approved = true
             this.post()
             break
+          case 'edit':
+            this.edit = !this.edit
+            break
           default:
             break
         }
@@ -288,7 +335,7 @@ export default defineComponent({
     },
     post () {
       this.qc.pronunciation = this.pronunciationJSON
-      postRecordingQC(this.qc)
+      postRecordingQC(this.qc as PostRecordingQualityControl)
       this.nextRecording()
     }
   }
@@ -581,5 +628,34 @@ div.autoPlay{
       font-size: 0.7em;
     }
   }
+}
+div.editSentence{
+  margin: 0px;
+  padding: 20px;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
+  width: 100%;
+  background-color: rgba(black, 0.5);
+  div {
+    width: 100%;
+    height: 100%;
+    max-width: 500px;
+    max-height: 500px;
+    textarea{
+      width: 100%;
+      height: 100%;
+      font-size: 18pt;
+      padding: 15px;
+    }
+  }
+}
+div.editSentence.disabled{
+  display: none;
 }
 </style>
