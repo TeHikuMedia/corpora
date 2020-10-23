@@ -78,7 +78,7 @@ rabbitmq_application_user: "{{ application_name }}"
 rabbitmq_application_password: password
 
 # Celery settings.
-celery_num_workers: 4 #
+celery_num_workers: 2 #
 celery_num_workers_secondary: 4 #
 celery_application_settings_file: settings.dev
 
