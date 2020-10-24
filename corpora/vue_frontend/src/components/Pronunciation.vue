@@ -84,17 +84,17 @@
         </div>
       </div>
     </div>
-    <div class="editSentence" :class="{ disabled: !edit }">
-      <div>
-        <textarea v-model="recording.sentence_text"></textarea>
-      </div>
-    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { getRandomRecording, postRecordingQC, getMyself } from '../api'
+import {
+  getRandomRecording,
+  postRecordingQC,
+  getMyself,
+  updateRecordingText
+} from '../api'
 import Toggle from '@/components/Toggle.vue' // @ is an alias to /src
 
 import {

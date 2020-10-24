@@ -20,3 +20,16 @@ export const getMyself = () => {
       return null
     })
 }
+
+export const updateRecordingText = (id: number, sentence_text: string) => {
+  const config = { headers: headerBuilder({ contentType: 'application/json', includeCSRFToken: true }) }
+  const url = `/api/recording/${id}`
+  return axios.put(
+    url,
+    {
+      id: id,
+      sentence_text: sentence_text
+    },
+    config
+  )
+}

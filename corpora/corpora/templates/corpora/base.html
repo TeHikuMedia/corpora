@@ -28,7 +28,7 @@
   {% addtoblock "js-include" %}<script type="text/javascript" src="{% static 'corpora/js/transitions.js' %}"></script>{% endaddtoblock %}
   {% addtoblock "js-include" %}<script type="text/javascript" src="{% static 'bower_components/popper.js/dist/umd/popper.js' %}"></script>{% endaddtoblock %}
   {% addtoblock "js-include" %}<script type="text/javascript" src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>{% endaddtoblock %}
-  {% addtoblock "js-include" %}<script type="text/javascript" src="{% static 'third_party/fontawesome-pro/js/all.js' %}"></script>{% endaddtoblock %}
+  {% addtoblock "js-include" %}<script src="https://kit.fontawesome.com/214eaebae0.js" crossorigin="anonymous"></script>{% endaddtoblock %}
   
   {% render_block "js-include" %}
   {% render_block "js" postprocessor "compressor.contrib.sekizai.compress" %}
