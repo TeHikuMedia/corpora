@@ -9,10 +9,10 @@
           <span>Auto Play</span>
         </div>
         <font-awesome-icon icon="play-circle"  fixed-width class="play"
-        v-on:click="toggleAudio();" v-if="!playing"/>
+        v-on:click="toggleAudio();" v-if="playing == false"/>
         <font-awesome-icon icon="pause-circle"  fixed-width class="play"
-        v-on:click="toggleAudio();" v-if="playing"/>
-        <a href="javascript:void(0)" id="next disabled" class="next"
+        v-on:click="toggleAudio();" v-if="playing == true"/>
+        <a href="javascript:void(0)" id="next" class="next"
          v-on:click="nextRecording();">
           <i class="fas fa-step-forward fw"></i>
           <span>Skip</span>
@@ -148,7 +148,8 @@ export default defineComponent({
   mounted: function () {
     this.audioElm = this.$refs.audio as HTMLAudioElement
     this.audioElm.onended = this.audioEnded
-    this.audioElm.onplay = () => { this.playing = true }
+    this.audioElm.onplay = this.audioStarted
+    this.audioElm.onpause = this.audioPaused
     getMyself().then((result) => {
       this.person = result
       this.qc.person = result
@@ -157,7 +158,6 @@ export default defineComponent({
 
     const setVh = () => {
       const vh = window.innerHeight * 0.01
-      console.log('resize')
       document.documentElement.style.setProperty('--vh', `${vh}px`)
     }
 
@@ -208,7 +208,6 @@ export default defineComponent({
     getCharacterList (): Array< Record<string, boolean> > {
       const characters: Array< Record<string, boolean> > = []
       this.charatersObject.forEach((charObj) => {
-        // console.log('test')
         charObj.chars.forEach((char) => {
           const d: Record<string, boolean> = {}
           d[char.character] = char.vote
@@ -221,7 +220,6 @@ export default defineComponent({
       let numChars = 0
       let numBad = 0
       this.charatersObject.forEach((charObj) => {
-        // console.log('test')
         charObj.chars.forEach((char) => {
           numChars += 1
           if (char.vote) {
@@ -255,6 +253,12 @@ export default defineComponent({
       this.playing = false
       this.buttonsDisabled = false
     },
+    audioPaused () {
+      this.playing = false
+    },
+    audioStarted () {
+      this.playing = true
+    },
     nextRecording () {
       this.reset()
       getRandomRecording()
@@ -270,10 +274,6 @@ export default defineComponent({
         })
         .catch((error) => {
           console.log(error)
-        })
-        .then(() => {
-          console.log('completed')
-          console.log(this.autoPlay)
         })
     },
     reset () {
