@@ -120,7 +120,12 @@ def send_email_to_person(person_pk, message_pk, ma_pk):
         subject = message.subject
 
         e = EMail(to=email, subject=subject)
-        tokena = jwt.encode({'email': email}, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
+        tokena = jwt.encode(
+            {'email': email, 'message': message_pk},
+            settings.JWT_SECRET,
+            algorithm=settings.JWT_ALGORITHM
+        )
+
         context = {
             'subject': subject,
             'person': person,
@@ -200,7 +205,12 @@ def send_email_to_group(group_pk, message_pk, ma_pk):
             invalid = get_invalid_group_members(group)
 
             e = EMail(to=email, subject=subject)
-            tokena = jwt.encode({'email': email}, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
+            tokena = jwt.encode(
+                {'email': email, 'message': message_pk},
+                settings.JWT_SECRET,
+                algorithm=settings.JWT_ALGORITHM
+            )
+
             context = {
                 'subject': subject,
                 'person': person,

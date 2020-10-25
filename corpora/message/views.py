@@ -45,6 +45,9 @@ class MessageView(UserPassesTestMixin, DetailView):
             except:
                 return False
             email = payload['email']
+            message = self.get_object()
+            if message.pk != payload['message']:
+                return False
             if Person.objects.filter(profile_email=email).exists():
                 return True
             elif User.objects.filter(email=email).exists():
