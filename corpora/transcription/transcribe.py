@@ -258,8 +258,8 @@ def transcribe_segment_async(ts_id):
         else:
             return "Segment already has text."
     except Exception as e:
-        logger.error("Failed to transcribe segment {0}.".format(ts.pk))
-        logger.error(e)
+        logger.warn("Failed to transcribe segment {0}.".format(ts.pk))
+        logger.warn(e)
         return "{0}".format(e)
 
     return result
@@ -376,9 +376,9 @@ def transcribe_aft_async(pk):
         try:
             transcribe_segment(segment)
         except Exception as e:
-            logger.error(e)
+            logger.warn(e)
             errors = errors + 1
-            logger.error(
+            logger.warn(
                 "Failed to transcribe segment {0}.".format(segment.pk))
 
     erase_all_temp_files(aft)

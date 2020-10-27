@@ -322,7 +322,7 @@
               <td width="100%" valign="top" class="viewInBrowser">
                   <div class="viewInBrowser">
                     {% if messageID %}
-                      <a href="https://{{site.domain}}{% url 'message:messageDetail' messageID %}"><em>View in browser</em>
+                      <a href="https://{{site.domain}}{% url 'message:messageDetail' messageID %}?tokena={{tokena}}"><em>View in browser</em>
                       </a>
                     {% else %}&nbsp;
                     {% endif %}

@@ -135,3 +135,26 @@
   tags:
     - deploy-app
     - deploy-django
+
+- name: "Clean web server before scaling local {{ application_name }}"
+  hosts: vagrant
+  remote_user: admin
+  become: true
+  vars:
+    - server_type: web
+    - host_tag: tag_project_env_server_type_{{application_name}}_{{env_type}}_web
+    - ansible_user: admin
+  vars_files:
+    - env_vars/base.yml
+    - env_vars/local.yml
+    - env_vars/vault.yml
+    - group_vars/remote.yml
+    - group_vars/local.yml
+  roles:
+    - clean-server
+  tags:
+    - local
+    - deploy
+    - deploy-django
+    - scale
+    - clean

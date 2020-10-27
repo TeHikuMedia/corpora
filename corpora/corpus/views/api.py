@@ -1,7 +1,8 @@
 from django.utils.translation import ugettext_lazy as _
-from corpus.models import \
-    RecordingQualityControl, Sentence, Recording, Source, Text, \
-    SentenceQualityControl
+from corpus.models import (
+    RecordingQualityControl, Sentence, Recording, Source, Text, 
+    SentenceQualityControl, RecordingMetadata
+)
 from django.db.models import \
     Count, Q, Sum, Case, When, Value, IntegerField, Max,\
     Prefetch
@@ -22,16 +23,19 @@ from people.competition import \
 from corpus.helpers import get_next_sentence
 from rest_framework import viewsets, permissions, pagination
 
-from corpus.serializers import \
-    RecordingQualityControlSerializer,\
-    SentenceQualityControlSerializer,\
-    SentenceSerializer, \
-    RecordingSerializer, \
-    RecordingSerializerPost, \
-    RecordingSerializerPostBase64, \
-    ListenSerializer, \
-    SourceSerializer, \
-    TextSerializer
+from corpus.serializers import (
+    RecordingQualityControlSerializer,
+    SentenceQualityControlSerializer,
+    SentenceSerializer,
+    RecordingSerializer,
+    RecordingSerializerPost,
+    RecordingSerializerPostBase64,
+    ListenSerializer,
+    SourceSerializer,
+    TextSerializer,
+    RecordingMetadataSerializer
+)
+
 from rest_framework import generics, serializers
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 from django.core.cache import cache
@@ -484,6 +488,14 @@ class RecordingViewSet(ViewSetCacheMixin, viewsets.ModelViewSet):
     - `filter` You can pass the following filters
         - `sentence:ID` - this returns recordings from a particular sentence.
 
+    ### Metadata
+    The metadata from Recording Metadata model is provided for convienince. 
+    To update the metadata for recordings, you have to PUT to the
+    `/api/recordingmetadata/{recording.id}/` endpoint. If no metadata
+    exists, you need to first create it using a POST request to 
+    `/api/recordingmetadata/`.
+    
+
     """
 
     queryset = Recording.objects.all()
@@ -897,3 +909,24 @@ def get_random_pk_from_queryset(queryset, cache_key):
     cache.set(queryset_cache_key, queryset_cache, 60*5)
 
     return pk
+
+
+class RecordingMetadataViewSet(ViewSetCacheMixin, viewsets.ModelViewSet):
+    """
+    ### Recording Metadata
+    This API allows us to associate any sort of metadata with each recording.
+    
+    Lookups for this API use the recording ID.
+    `/api/recordingmetadata/{recording.id}/`
+    """
+    queryset = RecordingMetadata.objects.all()
+    serializer_class = RecordingMetadataSerializer
+    permission_classes = (PutOnlyStaffReadPermission,)
+    pagination_class = OneHundredResultPagination
+    lookup_field = 'recording'
+
+    # def get_queryset(self):
+    #     q = super().get_queryset()
+    #     recording = self.request.query_params.get('recording', None)
+    #     if recording:
+    #         return q.filter(recording__pk=recording)

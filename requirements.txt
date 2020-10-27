@@ -1,5 +1,5 @@
 # Django + plugins
-Django~=3.0.0
+Django~=3.1.0
 django-extensions==3.0.9
 django-compressor
 django-celery-beat
@@ -41,6 +41,7 @@ premailer
 pygments
 markdown
 pyyaml
+pyjwt
 jellyfish==0.6
 Collectfast==2.2.0
 sentry-sdk
