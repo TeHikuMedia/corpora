@@ -4,10 +4,10 @@ from django.db import models
 
 from django.contrib import messages
 
-from .models import \
-    RecordingQualityControl, Sentence, Recording, Source, Text, \
-    SentenceQualityControl
-
+from corpus.models import (
+    RecordingQualityControl, Sentence, Recording, Source, Text,
+    SentenceQualityControl, RecordingMetadata
+)
 from corpus.tasks import transcode_audio
 import time
 from corpus.views.views import RecordingFileView
@@ -269,3 +269,8 @@ class TextAdmin(admin.ModelAdmin):
                 request, messages.INFO,
                 '%s sentences created from %s (%s errors)' % (
                     info['saved'], obj, info['errors']))
+
+
+@admin.register(RecordingMetadata)
+class RecordingMetadataAdmin(admin.ModelAdmin):
+    list_display = ('recording', 'updated', 'created')

@@ -7,7 +7,7 @@ setup_git_repo: yes
 
 # AWS Settings
 webserver_instance_type: t3.large
-webserver_asg_instance_type: t3.small
+webserver_asg_instance_type: t3.medium
 solrserver_instance_type: t3.medium
 debian_distro: buster
 number_webserver_instances: 1

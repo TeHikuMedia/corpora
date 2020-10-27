@@ -1,7 +1,7 @@
-from .models import \
-    RecordingQualityControl, Sentence, Recording, Source, Text, \
-    SentenceQualityControl
-
+from corpus.models import (
+    RecordingQualityControl, Sentence, Recording, Source, Text,
+    SentenceQualityControl, RecordingMetadata
+)
 from rest_framework import serializers
 from people.helpers import get_person
 from rest_framework.response import Response
@@ -75,9 +75,19 @@ class RecordingQualityControlSerializer(
     class Meta:
         model = RecordingQualityControl
         fields = ('id', 'good', 'bad', 'approved', 'approved_by', 'updated',
-                  'person', 'recording',
+                  'person', 'recording', 'content_type', 'object_id',
                   'trash', 'follow_up', 'noise', 'star',
-                  'machine', 'source', 'notes')
+                  'machine', 'source', 'notes', 'pronunciation')
+
+    def validate(self, data):
+        if 'content_type' in data and 'object_id' in data:
+            if data['content_type'] and data['object_id']:
+                if 'recording' in data['content_type'].name.lower():
+                    try:
+                        data['recording'] = Recording.objects.get(pk=data['object_id'])
+                    except ObjectDoesNotExist:
+                        pass
+        return super().validate(data)
 
 
 class SentenceQualityControlSerializer(
@@ -320,6 +330,7 @@ class RecordingSerializer(serializers.ModelSerializer):
     quality_control_aggregate = serializers.SerializerMethodField()
     transcription = serializers.SerializerMethodField()
     word_error_rate = serializers.SerializerMethodField()
+    metadata = serializers.SerializerMethodField()
 
     class Meta:
         model = Recording
@@ -327,7 +338,7 @@ class RecordingSerializer(serializers.ModelSerializer):
                   'id', 'sentence_text', 'user_agent', 'created', 'updated',
                   'audio_file_md5', 'audio_file_wav_md5',
                   'quality_control_aggregate', 'transcription',
-                  'word_error_rate', 'private')
+                  'word_error_rate', 'private', 'metadata')
 
     def get_updated(self, obj):
         qc = obj.quality_control.all().order_by('-updated').first()
@@ -357,6 +368,13 @@ class RecordingSerializer(serializers.ModelSerializer):
         except:
             pass
         return None
+
+    def get_metadata(self, obj):
+        try:
+            meta = RecordingMetadata.objects.get(recording=obj)
+            return meta.metadata
+        except ObjectDoesNotExist:
+            return None
 
 
 class ListenSerializer(serializers.ModelSerializer):
@@ -444,3 +462,11 @@ class TextSerializer(serializers.ModelSerializer):
             text = Text.objects.create(**validated_data)
 
         return text
+
+
+class RecordingMetadataSerializer(
+        SetPersonFromTokenWhenSelf, serializers.ModelSerializer):
+
+    class Meta:
+        model = RecordingMetadata
+        fields = ('recording', 'metadata', 'id')

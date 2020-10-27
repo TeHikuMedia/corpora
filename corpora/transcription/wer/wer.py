@@ -12,7 +12,7 @@ def word_error_rate(original, asr, language):
     if language.lower() in 'mi':
         from transcription.wer.mi import clean_text_for_wer_calculation
     else:
-        logger.error('No WER implemented for language {0}.'.format(language))
+        logger.warn('No WER implemented for language {0}.'.format(language))
         return None
 
     original = clean_text_for_wer_calculation(original)

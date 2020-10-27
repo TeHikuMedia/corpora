@@ -85,7 +85,7 @@ INSTALLED_APPS = [
 
     'corsheaders',
 
-    'django_celery_beat',
+    # 'django_celery_beat',
     'webpack_loader',
 ]
 
@@ -585,12 +585,19 @@ WEBPACK_LOADER = {
     }
 }
 
-# sentry_sdk.init(
-#     dsn="https://ba4e6615d22748dc98442c7c29696e87@o232677.ingest.sentry.io/5458955",
-#     integrations=[DjangoIntegration()],
-#     traces_sample_rate=1.0,
-#     environment=ENV_TYPE,
-#     # If you wish to associate users to errors (assuming you are using
-#     # django.contrib.auth) you may enable sending PII data.
-#     send_default_pii=True
-# )
+# if 'local' not in ENV_TYPE:
+
+    # sentry_sdk.init(
+    #     dsn="https://ba4e6615d22748dc98442c7c29696e87@o232677.ingest.sentry.io/5458955",
+    #     integrations=[DjangoIntegration()],
+    #     traces_sample_rate=1.0,
+    #     environment=ENV_TYPE,
+    #     # If you wish to associate users to errors (assuming you are using
+    #     # django.contrib.auth) you may enable sending PII data.
+    #     send_default_pii=True
+    # )
+
+
+# JWT Messages
+JWT_SECRET = os.environ['JWT_SECRET']
+JWT_ALGORITHM = "HS256"
