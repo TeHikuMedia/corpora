@@ -60,7 +60,9 @@
       <div class="slider">
         <div class="sliderGroup">
           <div class="rangeLabel">Incorrect</div>
-          <input type="range" min="0" max="100" class="slider" id="myRange" v-model="sliderValue" step="1">
+          <input type="range" min="0" max="100" class="slider" id="myRange"
+            v-model="sliderValue" step="1"
+            v-on:click="humanDidMoveSlider = true;">
           <div class="rangeLabel">Correct</div>
         </div>
         <div class="sliderLabel">
@@ -114,11 +116,14 @@ interface PronunciationData {
   playing: boolean;
   autoPlay: boolean;
   sliderValue: null | number;
+  humanDidMoveSlider: boolean;
   buttonsDisabled: boolean;
   person: number;
   qc: Partial<PostRecordingQualityControl>;
   edit: boolean;
 }
+
+const defaultSliderValue = 66
 
 export default defineComponent({
   name: 'Pronunciation',
@@ -138,7 +143,8 @@ export default defineComponent({
       audioElm: null,
       playing: false,
       autoPlay: false,
-      sliderValue: null,
+      sliderValue: defaultSliderValue,
+      humanDidMoveSlider: false,
       buttonsDisabled: true,
       person: 0,
       edit: false,
@@ -167,8 +173,14 @@ export default defineComponent({
   computed: {
     pronunciationJSON (): PronunciationJSON {
       const charList = this.getCharacterList()
+      let sliderValue: number | null
+      if (this.humanDidMoveSlider) {
+        sliderValue = this.sliderValue === null ? null : this.sliderValue / 100
+      } else {
+        sliderValue = null
+      }
       return {
-        ratingSlider: this.sliderValue === null ? null : this.sliderValue / 100,
+        ratingSlider: sliderValue,
         ratingComputed: this.getComputedVote(),
         characters: charList
       }
@@ -203,7 +215,7 @@ export default defineComponent({
   },
   methods: {
     updateSlider () {
-      // this.sliderValue = Math.round(100 * this.getComputedVote())
+      this.sliderValue = Math.round(66 * this.getComputedVote())
     },
     getCharacterList (): Array< Record<string, boolean> > {
       const characters: Array< Record<string, boolean> > = []
@@ -289,7 +301,7 @@ export default defineComponent({
       if (this.person !== 0) {
         this.qc.person = this.person
       }
-      this.sliderValue = null
+      this.sliderValue = defaultSliderValue
     },
     qc_toggle (field: string) {
       if (!this.buttonsDisabled) {

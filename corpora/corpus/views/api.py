@@ -480,7 +480,7 @@ class RecordingViewSet(ViewSetCacheMixin, viewsets.ModelViewSet):
 
     - `encoding`
 
-        Set the encoding of the posted file. CUrrently we only support
+        Set the encoding of the posted file. Currently we only support
         `?encoding=base64` which will allow you to base64 encode a file
         and post as a normal string field for example when doing a json
         type post.
