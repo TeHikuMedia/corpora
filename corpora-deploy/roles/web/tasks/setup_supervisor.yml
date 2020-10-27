@@ -41,21 +41,6 @@
     - reload supervisor
     - restart all
 
-# - name: Install process limiting lib for notebooks
-#   apt:
-#     name:
-#       - cgroup-tools
-#     update_cache: "{{ update_apt_cache }}"
-#     state: latest
-#   tags: sites
-
-# - name: Copy cgroup config for notebooks
-#   copy:
-#     src: cgred.conf
-#     dest: /etc/cgred.conf
-#   tags:
-#     - sites
-
 - name: Setup notebook supervisor config
   template: src=supervisor_notebook_config.j2
             dest=/etc/supervisor/conf.d/notebook.conf
@@ -65,3 +50,13 @@
   notify:
     - reload supervisor
     - restart all
+
+- name: Create the folder for the notebook scripts
+  file: path=/home/corpora/notebook_scripts/
+        mode=0777
+        owner={{ gunicorn_user }}
+        group={{ gunicorn_group }}
+        state=directory
+        recurse=yes
+  tags:
+    - sites

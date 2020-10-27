@@ -22,6 +22,8 @@ database_instance_type: db.t3.micro
 db_user: "{{ application_name }}"
 db_name: "{{ application_name }}"
 db_password: password
+read_db_user: "readonly_{{ application_name }}"
+read_db_password: "HbG\[X3xtt"
 db_roles: "NOSUPERUSER,NOCREATEDB"
 
 # Gunicorn settings. For the number of workers, a good rule to follow is

@@ -396,22 +396,22 @@ LOGGING = {
             'stream': sys.stdout,
             'formatter': 'verbose',
         },
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '../../logs/django.log',
-            'formatter': 'verbose',
-            'maxBytes': 1024 * 1000,  # 1kb * X
-            'backupCount': 20,
-        },
-        'celery': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '../../logs/celery.log',
-            'formatter': 'simple',
-            'maxBytes': 1024 * 1000,  # 500 kb,
-            'backupCount': 20,
-        }
+        # 'file': {
+        #     'level': 'DEBUG',
+        #     'class': 'logging.handlers.RotatingFileHandler',
+        #     'filename': '../../logs/django.log',
+        #     'formatter': 'verbose',
+        #     'maxBytes': 1024 * 1000,  # 1kb * X
+        #     'backupCount': 20,
+        # },
+        # 'celery': {
+        #     'level': 'DEBUG',
+        #     'class': 'logging.handlers.RotatingFileHandler',
+        #     'filename': '../../logs/celery.log',
+        #     'formatter': 'simple',
+        #     'maxBytes': 1024 * 1000,  # 500 kb,
+        #     'backupCount': 20,
+        # }
     },
     'loggers': {
         'django.test': {
@@ -424,16 +424,16 @@ LOGGING = {
             'level': 'INFO',
             'propagate': False,
         },
-        'corpora': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propogate': True
-        },
-        'celery': {
-            'handlers': ['celery', 'console'],
-            'level': 'DEBUG',
-            'propogate': True
-        }
+        # 'corpora': {
+        #     'handlers': ['file'],
+        #     'level': 'DEBUG',
+        #     'propogate': True
+        # },
+        # 'celery': {
+        #     'handlers': ['celery', 'console'],
+        #     'level': 'DEBUG',
+        #     'propogate': True
+        # }
     }
 }
 

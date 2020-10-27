@@ -9,6 +9,8 @@ env_type: local
 db_user: "{{ application_name }}"
 db_name: "{{ application_name }}"
 db_password: password # could encrypt and store in vault - but is it even necessary???
+read_db_user: "{{ application_name }}"
+read_db_password: "password"
 rebuild_database: no
 db_roles: "NOSUPERUSER,CREATEDB"
 # Here we assign "fake" ec2 registers for our code. This is the database host
