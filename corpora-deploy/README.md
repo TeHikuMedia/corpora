@@ -183,11 +183,11 @@ Remote Instances
 
 To deploy a staging instance,
 
-    ansible-playbook -i inventory/ec2.py --private-key ~/.ssh/corpora_2020.pem staging.yml
+    ansible-playbook -i inventory/aws_ec2.yml --private-key ~/.ssh/corpora_2020.pem staging.yml
 
 To deploy a production instance, 
 
-    ansible-playbook -i inventory/ec2.py --private-key ~/.ssh/corpora_2020.pem production.yml
+    ansible-playbook -i inventory/aws_ec2.yml --private-key ~/.ssh/corpora_2020.pem production.yml
 
 We're now using dedicated servers for media transcoding. This requires building two machines running the kuaka app. The plays above run these extra steps, however there are handlers that will determine when the media machine should be re-deployed and built as an AMI.
 
@@ -196,11 +196,11 @@ Once the instances have been launched and provisioned, it's only necessary to ru
 
 **Staging:**
 
-    ansible-playbook -i inventory/ec2.py --private-key ~/.ssh/corpora_2020.pem staging.yml -t deploy,scale
+    ansible-playbook -i inventory/aws_ec2.yml --private-key ~/.ssh/corpora_2020.pem staging.yml -t deploy,scale
 
 **Production:**
 
-    ansible-playbook -i inventory/ec2.py --private-key ~/.ssh/corpora_2020.pem production.yml -t deploy,scale
+    ansible-playbook -i inventory/aws_ec2.yml --private-key ~/.ssh/corpora_2020.pem production.yml -t deploy,scale
 
 
 The scale tag provisions Auto Scaling for the Media server.
@@ -210,11 +210,11 @@ Once the instances have been launched and provisioned, it's only necessary to ru
 
 **Staging:**
 
-    ansible-playbook -i inventory/ec2.py --private-key ~/.ssh/corpora_2020.pem staging.yml -t deploy
+    ansible-playbook -i inventory/aws_ec2.yml --private-key ~/.ssh/corpora_2020.pem staging.yml -t deploy
 
 **Production:**
 
-    ansible-playbook -i inventory/ec2.py --private-key ~/.ssh/corpora_2020.pem production.yml -t deploy
+    ansible-playbook -i inventory/aws_ec2.yml --private-key ~/.ssh/corpora_2020.pem production.yml -t deploy
 
 
 Note that we need to pass the branch to the staging play as this allows us to test different branches on the same staging servers.
