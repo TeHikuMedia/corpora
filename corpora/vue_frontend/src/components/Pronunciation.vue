@@ -123,6 +123,8 @@ interface PronunciationData {
   edit: boolean;
 }
 
+const defaultSliderValue = 66
+
 export default defineComponent({
   name: 'Pronunciation',
   components: {
@@ -141,7 +143,7 @@ export default defineComponent({
       audioElm: null,
       playing: false,
       autoPlay: false,
-      sliderValue: null,
+      sliderValue: defaultSliderValue,
       humanDidMoveSlider: false,
       buttonsDisabled: true,
       person: 0,
@@ -299,7 +301,7 @@ export default defineComponent({
       if (this.person !== 0) {
         this.qc.person = this.person
       }
-      this.sliderValue = null
+      this.sliderValue = defaultSliderValue
     },
     qc_toggle (field: string) {
       if (!this.buttonsDisabled) {
