@@ -19,6 +19,14 @@
   file: path={{virtualenv_path}}/bin
         state=directory
 
+- name: Create the folder for the notebook scripts
+  file: path=/home/corpora/notebook_scripts/
+        mode=0777
+        owner={{ gunicorn_user }}
+        group={{ gunicorn_group }}
+        state=directory
+        recurse=yes
+
 - name: LOCAL Create the virtualenv postactivate script to set environment variables
   template: src=virtualenv_postactivate.j2
             dest={{ virtualenv_path }}/bin/postactivate

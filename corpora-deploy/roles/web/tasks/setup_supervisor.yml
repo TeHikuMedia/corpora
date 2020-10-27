@@ -50,13 +50,3 @@
   notify:
     - reload supervisor
     - restart all
-
-- name: Create the folder for the notebook scripts
-  file: path=/home/corpora/notebook_scripts/
-        mode=0777
-        owner={{ gunicorn_user }}
-        group={{ gunicorn_group }}
-        state=directory
-        recurse=yes
-  tags:
-    - sites
