@@ -17,3 +17,9 @@ cloudfront_cname: "{{cloudfront_subdomain}}.{{zone_domain_name}}"
 asg_desired: 1
 asg_min_size: 1
 asg_max_size: 3
+
+asg_mixed_instances_policy:
+  instance_types:
+    - t3.small
+    - t3.medium
+    - t3.large
