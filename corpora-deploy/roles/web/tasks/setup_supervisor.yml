@@ -28,6 +28,9 @@
         mode=0755
         state=directory 
 
+- name: Clear old confs
+  shell: rm -rf /etc/supervisor/conf.d/*
+
 - name: Create the Supervisor config file
   template: src=supervisor_config.j2
             dest=/etc/supervisor/conf.d/{{ application_name }}_{{item}}.conf
