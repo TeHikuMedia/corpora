@@ -2,15 +2,15 @@
 
 - name: Create the celery log folder
   file: path={{ application_log_dir }}
-        owner={{ celery_user }}
-        group={{ celery_group }}
+        owner={{ gunicorn_user }}
+        group={{ gunicorn_group }}
         mode=0774
         state=directory
 
 - name: Create the celery log file
   file: path={{ application_log_dir }}
-        owner={{ celery_user }}
-        group={{ celery_group }}
+        owner={{ gunicorn_user }}
+        group={{ gunicorn_group }}
         state=touch
         mode=0755
   become: yes
