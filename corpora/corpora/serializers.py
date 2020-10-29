@@ -12,7 +12,6 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    # groups = GroupSerializer(many=True)
 
     class Meta:
         model = User
