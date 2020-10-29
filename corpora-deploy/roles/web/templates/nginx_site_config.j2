@@ -54,10 +54,6 @@ server {
         alias   {{ nginx_media_dir }};
     }
 
-    location /corpora-ipython-notebook/ {
-        proxy_pass http://127.0.0.1:9999
-    }
-
     {% if env_type == 'staging' %}
     location ~ ^/(api|recording-file)/ {
         if (-f {{ virtualenv_path }}/maintenance_on.html) {
@@ -84,6 +80,10 @@ server {
 
     location = /corpora-ipython-notebook {
         rewrite ^/(.*)$ $1/ permanent;
+    }
+
+    location /corpora-ipython-notebook/ {
+        proxy_pass http://127.0.0.1:9999;
     }
 
     location /corpora-ipython-notebook {
