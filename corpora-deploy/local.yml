@@ -150,8 +150,6 @@
     - env_vars/vault.yml
     - group_vars/remote.yml
     - group_vars/local.yml
-  roles:
-    - clean-server
   tags:
     - local
     - deploy
