@@ -1,7 +1,7 @@
 ---
 
 - name: Create the virtualenv
-  command: virtualenv {{ virtualenv_path }} --no-site-packages
+  command: virtualenv {{ virtualenv_path }}
            creates={{ virtualenv_path }}/bin/activate
   tags:
     - sites
@@ -26,7 +26,10 @@
         owner={{ gunicorn_user }}
         group={{ gunicorn_group }}
         mode=0755
-        state=directory 
+        state=directory
+
+- name: Clear old confs
+  shell: rm -rf /etc/supervisor/conf.d/*
 
 - name: Clear old confs
   shell: rm -rf /etc/supervisor/conf.d/*
@@ -40,6 +43,16 @@
   loop: "{{django_settings}}"
   loop_control:
     index_var: item_index
+  notify:
+    - reload supervisor
+    - restart all
+
+- name: Setup notebook supervisor config
+  template: src=supervisor_notebook_config.j2
+            dest=/etc/supervisor/conf.d/notebook.conf
+            backup=yes
+  tags:
+    - sites
   notify:
     - reload supervisor
     - restart all

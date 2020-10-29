@@ -1,0 +1,5 @@
+[program:readonly_shell_notebook]
+command = systemd-run --scope -p CPUQuota=50%% -p MemoryLimit=1G /bin/bash -c ". /webapp/bin/activate && . /webapp/bin/postactivate && cd /webapp/corpora/corpora && python manage.py shell_plus --notebook --settings=corpora.notebook_settings"
+user = root
+stdout_logfile = {{ notebook_log_file }}
+redirect_stderr = true

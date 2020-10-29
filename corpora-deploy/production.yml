@@ -61,7 +61,7 @@
     # host_key_checking: False
     ssh_known_hosts_command: "ssh-keyscan -T 10"
     ssh_known_hosts_file: "{{ lookup('env','HOME') + '/.ssh/known_hosts' }}"
-    ssh_known_hosts_tags: 
+    ssh_known_hosts_tags:
       - "tag_project_env_server_type_{{webserver_instance_hosttag}}"
   vars_files:
     - env_vars/base.yml
@@ -118,8 +118,8 @@
     - setup_bitbucket_repo: yes
     - update_apt_cache: yes
     - rebuild_database: no
-    - server_type: web    
-    - host_tag: tag_project_env_server_type_{{application_name}}_{{env_type}}_web    
+    - server_type: web
+    - host_tag: tag_project_env_server_type_{{application_name}}_{{env_type}}_web
   vars_files:
     - env_vars/base.yml
     - env_vars/production.yml
@@ -145,18 +145,18 @@
   become: true
   vars:
     - setup_bitbucket_repo: yes
-    - update_apt_cache: yes                 # "{{ lookup('file', '/tmp/ec2_solrserver_private_ip') }}"   
-    - ec2_solrserver_private_ip: 127.0.0.1  # moving solr to same instance for now since it has such low usage 
+    - update_apt_cache: yes                 # "{{ lookup('file', '/tmp/ec2_solrserver_private_ip') }}"
+    - ec2_solrserver_private_ip: 127.0.0.1  # moving solr to same instance for now since it has such low usage
     - server_type: web
     - host_tag: tag_project_env_server_type_{{application_name}}_{{env_type}}_web
     - ansible_user: admin
   vars_files:
     - env_vars/base.yml
-    - env_vars/production.yml  
+    - env_vars/production.yml
     - env_vars/vault.yml
     - group_vars/remote.yml
     - group_vars/production.yml
-  roles: 
+  roles:
     - get-rds-facts
     - web-common
     - webpack
@@ -180,18 +180,18 @@
   become: true
   vars:
     - setup_bitbucket_repo: yes
-    - update_apt_cache: yes                 # "{{ lookup('file', '/tmp/ec2_solrserver_private_ip') }}"   
-    - ec2_solrserver_private_ip: 127.0.0.1  # moving solr to same instance for now since it has such low usage 
+    - update_apt_cache: yes                 # "{{ lookup('file', '/tmp/ec2_solrserver_private_ip') }}"
+    - ec2_solrserver_private_ip: 127.0.0.1  # moving solr to same instance for now since it has such low usage
     - server_type: web
     - host_tag: tag_project_env_server_type_{{application_name}}_{{env_type}}_web
     - ansible_user: admin
   vars_files:
     - env_vars/base.yml
-    - env_vars/production.yml  
+    - env_vars/production.yml
     - env_vars/vault.yml
     - group_vars/remote.yml
     - group_vars/production.yml
-  roles: 
+  roles:
     - get-rds-facts # and other facts?
     - web
   tags:
@@ -234,8 +234,6 @@
     - env_vars/vault.yml
     - group_vars/remote.yml
     - group_vars/production.yml
-  roles:
-    - clean-server
   tags:
     - production
     - deploy
@@ -250,14 +248,14 @@
     - server_type: web
   vars_files:
     - env_vars/base.yml
-    - env_vars/production.yml  
+    - env_vars/production.yml
     - env_vars/vault.yml
-    - group_vars/production.yml    
+    - group_vars/production.yml
     - group_vars/remote.yml
   roles:
     - scale-web-server
   tags:
-    - production    
+    - production
     - deploy-asg
     - deploy-production
     - deploy-production-asg

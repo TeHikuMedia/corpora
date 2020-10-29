@@ -6,6 +6,11 @@ upstream wsgi_server_{{item}} {
   server unix:{{ virtualenv_path }}/run/gunicorn_{{item}}.sock fail_timeout=0;
 }
 
+upstream upstream_{{item}}_ipython {
+    server 127.0.0.1:9999;
+    keepalive 32;
+}
+
 server {
     listen 81;
     server_name _;
@@ -41,6 +46,49 @@ server {
     access_log {{ nginx_access_log_file }};
     error_log {{ nginx_error_log_file }};
 
+    location = /corpora-ipython-notebook {
+        rewrite ^/(.*)$ $1/ permanent;
+    }
+
+    location /corpora-ipython-notebook {
+        error_page 403 = @proxy_ipython;
+        deny 127.0.0.1;
+        allow all;
+        # set a webroot, if there is one
+        root /some-webroot;
+        try_files $uri @proxy_ipython;
+    }
+
+    location @proxy_ipython {
+        # rewrite /corpora-ipython-notebook(.*) $1  break;
+        proxy_read_timeout 300s;
+        proxy_pass http://upstream_{{item}}_ipython;
+        # pass some extra stuff to the backend
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-Ip $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    location ~ /corpora-ipython-notebook/api/kernels/ {
+        proxy_pass            http://upstream_{{item}}_ipython;
+        proxy_set_header      Host $host;
+        # websocket support
+        proxy_http_version    1.1;
+        proxy_set_header      Upgrade "websocket";
+        proxy_set_header      Connection "Upgrade";
+        proxy_read_timeout    86400;
+    }
+
+    location ~ /corpora-ipython-notebook/terminals/ {
+        proxy_pass            http://upstream_{{item}}_ipython;
+        proxy_set_header      Host $host;
+        # websocket support
+        proxy_http_version    1.1;
+        proxy_set_header      Upgrade "websocket";
+        proxy_set_header      Connection "Upgrade";
+        proxy_read_timeout    86400;
+    }
+
     location /static/ {
         alias   {{ nginx_static_dir }};
     }
@@ -64,7 +112,7 @@ server {
         proxy_set_header X-Forwarded-Proto https;
         proxy_set_header Host $http_host;
         proxy_redirect off;
-        proxy_read_timeout 60s; 
+        proxy_read_timeout 60s;
         proxy_connect_timeout 70s;
         proxy_send_timeout 100s;
 

@@ -61,7 +61,6 @@ def prepare_temporary_environment(model, test=False):
 
     absolute_directory = ''
 
-    # if test:
     logger.debug(
         '\nMEDIA_PATH:\t%s\nTMP_STOR_DIR:\t%s\nTMP_FILE:\t%s\nABS_DIR:\t%s'
         % (file_path, tmp_stor_dir, tmp_file, absolute_directory))

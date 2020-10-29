@@ -1,65 +1,31 @@
 ---
 
-# - name: Set log file mode
-#   set_fact:
-#     log_permissions: 0664    
-#   when: env_type != 'local'
+- name: Create the celery log folder
+  file: path={{ application_log_dir }}
+        owner={{ gunicorn_user }}
+        group={{ gunicorn_group }}
+        mode=0774
+        state=directory
 
-# - name: Set log file mode
-#   set_fact:
-#     log_permissions: 0666
-#   when: env_type == 'local'
+- name: Create the celery log file
+  file: path={{ application_log_dir }}
+        owner={{ gunicorn_user }}
+        group={{ gunicorn_group }}
+        state=touch
+        mode=0755
+  become: yes
 
-# - name: Set log folder mode
-#   set_fact:
-#     log_folder_permissions: 0774
-#   when: env_type != 'local'
+- name: Create the application bin folder
+  file: path={{virtualenv_path}}/bin
+        state=directory
 
-# - name: Set log folder mode
-#   set_fact:
-#     log_folder_permissions: 0777
-#   when: env_type == 'local'
-
-# # Are there security implications here? Afterall - if you have access to the server you can just do sudo and read this
-# # I suppose this prevents processes from accessing these. Is that an issue?
-# - name: Create the application log folder
-#   file: path={{ application_log_dir }}
-#         owner={{ gunicorn_user }}
-#         group={{ gunicorn_group }}
-#         mode={{log_folder_permissions}}
-#         state=directory 
-
-# - name: Create the application log file
-#   file: 
-#     state: touch
-#     path: "{{ application_log_file }}"
-#     owner: "{{ gunicorn_user }}"
-#     group: "{{ gunicorn_group }}"
-
-# - name: Create the django_log_file
-#   file:
-#     state: touch 
-#     path: "{{ django_log_file }}"
-#     owner: "{{ gunicorn_user }}"
-#     group: "{{ gunicorn_group }}"
-
-# - name: Create the celery_log_file
-#   file:
-#     state: touch
-#     path: "{{ celery_log_file }}"
-#     owner: "{{ gunicorn_user }}"
-#     group: "{{ gunicorn_group }}"
-
-# - name: Create the application tmp folder
-#   file: path={{ application_tmp_dir }}
-#         owner={{ gunicorn_user }}
-#         group={{ gunicorn_group }}
-#         mode=0777
-#         state=directory
-
-# - name: Create the application bin folder
-#   file: path={{virtualenv_path}}/bin
-#         state=directory
+- name: Create the folder for the notebook scripts
+  file: path=/home/corpora/notebook_scripts/
+        mode=0777
+        owner={{ gunicorn_user }}
+        group={{ gunicorn_group }}
+        state=directory
+        recurse=yes
 
 - name: LOCAL Create the virtualenv postactivate script to set environment variables
   template: src=virtualenv_postactivate.j2
@@ -67,7 +33,7 @@
             owner={{ gunicorn_user }}
             group={{ gunicorn_group }}
             mode=0777
-            backup=yes 
+            backup=yes
   with_items:
     - 127.0.0.1
   when: env_type == 'local'
@@ -84,51 +50,7 @@
             owner={{ gunicorn_user }}
             group={{ gunicorn_group }}
             mode=0640
-            backup=yes 
+            backup=yes
   when: env_type != 'local'
   with_items:
     - "{{ec2_webserver.private_ip_address}}"
-
-# - name: Set permission to the application log file
-#   file: path={{ application_log_file }}
-#         owner={{ gunicorn_user }}
-#         group={{ gunicorn_group }}
-#         mode=0664
-#         state=file
-
-
-
-# - name: Set permission to the celery_log_file
-#   file: path={{ celery_log_file }}
-#         owner={{ gunicorn_user }}
-#         group={{ gunicorn_group }}
-#         mode={{log_permissions}}
-#         state=file
-
-# - name: Set permission to the django_log_file
-#   file: path={{ django_log_file }}
-#         owner={{ gunicorn_user }}
-#         group={{ gunicorn_group }}
-#         mode={{log_permissions}}
-#         state=file
-                
-
-# - name: Create the maintenance page
-#   template: src=maintenance_off.html
-#             dest={{ virtualenv_path }}/maintenance_off.html
-#             mode=0664
-
-# - name: Go down for maintenance
-#   when: maintenance
-#   file: src={{ virtualenv_path }}/maintenance_off.html
-#         dest={{ virtualenv_path }}/maintenance_on.html
-#         state=link
-#   tags:
-#     - maintenance
-
-# - name: Go up from maintenance
-#   when: not maintenance
-#   file: path={{ virtualenv_path }}/maintenance_on.html
-#         state=absent
-#   tags:
-#     - maintenance

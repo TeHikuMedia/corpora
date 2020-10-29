@@ -87,6 +87,7 @@ INSTALLED_APPS = [
 
     # 'django_celery_beat',
     'webpack_loader',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [
@@ -185,7 +186,7 @@ DATABASES = {
         'NAME': os.environ['DATABASE_NAME'], # TODO: Give this a better name?
         'USER': os.environ['DATABASE_USER'],
         'PASSWORD': os.environ['DATABASE_PASSWORD'], # TODO: Secure this!
-        'HOST': os.environ['DATABASE_HOST'],           
+        'HOST': os.environ['DATABASE_HOST'],
         'PORT': '5432',
         }
     }
@@ -542,7 +543,7 @@ else:
 
 
 # These may be required if caching the entire site.
-# CACHE_MIDDLEWARE_ALIAS 
+# CACHE_MIDDLEWARE_ALIAS
 # CACHE_MIDDLEWARE_SECONDS
 # CACHE_MIDDLEWARE_KEY_PREFIX
 

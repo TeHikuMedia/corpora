@@ -26,7 +26,7 @@
   shell: . {{ virtualenv_path }}/bin/activate
          && . {{ virtualenv_path }}/bin/postactivate
          && cd {{ application_path }}
-         && python3 manage.py compilemessages 
+         && python3 manage.py compilemessages
   tags:
     - django
     - translations
@@ -38,7 +38,7 @@
   shell: . {{ virtualenv_path }}/bin/activate
          && . {{ virtualenv_path }}/bin/postactivate
          && cd {{ application_path }}
-         && python3 manage.py makemessages -l {{item}} 
+         && python3 manage.py makemessages -l {{item}}
   tags:
     - django
     - translations
@@ -62,7 +62,7 @@
          && python3 manage.py migrate --noinput
   when: run_django_migrations #and ec2_tag_server_role == tag_condition
   async: 1000
-  poll: 5  
+  poll: 5
   tags:
     - django
     - rebuild-database
@@ -73,7 +73,7 @@
   shell: . {{ virtualenv_path }}/bin/activate
          && . {{ virtualenv_path }}/bin/postactivate
          && cd {{ application_path }}
-         && python3 manage.py bower prune 
+         && python3 manage.py bower prune
   when: prune_bower_packages
   tags: django
 
@@ -90,8 +90,8 @@
 #          && . {{ virtualenv_path }}/bin/postactivate
 #          && cd {{ application_path }}
 #          && python3 manage.py compilescss
-#   when: run_django_collectstatic and env_type != 'local'  
-#   tags: 
+#   when: run_django_collectstatic and env_type != 'local'
+#   tags:
 #    - django
 #    - collectstatic
 #    - compilescss
@@ -100,9 +100,9 @@
   shell: . {{ virtualenv_path }}/bin/activate
          && . {{ virtualenv_path }}/bin/postactivate
          && cd {{ application_path }}
-         && python3 manage.py collectstatic --clear --noinput 
+         && python3 manage.py collectstatic --clear --noinput
   when: run_django_clearstatic
-  tags: 
+  tags:
    - django
    - collectstatic
   ignore_errors: yes
@@ -111,21 +111,21 @@
   shell: . {{ virtualenv_path }}/bin/activate
          && . {{ virtualenv_path }}/bin/postactivate
          && cd {{ application_path }}
-         && python3 manage.py clearcache 
-  when: run_django_clearstatic 
-  tags: 
+         && python3 manage.py clearcache
+  when: run_django_clearstatic
+  tags:
    - django
    - collectstatic
    - clearcache
   ignore_errors: yes
-   
+
 - name: Run Django collectstatic
   shell: . {{ virtualenv_path }}/bin/activate
          && . {{ virtualenv_path }}/bin/postactivate
          && cd {{ application_path }}
-         && python3 manage.py collectstatic --noinput 
+         && python3 manage.py collectstatic --noinput
   when: run_django_collectstatic
-  tags: 
+  tags:
    - django
    - collectstatic
   ignore_errors: yes
@@ -148,7 +148,7 @@
     state: directory
     owner: "{{ gunicorn_user }}"
     group: "{{ gunicorn_group }}"
-  tags: 
+  tags:
     - django
     - current
 - debug: var=nginx_media_dir
@@ -157,7 +157,7 @@
   shell: . {{ virtualenv_path }}/bin/activate
          && . {{ virtualenv_path }}/bin/postactivate
          && cd {{ application_path }}
-         && python3 manage.py loaddata /webapp/corpora/corpora/people/fixtures/iwi.yaml 
+         && python3 manage.py loaddata /webapp/corpora/corpora/people/fixtures/iwi.yaml
   tags:
     - django
     - loaddata
@@ -191,7 +191,7 @@
     - beat
   tags:
     - django-celery
-  ignore_errors: "{{server_role == 'secondary'}}" # need a way to ignore beat when not on server   
+  ignore_errors: "{{server_role == 'secondary'}}" # need a way to ignore beat when not on server
 
 
 - name: Setting up django vagrant aliases
