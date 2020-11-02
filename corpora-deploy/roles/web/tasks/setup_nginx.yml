@@ -42,8 +42,7 @@
     - sites
 
 - name: Ensure that the old site is removed
-  command: rm /etc/nginx/sites-enabled/{{project_name}}
-           removes=/etc/nginx/sites-enabled/{{project_name}}
+  shell: "rm /etc/nginx/sites-enabled/{{project_name}}"
   notify:
     - reload nginx
     - restart nginx

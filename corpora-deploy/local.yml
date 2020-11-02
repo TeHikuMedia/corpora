@@ -82,9 +82,8 @@
     - group_vars/local.yml
   roles:
     - web-common
-    - web
-    # - webpack-build
     - nginx
+    - web
     - celery
   tags:
     - local
