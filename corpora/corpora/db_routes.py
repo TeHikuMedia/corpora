@@ -15,7 +15,7 @@ class ReadRouter:
         '''
         return 'default'
 
-    def allow_relation(obj1, obj2, **hints):
+    def allow_relation(self, obj1, obj2, **hints):
         '''
         Always allow relations. This is needed for read only
         select related.
