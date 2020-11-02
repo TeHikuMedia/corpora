@@ -188,8 +188,17 @@ DATABASES = {
         'PASSWORD': os.environ['DATABASE_PASSWORD'], # TODO: Secure this!
         'HOST': os.environ['DATABASE_HOST'],
         'PORT': '5432',
-        }
+        },
+    'replica': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ['DATABASE_NAME'], # TODO: Give this a better name?
+        'USER': os.environ['DATABASE_USER'],
+        'PASSWORD': os.environ['DATABASE_PASSWORD'], # TODO: Secure this!
+        'HOST': os.environ['DATABASE_HOST'].replace('base.','base-replica.'),
+        'PORT': '5432',
+        },
     }
+DATABASE_ROUTERS = ['corpora.db_routes.ReadRouter']
 
 # All auth
 AUTHENTICATION_BACKENDS = (

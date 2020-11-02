@@ -4,9 +4,12 @@ from celery import shared_task
 from django.conf import settings
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
-from corpus.models import Recording, Source, \
-    RecordingQualityControl, \
-    SentenceQualityControl
+from corpus.models import (
+    Recording, Source,
+    RecordingQualityControl,
+    SentenceQualityControl,
+    RecordingMetadata
+)
 from django.contrib.contenttypes.models import ContentType
 from corpus.views.views import RecordingFileView
 from django.contrib.sites.shortcuts import get_current_site
@@ -20,7 +23,7 @@ from django.utils import timezone
 from corpora.utils.tmp_files import prepare_temporary_environment
 
 from helpers.media_manager import MediaManager
-
+from corpus.aggregate import build_qualitycontrol_stat_dict
 import datetime
 
 from django.core.files import File
@@ -332,3 +335,32 @@ def set_s3_content_deposition(recording):
 
     else:
         return 'Non s3 storage - not setting s3 content deposition.'
+
+
+@shared_task
+def build_recording_aggregate_pk(recording_pk):
+    try:
+        build_recording_aggregate(Recording.objects.get(pk=recording_pk))
+    except ObjectDoesNotExist:
+        pass
+
+
+@shared_task
+def build_recording_aggregate(recording):
+    meta, created = RecordingMetadata.objects.get_or_create(recording=recording)
+    qc = recording.quality_control.all()
+    if not meta.metadata:
+        meta.metadata = {}
+    if qc.exists():
+        meta.metadata['quality_control_aggregate'] = build_qualitycontrol_stat_dict(qc)
+    meta.save()
+
+
+@shared_task
+def build_recording_aggregates():
+    recordings = Recording.objects.filter(
+        metadata__metadata__quality_control_aggregate__isnull=True
+    )
+
+    for recording in recordings:
+        build_recording_aggregate(recording)

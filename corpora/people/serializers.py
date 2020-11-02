@@ -76,23 +76,25 @@ class PersonSerializer(serializers.HyperlinkedModelSerializer):
         if validated_data['groups'] == []:
             del validated_data['groups']
 
+        user = None
         try:
             user_data = self.initial_data['user']
             user_data = ast.literal_eval(user_data)
             user = User.objects.get(**user_data)
+        except KeyError as e:
+            pass
         except Exception as e:
             logger.error(e)
-            user = None
 
         try:
-            logger.debug(user)
-            logger.debug(validated_data)
-
             if 'known_languages' in validated_data:
                 if isinstance(validated_data['known_languages'], list):
                     if len(validated_data['known_languages']) == 0:
                         del validated_data['known_languages']
-            logger.debug(validated_data)
+
+            if 'user' in validated_data:
+                del validated_data['user']
+
             person, created = Person.objects.get_or_create(
                 user=user, **validated_data)
             logger.debug(person.user)
@@ -101,7 +103,15 @@ class PersonSerializer(serializers.HyperlinkedModelSerializer):
             raise Exception(e)
         return person
 
+    def validate_demographic(self, validated_data):
+        if not validated_data:
+            return None
+        else:
+            return validated_data
+
     def validate_username(self, validated_data):
+        if not validated_data:
+            return None
         person = self.instance
         current_user = person.user
         new_username = validated_data
@@ -126,6 +136,8 @@ class PersonSerializer(serializers.HyperlinkedModelSerializer):
         return validated_data
 
     def validate_profile_email(self, validated_data):
+        if not validated_data:
+            return None
         person = self.instance
         current_user = person.user
         if current_user:
