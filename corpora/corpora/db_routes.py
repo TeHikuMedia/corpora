@@ -1,5 +1,5 @@
 import random
-from django.cong import settings
+from django.conf import settings
 
 
 class ReadRouter:
