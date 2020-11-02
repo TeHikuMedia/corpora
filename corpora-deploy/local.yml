@@ -85,6 +85,7 @@
     - nginx
     - web
     - celery
+    - resilio-sync-folder
   tags:
     - local
     - deploy

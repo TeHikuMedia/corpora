@@ -36,7 +36,7 @@ NOTEBOOK_ARGUMENTS = [
     '--NotebookApp.allow_origin', '*',
     '--NotebookApp.base_url', '/corpora-ipython-notebook',
     '--NotebookApp.password', 'sha1:0fd79e03d39f:aab45f20dbba3587fbabc29a335a52ecfefa6e69',
-    '--notebook-dir', '/home/corpora/notebook_scripts/',
+    '--notebook-dir', os.environ['NOTEBOOK_DIR'],
     '--no-browser',
     '--allow-root'
 ]
