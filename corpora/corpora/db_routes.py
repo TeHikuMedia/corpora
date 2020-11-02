@@ -9,9 +9,18 @@ class ReadRouter:
         '''
         return random.choice(list(settings.DATABASES.keys()))
 
+    def db_for_write(self, model, **hints):
+        '''
+        Only use default for writing
+        '''
+        return 'default'
+
     def allow_relation(obj1, obj2, **hints):
         '''
         Always allow relations. This is needed for read only
         select related.
         '''
         return True
+
+    def allow_migrate(self, db, app_label, model_name=None, **hints):
+        return db == 'default'
