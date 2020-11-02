@@ -37,14 +37,15 @@ class PersonAdmin(admin.ModelAdmin):
         'uuid',
         'score',
         'get_groups'
-        )
+    )
     raw_id_fields = ('user', )
     readonly_fields = (
         'profile_email', 'score_comp', 'num_recordings', 'num_reviews',
         'num_reviews_comp', 'num_recordings_comp')
     inlines = [PersonRecordingsInline, PersonGroupInline]
     exclude = ('groups', )  # see PersonGroupInline
-    search_fields = ['username', 'profile_email', 'user__username', 'user__email',
+    search_fields = [
+        'username', 'profile_email', 'user__username', 'user__email',
         'full_name', 'user__emailaddress__email']
 
     def get_groups(self, obj):
@@ -71,7 +72,7 @@ class KnownLanguageAdmin(admin.ModelAdmin):
         'dialect',
         'accent',
         'active',
-        )
+    )
 
 
 class MembershipInline(admin.TabularInline):
