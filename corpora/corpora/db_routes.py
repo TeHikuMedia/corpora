@@ -1,7 +1,6 @@
 import random
 from django.conf import settings
 
-
 class ReadRouter:
 
     def db_for_read(self, model, **hints):
