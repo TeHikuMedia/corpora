@@ -1,12 +1,18 @@
 from django.dispatch import receiver
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
-from .models import Sentence, Recording, \
-    RecordingQualityControl, \
+from .models import (
+    Sentence, Recording,
+    RecordingQualityControl,
     SentenceQualityControl
+)
 from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
-from corpus.tasks import set_recording_length, transcode_audio
+from corpus.tasks import (
+    set_recording_length,
+    transcode_audio,
+    build_recording_aggregate_pk
+)
 from people.tasks import update_person_score
 from people.models import KnownLanguage
 from transcription.tasks import transcribe_recording
@@ -66,14 +72,6 @@ def clear_quality_control_instance_when_object_modified(
                 qc.delete()
         except ObjectDoesNotExist:
             pass
-
-
-@receiver(models.signals.pre_save, sender=Sentence)
-@receiver(models.signals.pre_save, sender=Recording)
-@receiver(models.signals.pre_save, sender=SentenceQualityControl)
-@receiver(models.signals.pre_save, sender=RecordingQualityControl)
-def update_update_field_when_model_saved(sender, instance, **kwargs):
-    instance.updated = timezone.now()
 
 
 # @receiver(models.signals.pre_save, sender=Sentence)
@@ -229,13 +227,12 @@ def update_person_score_when_model_saved(sender, instance, created, **kwargs):
                 countdown=60*3)
 
         elif isinstance(instance, RecordingQualityControl):
-            if isinstance(instance.content_object, Recording):
-                recording = instance.content_object
+            recording = instance.recording
 
-                update_person_score.apply_async(
-                    args=[instance.person.pk],
-                    task_id=task_id,
-                    countdown=60*3)
+            update_person_score.apply_async(
+                args=[instance.person.pk],
+                task_id=task_id,
+                countdown=60*3)
 
         cache.set(key, task_id, 60*3)
 
@@ -252,12 +249,18 @@ def update_person_score_when_model_saved(sender, instance, created, **kwargs):
                     countdown=60*3)
 
             elif isinstance(instance, RecordingQualityControl):
-                if isinstance(instance.content_object, Recording):
-                    recording = instance.content_object
+                recording = instance.recording
 
-                    update_person_score.apply_async(
-                        args=[instance.person.pk],
-                        task_id=task_id,
-                        countdown=60*3)
+                update_person_score.apply_async(
+                    args=[instance.person.pk],
+                    task_id=task_id,
+                    countdown=60*3)
         else:
             pass
+
+
+@receiver(models.signals.post_save, sender=RecordingQualityControl)
+@receiver(models.signals.post_delete, sender=RecordingQualityControl)
+def update_aggregate_data(sender, instance, created, **kwargs):
+    build_recording_aggregate_pk.apply_async(
+        args=[instance.recording.pk])

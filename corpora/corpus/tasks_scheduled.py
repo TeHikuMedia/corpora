@@ -18,4 +18,9 @@ CELERYBEAT_SCHEDULE = {
         'schedule': crontab(minute=42, hour=1, day_of_week=6),
         # 'options': {'task_id': 'set_recordings_md5s'},
     },
+    'build_recording_aggregates': {
+        'task': 'corpus.tasks.build_recording_aggregates',
+        'schedule': crontab(minute=16, hour='*', day_of_week='*'),
+        # 'options': {'task_id': 'set_recordings_md5s'},
+    },
 }

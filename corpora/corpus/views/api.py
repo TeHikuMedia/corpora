@@ -501,7 +501,7 @@ class RecordingViewSet(ViewSetCacheMixin, viewsets.ModelViewSet):
 
     """
 
-    queryset = Recording.objects.all()
+    queryset = Recording.objects.all().order_by('pk')
     serializer_class = RecordingSerializer
     permission_classes = (RecordingPermissions,)
     pagination_class = TenResultPagination
@@ -539,15 +539,6 @@ class RecordingViewSet(ViewSetCacheMixin, viewsets.ModelViewSet):
                     )
                 )\
             .select_related('person', 'sentence', 'source')
-
-        if self.request.user.is_staff:
-            person_id = self.request.query_params.get('person_id', '')
-            try:
-                filtered_queryset = queryset.filter(person__id=person_id)
-                if filtered_queryset.count() > 0:
-                    queryset = filtered_queryset
-            except:
-                pass
 
         sort_by = self.request.query_params.get('sort_by', '')
         sort_by = sort_by.lower()
