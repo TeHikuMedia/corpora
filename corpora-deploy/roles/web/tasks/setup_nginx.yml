@@ -48,6 +48,7 @@
     - restart nginx
   tags:
     - sites
+  ignore_errors: yes
 
 - name: Ensure that the application site is enabled
   command: ln -s /etc/nginx/sites-available/{{ application_name }}_{{item}}
