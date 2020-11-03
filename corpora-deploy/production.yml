@@ -160,6 +160,7 @@
   roles:
     - get-rds-facts
     - web-common
+    - resilio-sync-folder
     - webpack
     - web
     - webpack-build
