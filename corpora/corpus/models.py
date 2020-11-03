@@ -442,7 +442,7 @@ class Recording(models.Model):
         sentence_text = self.get_sentence_text()
         sentence_text = sentence_text[0:64]
         try:
-            return  f"{sentence_text} by {self.get_person_name()}"
+            return f"{sentence_text} by {self.get_person_name()}"
         except:
             return f"{sentence_text}"
 
