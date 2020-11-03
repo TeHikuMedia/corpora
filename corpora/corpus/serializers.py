@@ -305,20 +305,58 @@ class RecordingSerializerPostBase64(
             'person', 'id', 'sentence')
 
 
+class RecordingMetadataSerializerFetch(serializers.ModelSerializer):
+
+    class Meta:
+        model = RecordingMetadata
+        fields = ('metadata',)
+
+
 class RecordingFetchSerializer(serializers.ModelSerializer):
     audio_file_url = serializers.SerializerMethodField()
-
+    transcription = serializers.SerializerMethodField()
+    person = serializers.PrimaryKeyRelatedField(
+        many=False,
+        read_only=True
+    )
+    sentence = serializers.PrimaryKeyRelatedField(
+        many=False,
+        read_only=True
+    )
+    metadata = RecordingMetadataSerializerFetch()
     class Meta:
         model = Recording
         fields = ('person', 'sentence', 'audio_file_url',
-                  'id', 'sentence_text', 'user_agent', 'updated',
+                  'id', 'sentence_text', 'updated',
                   'audio_file_md5', 'audio_file_wav_md5',
-                   'private',
+                   'private', 'transcription',
                   'metadata')
         depth = 1
+    
     def get_audio_file_url(self, obj):
         return obj.get_recording_file_url(self.context['request'])
+    
+    def get_transcription(self, obj):
+        t = obj.transcription_set.first()
+        if t:
+            return {'text': t.text, 'wer': t.word_error_rate}
+        return None
 
+class RecordingFetchSerializer2(RecordingFetchSerializer):
+    quality_control_aggregate = serializers.SerializerMethodField()
+    class Meta:
+        model = Recording
+        fields = ('person', 'sentence', 'audio_file_url',
+                  'id', 'sentence_text', 'updated',
+                  'audio_file_md5', 'audio_file_wav_md5',
+                   'private', 'transcription',
+                  'quality_control_aggregate')
+        depth = 1
+    def get_quality_control_aggregate(self, obj):
+        if hasattr(obj,'metadata'):
+            if 'quality_control_aggregate' in obj.metadata.metadata:
+                return obj.metadata.metadata['quality_control_aggregate']
+        return None
 
 class RecordingSerializer(serializers.ModelSerializer):
     sentence = SentenceSerializerNotNested(
@@ -464,3 +502,4 @@ class RecordingMetadataSerializer(
     class Meta:
         model = RecordingMetadata
         fields = ('recording', 'metadata', 'id')
+

@@ -29,6 +29,7 @@ from corpus.serializers import (
     SentenceSerializer,
     RecordingSerializer,
     RecordingFetchSerializer,
+    RecordingFetchSerializer2,
     RecordingSerializerPost,
     RecordingSerializerPostBase64,
     ListenSerializer,
@@ -444,6 +445,8 @@ class RecordingFetchViewSet(viewsets.ModelViewSet):
     permission_classes = (RecordingPermissions,)
     pagination_class = OneHundredResultPagination
 
+class RecordingFetchViewSet2(RecordingFetchViewSet):
+    serializer_class = RecordingFetchSerializer2
 
 class RecordingViewSet(ViewSetCacheMixin, viewsets.ModelViewSet):
     """
