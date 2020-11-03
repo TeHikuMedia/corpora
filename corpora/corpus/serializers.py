@@ -322,15 +322,14 @@ class RecordingSerializer(serializers.ModelSerializer):
     audio_file_url = serializers.SerializerMethodField()
     # audio_file_url = serializers.CharField(source='get_recording_file_url',
     #                                        read_only=True)
-    created = serializers.DateTimeField(
-        format="%d-%m-%y %H:%M %Z",
-        read_only=True)
+    # created = serializers.DateTimeField(
+    #     format="%d-%m-%y %H:%M %Z",
+    #     read_only=True)
 
-    updated = serializers.SerializerMethodField()
     quality_control_aggregate = serializers.SerializerMethodField()
     transcription = serializers.SerializerMethodField()
     word_error_rate = serializers.SerializerMethodField()
-    metadata = serializers.SerializerMethodField()
+    # metadata = serializers.SerializerMethodField()
 
     class Meta:
         model = Recording
@@ -338,28 +337,35 @@ class RecordingSerializer(serializers.ModelSerializer):
                   'id', 'sentence_text', 'user_agent', 'created', 'updated',
                   'audio_file_md5', 'audio_file_wav_md5',
                   'quality_control_aggregate', 'transcription',
-                  'word_error_rate', 'private', 'metadata')
+                  'word_error_rate', 'private', ) #'metadata'
 
-    def get_updated(self, obj):
-        qc = obj.quality_control.all().order_by('-updated').first()
-        if qc is not None:
-            if qc.updated > obj.updated:
-                return localtime(qc.updated)
-        return localtime(obj.updated)
+    # def get_updated(self, obj):
+    #     qc = obj.quality_control.all().order_by('-updated').first()
+    #     if qc is not None:
+    #         if qc.updated > obj.updated:
+    #             return localtime(qc.updated)
+    #     return localtime(obj.updated)
 
     def get_audio_file_url(self, obj):
         return obj.get_recording_file_url(self.context['request'])
 
     def get_quality_control_aggregate(self, obj):
-        metas = RecordingMetadata.objects.filter(
-            recording=obj,
-            metadata__quality_control_aggregate__isnull=False
-        )
-        if metas.exists():
-            meta = metas.first()
-            return meta.metadata['quality_control_aggregate']
-        else:
-            return build_qualitycontrol_stat_dict(obj.quality_control.all())
+        try:
+            if 'quality_control_aggregate' in obj.metadata.metadata:
+                return obj.metadata.metadata['quality_control_aggregate']
+        except:
+            pass
+
+        # metas = RecordingMetadata.objects.filter(
+        #     recording=obj,
+        #     metadata__quality_control_aggregate__isnull=False
+        # )
+        # if metas.exists():
+        #     meta = metas.first()
+        #     return meta.metadata['quality_control_aggregate']
+        # else:
+
+        return build_qualitycontrol_stat_dict(obj.quality_control.all())
 
     def get_transcription(self, obj):
         try:
@@ -377,13 +383,8 @@ class RecordingSerializer(serializers.ModelSerializer):
             pass
         return None
 
-    def get_metadata(self, obj):
-        try:
-            meta = RecordingMetadata.objects.get(recording=obj)
-            return meta.metadata
-        except ObjectDoesNotExist:
-            return None
-
+    # def get_metadata(self, obj):
+    #     return obj.metadata.metadata
 
 class ListenSerializer(serializers.ModelSerializer):
     sentence = ReadSentenceSerializer(
