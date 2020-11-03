@@ -178,14 +178,14 @@ class SentenceSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class SentenceSerializerNotNested(serializers.HyperlinkedModelSerializer):
-    quality_control = serializers.PrimaryKeyRelatedField(
-        many=True,
-        read_only=True
-    )
+    # quality_control = serializers.PrimaryKeyRelatedField(
+    #     many=True,
+    #     read_only=True
+    # )
 
     class Meta:
         model = Sentence
-        fields = ('id', 'text', 'language', 'quality_control', 'updated', 'source')
+        fields = ('id', 'text', 'language', 'source')
         extra_kwargs = {
             'source': {'view_name': 'api:source-detail'}
         }
