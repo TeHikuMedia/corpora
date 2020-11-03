@@ -40,7 +40,7 @@ resilio_sync_folders:
 resilio_sync_folder_settings:
   - secret: "{{RESILIO_FOLDER_KEY}}" # required field - use --generate-secret in command line to create new secret
     dir: "{{resilio_sync_folders.0}}" # * required field
-    use_relay_server: false #  use relay server when direct connection fails
+    use_relay_server: true #  use relay server when direct connection fails
     use_tracker: true
     search_lan: true
     use_sync_trash: false # enable SyncArchive to store files deleted on remote devices

@@ -3,6 +3,7 @@
 ec2_key_pair : corpora_2020
 vpc_id: vpc-9a9d97f8
 aws_region: ap-southeast-2
+aws_cloudfront_ssl_region: us-east-1
 
 # SSH Credentials
 private_key: ~/.ssh/corpora_2020.pem

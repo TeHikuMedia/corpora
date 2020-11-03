@@ -11,7 +11,7 @@ zone_domain_name: koreromaori.com
 domain_name: koreromaori.com
 cloudfront_subdomain: cdn
 cloudfront_cname: "{{cloudfront_subdomain}}.{{zone_domain_name}}"
-
+cloudfront_acm_domain: cdn.koreromaori.com
 
 # Shared Roles Config
 asg_desired: 1
