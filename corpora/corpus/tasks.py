@@ -349,11 +349,14 @@ def build_recording_aggregate_pk(recording_pk):
 def build_recording_aggregate(recording):
     meta, created = RecordingMetadata.objects.get_or_create(recording=recording)
     qc = recording.quality_control.all()
+    stats = None
     if not meta.metadata:
         meta.metadata = {}
     if qc.exists():
-        meta.metadata['quality_control_aggregate'] = build_qualitycontrol_stat_dict(qc)
+        stats = build_qualitycontrol_stat_dict(qc)
+        meta.metadata['quality_control_aggregate'] = stats
     meta.save()
+    return stats
 
 
 @shared_task

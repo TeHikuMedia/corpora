@@ -51,6 +51,7 @@
     - run-tests
     - deploy-django
     - webpack
+    - scale
 
 # https://stackoverflow.com/questions/30226113/ansible-ssh-prompt-known-hosts-issue/39083724#39083724
 # We do this to register these new hosts as known hosts.
@@ -234,6 +235,8 @@
     - env_vars/vault.yml
     - group_vars/remote.yml
     - group_vars/production.yml
+  roles:
+    - clean-server
   tags:
     - production
     - deploy

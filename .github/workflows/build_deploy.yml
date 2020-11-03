@@ -7,13 +7,13 @@ name: Build Deploy Machine
 on:
   push:
     branches:
-      - staging
+      - xstaging
     paths:
       - "corpora-deploy/**"
   pull_request:
     branches:
-      - tumu
-      - staging
+      - xtumu
+      - xstaging
     paths:
       - "corpora-deploy/**"
 
