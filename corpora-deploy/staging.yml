@@ -160,6 +160,7 @@
   roles:
     - get-rds-facts
     - web-common
+    - resilio-sync-folder
     - webpack
     - web
     - webpack-build
@@ -235,6 +236,8 @@
     - env_vars/vault.yml
     - group_vars/remote.yml
     - group_vars/staging.yml
+  roles:
+    - clean-server
   tags:
     - staging
     - deploy

@@ -176,12 +176,6 @@ class RecordingQualityControl(models.Model):
         except:
             return u'old sentence?'
 
-    def __str__(self):
-        try:
-            return u'Recording QC: {0}'.format(self.recording.pk)
-        except:
-            return u'old sentence?'
-
 
 class SentenceQualityControl(models.Model):
 
@@ -445,16 +439,13 @@ class Recording(models.Model):
         ]
 
     def __str__(self):
+        sentence_text = self.get_sentence_text()
+        sentence_text = sentence_text[0:64]
         try:
-            return self.get_sentence_text() + u" by " + self.get_person_name()
+            return f"{sentence_text} by {self.get_person_name()}"
         except:
-            return self.get_sentence_text()
+            return f"{sentence_text}"
 
-    def __str__(self):
-        try:
-            return self.get_sentence_text() + u" by " + self.get_person_name()
-        except:
-            return self.get_sentence_text()
 
     def audio_file_admin(self):
         url = self.get_recording_file_url()
