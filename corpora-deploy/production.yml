@@ -234,6 +234,8 @@
     - env_vars/vault.yml
     - group_vars/remote.yml
     - group_vars/production.yml
+  roles:
+    - clean-server
   tags:
     - production
     - deploy
