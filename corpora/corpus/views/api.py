@@ -28,6 +28,7 @@ from corpus.serializers import (
     SentenceQualityControlSerializer,
     SentenceSerializer,
     RecordingSerializer,
+    RecordingFetchSerializer,
     RecordingSerializerPost,
     RecordingSerializerPostBase64,
     ListenSerializer,
@@ -435,6 +436,13 @@ class RecordingPermissions(permissions.BasePermission):
                     return obj.person == person
         self.message = _("Reading recording is not allowed.")
         return False
+
+
+class RecordingFetchViewSet(viewsets.ModelViewSet):
+    queryset = Recording.objects.all()
+    serializer_class = RecordingFetchSerializer
+    permission_classes = (RecordingPermissions,)
+    pagination_class = OneHundredResultPagination
 
 
 class RecordingViewSet(ViewSetCacheMixin, viewsets.ModelViewSet):
