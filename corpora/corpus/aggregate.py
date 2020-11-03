@@ -99,6 +99,8 @@ def build_recordings_stat_dict(recording_queryset):
     if stats['num_approved'] is None:
         stats['num_approved'] = 0
 
+    stats['net_vote'] = stats['up_votes'] - stats['down_votes']
+
     return stats
 
 
@@ -122,5 +124,7 @@ def build_qualitycontrol_stat_dict(queryset):
         'delete': deletes.count(),
         'star': stars['sum'] if stars['sum'] is not None else 0,
     }
+
+    stats['net_vote'] = stats['good'] - stats['bad']
 
     return stats
