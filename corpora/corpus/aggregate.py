@@ -107,6 +107,18 @@ def build_recordings_stat_dict(recording_queryset):
 # This assumes recording QCs
 def build_qualitycontrol_stat_dict(queryset):
 
+    if not queryset.exists():
+        return {
+            'count': 0,
+            'approved': 0,
+            'good': 0,
+            'bad': 0,
+            'trash': 0,
+            'delete': 0,
+            'star': 0,
+            'net_vote': 0
+        }
+
     approved = \
         queryset.filter(approved=True)
 

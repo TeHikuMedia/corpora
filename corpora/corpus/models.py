@@ -176,6 +176,10 @@ class RecordingQualityControl(models.Model):
         except:
             return u'old sentence?'
 
+    def save(self, *args, **kwargs):
+        self.recording.save()
+        return super().save(*args, **kwargs)
+
 
 class SentenceQualityControl(models.Model):
 
@@ -408,7 +412,7 @@ class Recording(models.Model):
     audio_file_md5 = models.CharField(
         max_length=32, editable=False, default=None, null=True)
 
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True, editable=False)
     updated = models.DateTimeField(auto_now=True)
     sentence_text = models.CharField(max_length=1024, blank=True, null=True)
     duration = models.FloatField(default=0, blank=True)
