@@ -361,9 +361,10 @@ def build_recording_aggregate(recording):
 
 @shared_task
 def build_recording_aggregates():
-    recordings = Recording.objects.filter(
-        metadata__metadata__quality_control_aggregate__isnull=True
+    reviewed = Recording.objects.filter(quality_control__isnull=False).distinct()
+    to_check = reviewed.filter(
+        metadata__metadata__quality_control_aggregate__net_vote__isnull=True
     )
 
-    for recording in recordings:
+    for recording in to_check:
         build_recording_aggregate(recording)
