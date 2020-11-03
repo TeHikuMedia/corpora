@@ -23,7 +23,28 @@ daphne_log_file: "{{ application_log_dir }}/daphne_supervisor.log"
 django_log_file: "{{ application_log_dir }}/django.log"
 celery_log_file: "{{ application_log_dir }}/celery.log"
 notebook_log_file: "{{ application_log_dir }}/notebook.log"
+
 requirements_file: "{{ project_path }}/requirements.txt"
 application_tmp_dir: "/tmp/{{ project_name }}_files"
 npm_dir: "{{application_path}}/vue_frontend"
 npm_build_cmd: "npm run build"
+
+# Resilio Vars
+resilio_sync_host_name: "corpora-{{env_type}}"
+resilio_sync_dir: "{{virtualenv_path}}/sync"
+resilio_sync_config: "/etc/resilio-sync/config.json"
+resilio_sync_folders:
+  - "{{resilio_sync_dir}}/jupyter-corpora-{{env_type}}"
+
+# Each folder above requires a folder setting
+resilio_sync_folder_settings:
+  - secret: "{{RESILIO_FOLDER_KEY}}" # required field - use --generate-secret in command line to create new secret
+    dir: "{{resilio_sync_folders.0}}" # * required field
+    use_relay_server: false #  use relay server when direct connection fails
+    use_tracker: true
+    search_lan: true
+    use_sync_trash: false # enable SyncArchive to store files deleted on remote devices
+    overwrite_changes: false # restore modified files to original version, ONLY for Read-Only folders
+    selective_sync: false # add folder in selective sync mode
+
+notebook_path: "{{ resilio_sync_folders.0 }}"
