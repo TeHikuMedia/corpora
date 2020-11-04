@@ -45,11 +45,11 @@ class RecordingQualityControlHyperLinkedRelatedField(
     def to_representation(self, value):
         self.view_name = 'api:{0}-detail'.format(
             value.__class__.__name__.lower()
-            )
+        )
         return super(
             RecordingQualityControlHyperLinkedRelatedField,
             self
-            ).to_representation(value)
+        ).to_representation(value)
 
 
 class SentenceQualityControlHyperLinkedRelatedField(
@@ -58,11 +58,11 @@ class SentenceQualityControlHyperLinkedRelatedField(
     def to_representation(self, value):
         self.view_name = 'api:{0}-detail'.format(
             value.__class__.__name__.lower()
-            )
+        )
         return super(
             SentenceQualityControlHyperLinkedRelatedField,
             self
-            ).to_representation(value)
+        ).to_representation(value)
 
 
 class RecordingQualityControlSerializer(
@@ -84,7 +84,8 @@ class RecordingQualityControlSerializer(
             if data['content_type'] and data['object_id']:
                 if 'recording' in data['content_type'].name.lower():
                     try:
-                        data['recording'] = Recording.objects.get(pk=data['object_id'])
+                        data['recording'] = Recording.objects.get(
+                            pk=data['object_id'])
                     except ObjectDoesNotExist:
                         pass
         return super().validate(data)
@@ -106,19 +107,22 @@ class SentenceQualityControlSerializer(
 
 class RecordingQualityControRelatedField(serializers.RelatedField):
     def to_representation(self, value):
-        serializer = RecordingQualityControlSerializer(value, context=self.parent.context)
+        serializer = RecordingQualityControlSerializer(
+            value, context=self.parent.context)
         return serializer.data
 
 
 class SentenceQualityControRelatedField(serializers.RelatedField):
     def to_representation(self, value):
-        serializer = SentenceQualityControlSerializer(value, context=self.parent.context)
+        serializer = SentenceQualityControlSerializer(
+            value, context=self.parent.context)
         return serializer.data
 
 
 class ListenQualityControRelatedField(serializers.RelatedField):
     def to_representation(self, value):
-        serializer = RecordingQualityControlSerializer(value, context=self.parent.context)
+        serializer = RecordingQualityControlSerializer(
+            value, context=self.parent.context)
         person = get_person(self.parent.context['request'])
         data = serializer.data
         return data
@@ -147,7 +151,8 @@ class SourceSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         try:
-            source_obj, created = Source.objects.get_or_create(**validated_data)
+            source_obj, created = Source.objects.get_or_create(
+                **validated_data)
         except Exception as e:
             raise Exception(e)
         return source_obj
@@ -164,14 +169,16 @@ class SentenceSerializer(serializers.HyperlinkedModelSerializer):
 
     def create(self, validated_data):
         try:
-            sentence_obj, created = Sentence.objects.get_or_create(**validated_data)
+            sentence_obj, created = Sentence.objects.get_or_create(
+                **validated_data)
         except Exception as e:
             raise Exception(e)
         return sentence_obj
 
     class Meta:
         model = Sentence
-        fields = ('id', 'text', 'language', 'quality_control', 'updated', 'source')
+        fields = ('id', 'text', 'language',
+                  'quality_control', 'updated', 'source')
         extra_kwargs = {
             'source': {'view_name': 'api:source-detail'}
         }
@@ -247,7 +254,8 @@ class Base64FieldMixin(object):
     def _decode(self, data):
         if isinstance(data, text_type) and data.startswith('data:'):
             # base64 encoded file - decode
-            format, datastr = data.split(';base64,')    # format ~= data:image/X,
+            # format ~= data:image/X,
+            format, datastr = data.split(';base64,')
             ext = format.split('/')[-1]    # guess file extension
             if ext[:3] == 'svg':
                 ext = 'svg'
@@ -305,6 +313,43 @@ class RecordingSerializerPostBase64(
             'person', 'id', 'sentence')
 
 
+class RecordingFetchSerializer(serializers.ModelSerializer):
+    audio_file_url = serializers.SerializerMethodField()
+    transcription = serializers.SerializerMethodField()
+    person = serializers.PrimaryKeyRelatedField(
+        many=False,
+        read_only=True
+    )
+    sentence = serializers.PrimaryKeyRelatedField(
+        many=False,
+        read_only=True
+    )
+    quality_control_aggregate = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Recording
+        fields = ('person', 'sentence', 'audio_file_url',
+                  'id', 'sentence_text', 'updated',
+                  'audio_file_md5', 'audio_file_wav_md5',
+                  'private', 'transcription', 'quality_control_aggregate',)
+        depth = 1
+
+    def get_audio_file_url(self, obj):
+        return obj.get_recording_file_url(self.context['request'])
+
+    def get_transcription(self, obj):
+        t = obj.transcription_set.first()
+        if t:
+            return {'text': t.text, 'wer': t.word_error_rate}
+        return None
+
+    def get_quality_control_aggregate(self, obj):
+        if hasattr(obj, 'metadata'):
+            if 'quality_control_aggregate' in obj.metadata.metadata:
+                return obj.metadata.metadata['quality_control_aggregate']
+        return None
+
+
 class RecordingSerializer(serializers.ModelSerializer):
     sentence = SentenceSerializerNotNested(
         many=False,
@@ -320,12 +365,6 @@ class RecordingSerializer(serializers.ModelSerializer):
     #     read_only=True,
     # )
     audio_file_url = serializers.SerializerMethodField()
-    # audio_file_url = serializers.CharField(source='get_recording_file_url',
-    #                                        read_only=True)
-    # created = serializers.DateTimeField(
-    #     format="%d-%m-%y %H:%M %Z",
-    #     read_only=True)
-
     quality_control_aggregate = serializers.SerializerMethodField()
     transcription = serializers.SerializerMethodField()
     word_error_rate = serializers.SerializerMethodField()
@@ -333,58 +372,34 @@ class RecordingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recording
-        fields = ('person', 'sentence', 'audio_file_url', #'quality_control',
-                  'id', 'sentence_text', 'user_agent', 'created', 'updated',
+        fields = ('person', 'sentence', 'audio_file_url',  # 'quality_control',
+                  'id', 'sentence_text', 'user_agent', 'updated',
                   'audio_file_md5', 'audio_file_wav_md5',
                   'quality_control_aggregate', 'transcription',
-                  'word_error_rate', 'private', ) #'metadata'
-
-    # def get_updated(self, obj):
-    #     qc = obj.quality_control.all().order_by('-updated').first()
-    #     if qc is not None:
-    #         if qc.updated > obj.updated:
-    #             return localtime(qc.updated)
-    #     return localtime(obj.updated)
+                  'word_error_rate', 'private', )  # 'metadata'
 
     def get_audio_file_url(self, obj):
         return obj.get_recording_file_url(self.context['request'])
 
     def get_quality_control_aggregate(self, obj):
-        try:
+        if hasattr(obj, 'metadata'):
             if 'quality_control_aggregate' in obj.metadata.metadata:
                 return obj.metadata.metadata['quality_control_aggregate']
-        except:
-            pass
-
-        # metas = RecordingMetadata.objects.filter(
-        #     recording=obj,
-        #     metadata__quality_control_aggregate__isnull=False
-        # )
-        # if metas.exists():
-        #     meta = metas.first()
-        #     return meta.metadata['quality_control_aggregate']
-        # else:
 
         return build_qualitycontrol_stat_dict(obj.quality_control.all())
 
     def get_transcription(self, obj):
-        try:
-            t = obj.transcription_set.first()
+        t = obj.transcription_set.first()
+        if t:
             return t.text
-        except:
-            pass
         return None
 
     def get_word_error_rate(self, obj):
-        try:
-            t = obj.transcription_set.first()
+        t = obj.transcription_set.first()
+        if t:
             return t.word_error_rate
-        except:
-            pass
         return None
 
-    # def get_metadata(self, obj):
-    #     return obj.metadata.metadata
 
 class ListenSerializer(serializers.ModelSerializer):
     sentence = ReadSentenceSerializer(
@@ -403,7 +418,7 @@ class ListenSerializer(serializers.ModelSerializer):
         model = Recording
         fields = (
             'sentence', 'audio_file_url', 'id', 'sentence_text',
-            )
+        )
 
     def get_audio_file_url(self, obj):
         return obj.get_recording_file_url(self.context['request'])
