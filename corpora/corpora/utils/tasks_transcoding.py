@@ -17,8 +17,8 @@ import contextlib
 import os
 import stat
 import subprocess
-import ast
 import sys
+import json
 
 from django.core.cache import cache
 
@@ -77,7 +77,7 @@ def encode_audio(obj, test=False, codec='aac'):
               tmp_file
     p = subprocess.Popen(command.split(' '))
     output, error = p.communicate()
-    data = ast.literal_eval(output)
+    data = json.loads(output)
     streams = data['streams']
 
     audio = False
@@ -114,12 +114,12 @@ def encode_audio(obj, test=False, codec='aac'):
             obj.audio_file_aac.save(
                 file_name+'.'+extension,
                 File(open(tmp_stor_dir+'/{0}.{1}'.format(
-                    file_name, extension))))
+                    file_name, extension), 'rb')))
         elif 'wav' in codec:
             obj.audio_file_wav.save(
                 file_name+'.'+extension,
                 File(open(tmp_stor_dir+'/{0}.{1}'.format(
-                    file_name, extension))))
+                    file_name, extension), 'rb')))
 
         code = 'rm '+tmp_stor_dir+'/{0}.{1}'.format(file_name, extension)
         logger.debug('Running: '+code)

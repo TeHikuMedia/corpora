@@ -4,6 +4,10 @@ DJANGODIR={{ application_path }}
 USER={{ gunicorn_user }}
 GROUP={{ gunicorn_group }}
 
+CPUs=$(lscpu | grep -E -m 1 "CPU\(s\): +" | awk '{print $2}')
+NUM_WORKERS=$(( 2 * $CPUs + 1 ))
+NUM_THREADS=$(( $CPUs ))
+
 # Activate the virtual environment.
 cd $DJANGODIR
 source {{ virtualenv_path }}/bin/activate
@@ -44,5 +48,5 @@ exec celery \
 	-Q {{item}}_{{env_type}} worker \
 	-l info \
 	-n worker.{{item}}.{{env_type}}.%h \
-	--concurrency={{ celery_num_workers }}
+	--concurrency=$NUM_WORKERS
 {% endif %}
