@@ -274,3 +274,4 @@ class TextAdmin(admin.ModelAdmin):
 @admin.register(RecordingMetadata)
 class RecordingMetadataAdmin(admin.ModelAdmin):
     list_display = ('recording', 'updated', 'created')
+    raw_id_fields = ('recording',)
