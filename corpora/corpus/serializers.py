@@ -357,6 +357,23 @@ class RecordingFetchSerializer(serializers.ModelSerializer):
         return None
 
 
+class PronunciationFetchSerializer(RecordingFetchSerializer):
+    pronunciation = serializers.SerializerMethodField()
+    class Meta:
+        model = Recording
+        depth = 1
+        fields = ('person', 'audio_file_url',
+                  'id', 'sentence_text', 'updated',
+                  'audio_file_md5', 'audio_file_wav_md5',
+                  'private',  'quality_control_aggregate', 'pronunciation')
+    def get_pronunciation(self, obj):
+        if hasattr(obj, 'metadata'):
+            if 'pronunciation' in obj.metadata.metadata:
+                return obj.metadata.metadata['pronunciation']
+        return None
+
+
+
 class RecordingSerializer(serializers.ModelSerializer):
     sentence = SentenceSerializerNotNested(
         many=False,

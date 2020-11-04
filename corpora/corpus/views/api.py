@@ -30,6 +30,7 @@ from corpus.serializers import (
     SentenceSerializer,
     RecordingSerializer,
     RecordingFetchSerializer,
+    PronunciationFetchSerializer,
     RecordingSerializerPost,
     RecordingSerializerPostBase64,
     ListenSerializer,
@@ -941,3 +942,13 @@ class RecordingMetadataViewSet(ViewSetCacheMixin, viewsets.ModelViewSet):
     #     recording = self.request.query_params.get('recording', None)
     #     if recording:
     #         return q.filter(recording__pk=recording)
+
+class PronunciationFetchViewSet(viewsets.ModelViewSet):
+    queryset = (
+        Recording.objects
+            .filter(metadata__metadata__pronunciation__isnull=True).distinct()
+    )
+    serializer_class = PronunciationFetchSerializer
+    permission_classes = (RecordingPermissions,)
+    pagination_class = OneHundredResultPagination
+
