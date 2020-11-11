@@ -446,7 +446,7 @@ class RecordingPermissions(permissions.BasePermission):
 
 
 class RecordingFetchViewSet(viewsets.ModelViewSet):
-    queryset = Recording.objects.all()
+    queryset = Recording.objects.all().distinct().order_by('pk')
     serializer_class = RecordingFetchSerializer
     permission_classes = (RecordingPermissions,)
     pagination_class = OneHundredResultPagination
