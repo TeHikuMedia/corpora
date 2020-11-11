@@ -454,6 +454,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
+        'corpora.authentication.StagingTokenAuthentication',
         'reo_api.authentication.ApplicationAPITokenAuthentication',
         'reo_api.authentication.UserAPITokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
