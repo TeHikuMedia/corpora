@@ -159,12 +159,12 @@ def set_all_recording_md5():
             time = timezone.now()-start
             return "Churned through {0} of {2} recordings with {3} errors. \
                     Created {1} QCs. Took {4}s".format(
-                        count, new_qc, total, error, time.total_seconds())
+                count, new_qc, total, error, time.total_seconds())
 
     time = timezone.now()-start
     return "Churned through {0} of {2} recordings with {3} errors. \
             Created {1} QCs. Took {4}s".format(
-            count, new_qc, total, error, time.total_seconds())
+        count, new_qc, total, error, time.total_seconds())
 
 
 @shared_task
@@ -244,7 +244,7 @@ def encode_audio(recording, test=False, codec='aac'):
     '''
     Encode audio into required formats. Also sets recording duration.
     '''
-    
+
     if not isinstance(codec, list):
         codec_list = [codec]  # Backwards compatibility
     else:
@@ -305,33 +305,60 @@ def set_s3_content_deposition(recording):
     if 's3boto' in settings.DEFAULT_FILE_STORAGE.lower():
 
         from boto.s3.connection import S3Connection
+        from boto3 import client
+
         c = S3Connection(
             settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
-        b = c.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)  # , validate=False)
+        b = c.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
+        s3 = client(
+            's3',
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
+        )
 
-        attrs = ['audio_file', 'audio_file_aac']
+        attrs = ['audio_file', 'audio_file_aac', 'audio_file_wav']
         for attr in attrs:
             file = getattr(recording, attr)
             if file:
-
                 k = file.name
                 key = b.get_key(k)  # validate=False)
-
+                url = s3.generate_presigned_url(
+                    ClientMethod='get_object',
+                    Params={
+                        'Bucket': settings.AWS_STORAGE_BUCKET_NAME,
+                        'Key': f"{key.name}"
+                    }
+                )
                 if key is None:
-                    return "Error: key {0} doesn't exist in S3.".format(key)
+                    print("Error: key {0} doesn't exist in S3.".format(key))
                 else:
+                    m_type = mimetypes.guess_type(file.url)[0]
+                    if m_type is None:
+                        p = subprocess.Popen([
+                            'ffprobe', '-v', 'quiet',
+                            '-print_format', 'json',
+                            '-show_format', '-show_streams',
+                            '-i', url
+                        ], stdout=subprocess.PIPE)
+                        output, error = p.communicate()
+                        stream = json.loads(output)
+                        extension = stream['format']['format_name']
+                        m_type = mimetypes.guess_type(f"foo.{extension}")[0]
+
                     metadata = key.metadata
                     metadata['Content-Disposition'] = \
                         "attachment; filename={0}".format(
                             file.name.split('/')[-1])
                     metadata['Content-Type'] = \
-                        mimetypes.guess_type(file.url)[0]
+                        f"{m_type}"
+
                     key.copy(
                         key.bucket,
                         key.name,
                         preserve_acl=True,
                         metadata=metadata)
-        return metadata
+
+        return f"Finished: {metadata}"
 
     else:
         return 'Non s3 storage - not setting s3 content deposition.'
@@ -347,7 +374,8 @@ def build_recording_aggregate_pk(recording_pk):
 
 @shared_task
 def build_recording_aggregate(recording):
-    meta, created = RecordingMetadata.objects.get_or_create(recording=recording)
+    meta, created = RecordingMetadata.objects.get_or_create(
+        recording=recording)
     qc = recording.quality_control.all()
     stats = None
     if not meta.metadata:
@@ -361,7 +389,8 @@ def build_recording_aggregate(recording):
 
 @shared_task
 def build_recording_aggregates():
-    reviewed = Recording.objects.filter(quality_control__isnull=False).distinct()
+    reviewed = Recording.objects.filter(
+        quality_control__isnull=False).distinct()
     to_check = reviewed.filter(
         metadata__metadata__quality_control_aggregate__net_vote__isnull=True
     )
