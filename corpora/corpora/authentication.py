@@ -1,5 +1,6 @@
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import HTTP_HEADER_ENCODING
+from django.conf import settings
 
 def get_authorization_header(request):
     """
@@ -15,6 +16,10 @@ def get_authorization_header(request):
 class StagingTokenAuthentication(TokenAuthentication):
 
     def authenticate(self, request):
+
+        if 'stag' not in settings.ENV_TYPE.lower():
+            return super().authenticate(request)
+
         auth = get_authorization_header(request).split()
 
         if not auth or auth[0].lower() != self.keyword.lower().encode():

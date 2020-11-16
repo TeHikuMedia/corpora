@@ -52,7 +52,7 @@ nginx_server_names:
   corpora: "koreromaori.com"
   reo_api: "koreromaori.io"
 nginx_server_names_aliases:
-  corpora: "www.corpora.io corpora.io www.koreromaori.com"
+  corpora: "www.corpora.io corpora.io www.koreromaori.com olelomaoli.com"
   reo_api: "www.koreromaori.io"
 
 # memcached Settings:
