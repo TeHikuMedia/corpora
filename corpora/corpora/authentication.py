@@ -17,7 +17,7 @@ class StagingTokenAuthentication(TokenAuthentication):
 
     def authenticate(self, request):
 
-        if 'stag' not in settings.ENV_TYPE.lower():
+        if 'prod' in settings.ENV_TYPE.lower():
             return super().authenticate(request)
 
         auth = get_authorization_header(request).split()

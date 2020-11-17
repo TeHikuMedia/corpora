@@ -34,6 +34,7 @@ export AWS_SECRET_S3="{{aws_secret_s3}}"
 export AWS_ID_S3="{{aws_id_s3}}"
 
 export ALLOWED_HOSTS="{{nginx_server_name}} {{nginx_server_name_aliases}} {{nginx_server_name_no_ssl}}" #note these will be space separated hosts
+export ALLOWED_HOSTS="{% for item in nginx_server_names %}{{nginx_server_names[item]}} {% endfor %}{% for item in nginx_server_names_aliases %}{{nginx_server_names_aliases[item]}} {% endfor %}"
 export ALLOWED_HOSTS_INTERNAL="127.0.0.1"
 
 export DJANGO_MEMCACHED_IP="{% if env_type == 'local' %}{{item}}{% else %}{% for ip in groups[host_tag] %}{% if ip in hostvars[ip].groups.tag_server_role_primary %}{{ hostvars[ip].ec2_private_ip_address }}{% endif %}{% endfor %}{% endif %}" # memcached_listen
@@ -64,7 +65,7 @@ export TRANSCODE_API_TOKEN="{{koreromaori_transcode_api_token}}"
 {% if env_type == 'prod' %}
 export ASR_URL="{{asr_url}}"
 {% elif env_type == 'local' %}
-export ASR_URL="{{asr_url}}"
+export ASR_URL="{{asr_url_stag}}"
 {% else %}
 export ASR_URL="{{asr_url_stag}}"
 {% endif %}

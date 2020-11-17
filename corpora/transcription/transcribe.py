@@ -33,7 +33,8 @@ import sys
 import requests
 import json
 import uuid
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, check_output
+import subprocess
 import time
 
 
@@ -160,32 +161,43 @@ def transcribe_audio_quick(file_object):
     if duration > 100:
         return {'transcription': 'Stream duration is too long. Not Transcribing.'}
 
-    convert = [
-        'ffmpeg', '-y', '-i', tmp_file, '-ar', '16000', '-ac', '1',
-        '{0}.wav'.format(tmp_file)]
+    params = ['-ac', '1', '-c:a', 'pcm_s16le', '-ar', '16k', '-f', 'wav']
+
+    ffmpeg = [
+        'ffmpeg', '-y', '-loglevel', 'error',
+        '-i', tmp_file,
+        ]+params+['-']
 
     post = [
-        'curl', '-X', 'POST', '--data-binary', '@{0}.wav'.format(tmp_file),
-        '--header', '"Accept: application/json"',
-        '--header', '"Content-Type: application/json"',
-        settings.DEEPSPEECH_URL]
+        'curl', '--silent', '-X', 'POST',
+        '-H',
+        '\'Accept: application/json\'',
+        '--data-binary', '@-',
+        '-L', '\'{0}\''.format(settings.DEEPSPEECH_URL),
+        ]
 
-    p = Popen(convert, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-    (output, errors) = p.communicate()
-    p_status = p.poll()
-    while p_status is None:
-        p_status = p.poll()
+    cmd = ffmpeg + ['|'] + post
 
-    p = Popen(post, stdout=PIPE)
-    (output, errors) = p.communicate()
+    data = {}
+    count = 0
+    while 'metadata' not in data:
+        logger.info('Calling api...')
+        output = subprocess.check_output(' '.join(cmd), shell=True)
+        try:
+            data = json.loads(output)
+        except:
+            data = {}
+        if count>3:
+            break
+        count = count+1
+        if not data:
+            time.sleep(1)
+            logger.info('try again...')
 
-    p = Popen(['rm', tmp_file])
-    p.communicate()
-    p = Popen(['rm', '{0}.wav'.format(tmp_file)])
-    p.communicate()
 
     logger.debug(output)
-    logger.debug(post)
+    logger.debug(errors)
+    logger.debug(' '.join(post))
 
     return json.loads(output.strip())
 

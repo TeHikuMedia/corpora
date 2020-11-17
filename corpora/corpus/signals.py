@@ -261,6 +261,6 @@ def update_person_score_when_model_saved(sender, instance, created, **kwargs):
 
 @receiver(models.signals.post_save, sender=RecordingQualityControl)
 @receiver(models.signals.post_delete, sender=RecordingQualityControl)
-def update_aggregate_data(sender, instance, created, **kwargs):
+def update_aggregate_data(sender, instance, **kwargs):
     build_recording_aggregate_pk.apply_async(
         args=[instance.recording.pk])

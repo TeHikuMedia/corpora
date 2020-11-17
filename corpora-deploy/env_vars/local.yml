@@ -46,6 +46,9 @@ nginx_server_name_no_ssl: "podcast.{{ ansible_eth1.ipv4.address }} podcast.tehik
 nginx_server_names:
   corpora: "{{ ansible_eth1.ipv4.address }} corporalocal.nz www.corporalocal.nz kōreromāorilocal.com olelohawaii.com"
   reo_api: "corporalocal.io"
+nginx_server_names_aliases:
+  corpora: "www.corporalocal.io"
+  reo_api: "www.corporalocal.io"
 
 # memcached Settings:
 memcached_listen: 127.0.0.1
