@@ -143,7 +143,7 @@ def set_recording_length_on_save(sender, instance, created, **kwargs):
 
     if instance.audio_file:
 
-        if not created and instance.duration <= 0:
+        if instance.duration <= 0:
             # Encoding tasks handles duration calc.
             set_recording_length.apply_async(
                 args=[instance.pk],
@@ -262,5 +262,6 @@ def update_person_score_when_model_saved(sender, instance, created, **kwargs):
 @receiver(models.signals.post_save, sender=RecordingQualityControl)
 @receiver(models.signals.post_delete, sender=RecordingQualityControl)
 def update_aggregate_data(sender, instance, **kwargs):
-    build_recording_aggregate_pk.apply_async(
-        args=[instance.recording.pk])
+    if instance.recording:
+        build_recording_aggregate_pk.apply_async(
+            args=[instance.recording.pk])

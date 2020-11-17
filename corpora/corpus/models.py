@@ -111,7 +111,7 @@ class RecordingQualityControl(models.Model):
         'corpus.Recording',
         related_name='quality_control',
         null=True,
-        on_delete=models.SET_NULL,)
+        on_delete=models.CASCADE,)
 
     notes = models.TextField(
         blank=True,

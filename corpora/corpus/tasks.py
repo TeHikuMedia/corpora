@@ -61,7 +61,7 @@ def set_recording_length(recording_pk):
         recording.save()
     except Exception as e:
         logger.error(e)
-        return 'Cound not set Recording {0} duration'.format(recording.pk)
+        return f'Could not set recording duration for {recording.pk}'
 
     return 'Recording {0} duration set to {1}'.format(
         recording.pk, recording.duration)

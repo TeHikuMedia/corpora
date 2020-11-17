@@ -69,7 +69,7 @@ lets hope this is okay".format(tmp_file))
     # Will just replace file since we only doing one encode.
     if 'http' in file_path:
         url = get_file_url(file)
-        code = ['wget', tmp_file, '-O']
+        code = ['wget', file_path, '-O', tmp_file]
     else:
         code = ['cp', file_path, tmp_file]
 
