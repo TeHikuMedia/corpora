@@ -10,6 +10,7 @@ from transcription.utils import create_and_return_transcription_segments
 from transcription.models import AudioFileTranscription
 
 from people.models import Person
+from django.contrib.auth.models import User
 
 
 import logging
@@ -37,8 +38,10 @@ asr_wer = \
 
 class TestTranscribeMethods(TestCase):
     def setUp(self):
+        u = User.objects.create(username="testUser")
         p = Person.objects.create(
-            full_name="Test Person")
+            full_name="Test Person",
+            user=u)
 
         aft = AudioFileTranscription.objects.create(
             name="Test Audio 1",

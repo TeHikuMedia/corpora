@@ -31,5 +31,5 @@ class TestMediaFunctions(TestCase):
     def test_get_duration_from_model(self):
         aft = AudioFileTranscription.objects.first()
         duration = media_functions.get_media_duration(aft)
-
+        print(f"Duration {duration}")
         self.assertEqual(round(duration*100)/100, 5.61)
