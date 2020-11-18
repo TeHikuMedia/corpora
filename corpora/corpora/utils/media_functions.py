@@ -17,4 +17,4 @@ def get_media_duration(obj):
     M = MediaManager(obj.audio_file)
     M.set_media_stats()
 
-    return float(M.duraion)
+    return float(M.duration)
