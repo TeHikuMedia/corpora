@@ -18,7 +18,7 @@ django-autocomplete-light>=3.2.10
 django-analytical
 django-cors-headers
 django-webpack-loader==0.7.0
-
+dj-inmemorystorage==2.1.0
 
 # Miscelanious
 boto

@@ -173,6 +173,7 @@
     - deploy-staging
     - deploy-staging-web
     - remote
+    - resilio
 
 
 - name: "Deploy to Django staging {{ application_name }} WEB server"

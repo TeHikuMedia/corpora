@@ -30,6 +30,7 @@ npm_dir: "{{application_path}}/vue_frontend"
 npm_build_cmd: "npm run build"
 
 # Resilio Vars
+RESILIO_AGENT_VERSION: "2.10"
 resilio_sync_host_name: "corpora-{{env_type}}"
 resilio_sync_dir: "{{virtualenv_path}}/sync"
 resilio_sync_config: "/etc/resilio-sync/config.json"

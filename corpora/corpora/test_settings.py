@@ -28,3 +28,5 @@ DATABASES = {
         },
     }
 DATABASE_ROUTERS = []
+
+DEFAULT_FILE_STORAGE = 'inmemorystorage.InMemoryStorage'
