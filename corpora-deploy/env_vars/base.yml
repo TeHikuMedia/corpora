@@ -48,4 +48,4 @@ resilio_sync_folder_settings:
     overwrite_changes: false # restore modified files to original version, ONLY for Read-Only folders
     selective_sync: false # add folder in selective sync mode
 
-notebook_path: "jupyter-{{project_name}}-{{env_type}}"
+notebook_path: "{{resilio_sync_dir}}/jupyter-{{project_name}}-{{env_type}}"
