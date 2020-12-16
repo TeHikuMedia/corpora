@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from django.core.files import File
 
@@ -12,7 +12,9 @@ from people.models import Person
 
 import os
 
-
+@override_settings(
+  DEFAULT_FILE_STORAGE='django.core.files.storage.FileSystemStorage',
+)
 class TestMediaFunctions(TestCase):
     def setUp(self):
 

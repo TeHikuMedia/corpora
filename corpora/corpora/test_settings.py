@@ -4,7 +4,7 @@ sys.path.append('/webapp/corpora/corpora')
 
 ### FILE STORAGE SETTINGS ###
 # TURNED OFF FOR NOW AS IT BREAKS TESTS THAT NEED UPDATING
-# DEFAULT_FILE_STORAGE = 'inmemorystorage.InMemoryStorage'
+DEFAULT_FILE_STORAGE = 'inmemorystorage.InMemoryStorage'
 ### FILE STORAGE SETTINGS ###
 
 ### ALLOWED HOSTS ###
@@ -28,5 +28,3 @@ DATABASES = {
         },
     }
 DATABASE_ROUTERS = []
-
-DEFAULT_FILE_STORAGE = 'inmemorystorage.InMemoryStorage'
