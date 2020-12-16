@@ -35,7 +35,7 @@ key=$(\
 export AWS_ACCESS_KEY_ID=$(echo $credentials | cut -d: -f1)
 export AWS_SECRET_ACCESS_KEY=$(echo $credentials | cut -d: -f2)
 
-mkdir $SSH_PATH
+mkdir $SSH_PATH || true
 echo $key > ~/out.pem
 awk '{gsub(/\\n/,"\n")}1' ~/out.pem > $KEY_PATH
 rm ~/out.pem

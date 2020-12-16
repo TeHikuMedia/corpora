@@ -30,6 +30,7 @@ npm_dir: "{{application_path}}/vue_frontend"
 npm_build_cmd: "npm run build"
 
 # Resilio Vars
+RESILIO_AGENT_VERSION: "2.10"
 resilio_sync_host_name: "corpora-{{env_type}}"
 resilio_sync_dir: "{{virtualenv_path}}/sync"
 resilio_sync_config: "/etc/resilio-sync/config.json"
@@ -47,4 +48,4 @@ resilio_sync_folder_settings:
     overwrite_changes: false # restore modified files to original version, ONLY for Read-Only folders
     selective_sync: false # add folder in selective sync mode
 
-notebook_path: "{{ resilio_sync_folders.0 }}"
+notebook_path: "{{resilio_sync_dir}}/jupyter-{{project_name}}-{{env_type}}"
